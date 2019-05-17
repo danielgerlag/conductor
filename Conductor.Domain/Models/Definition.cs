@@ -5,7 +5,7 @@ using WorkflowCore.Models;
 
 namespace Conductor.Domain.Models
 {
-    public class Workflow
+    public class Definition
     {
         public string Id { get; set; }
 
