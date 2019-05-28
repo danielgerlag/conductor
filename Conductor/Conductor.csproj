@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Conductor.Domain\Conductor.Domain.csproj" />
+    <ProjectReference Include="..\Conductor.Storage\Conductor.Storage.csproj" />
   </ItemGroup>
 
 </Project>
