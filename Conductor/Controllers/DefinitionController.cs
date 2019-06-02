@@ -32,16 +32,16 @@ namespace Conductor.Controllers
             return "value";
         }
 
-        // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)
         {
+            _service.RegisterNewDefinition(value);
         }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+                
+        [HttpPut]
+        public void Put([FromBody] string value)
         {
+            _service.RegisterNewDefinition(value);
         }
 
         // DELETE api/values/5
