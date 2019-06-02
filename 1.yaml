@@ -1,0 +1,12 @@
+Id: Test
+Version: 1
+Steps: 
+	- Id: Step1
+	  StepType: EmitLog
+	  Inputs:
+		Message: Hi there
+	  NextStepId: Step2
+	- Id: Step2
+	  StepType: EmitLog
+	  Inputs:
+		Message: Goodbye!

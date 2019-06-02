@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conductor.Domain", "Conduct
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conductor.Storage", "Conductor.Storage\Conductor.Storage.csproj", "{1010AB76-79FD-42FE-9F59-166323E9BDBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Steps", "Conductor.Steps\Conductor.Steps.csproj", "{C9DA979C-9D97-4D8B-B297-C0DEC68C9490}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conductor.Steps", "Conductor.Steps\Conductor.Steps.csproj", "{C9DA979C-9D97-4D8B-B297-C0DEC68C9490}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scratch", "Scratch", "{29F7D894-9426-4C1E-8BBD-F87DA689E134}"
+	ProjectSection(SolutionItems) = preProject
+		1.yaml = 1.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

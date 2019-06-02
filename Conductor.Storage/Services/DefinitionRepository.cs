@@ -15,7 +15,7 @@ namespace Conductor.Storage.Services
 
         private IMongoCollection<StoredDefinition> _collection => _database.GetCollection<StoredDefinition>("Definitions");
 
-        protected DefinitionRepository(IMongoDatabase database)
+        public DefinitionRepository(IMongoDatabase database)
         {
             _database = database;
             CreateIndexes(_collection);

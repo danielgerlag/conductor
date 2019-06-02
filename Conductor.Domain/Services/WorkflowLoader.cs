@@ -214,12 +214,13 @@ namespace Conductor.Domain.Services
 
         private Type FindType(string name)
         {
+            name = name.Trim();
             var result = Type.GetType($"WorkflowCore.Primitives.{name} , WorkflowCore", false, true);
 
             if (result != null)
                 return result;
 
-            return Type.GetType($"Conductor.Steps.{name} , Conductor.Steps", true, true);
+            return Type.GetType($"Conductor.Steps.{name}, Conductor.Steps", true, true);
         }
 
     }

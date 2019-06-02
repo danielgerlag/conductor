@@ -36,6 +36,7 @@ namespace Conductor.Controllers
         public void Post([FromBody] string value)
         {
             _service.RegisterNewDefinition(value);
+            Response.StatusCode = 204;
         }
                 
         [HttpPut]
