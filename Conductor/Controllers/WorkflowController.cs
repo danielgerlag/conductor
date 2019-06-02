@@ -21,9 +21,9 @@ namespace Conductor.Controllers
         }
 
         [HttpPost("{id}")]
-        public void Post([FromBody] string data)
+        public void Post(string id, [FromBody] string data)
         {
-            _workflowController.StartWorkflow(Request.Query["id"]);
+            _workflowController.StartWorkflow(id);
             Response.StatusCode = 204;
         }
 
