@@ -23,12 +23,27 @@ namespace Conductor.Storage.Services
 
         public Definition Find(string workflowId)
         {
-            throw new NotImplementedException();
+            var version = GetLatestVersion(workflowId);
+            if (version == null)
+                return null;
+            return Find(workflowId, version.Value);
         }
 
         public Definition Find(string workflowId, int version)
         {
-            throw new NotImplementedException();
+            var result = _collection.Find(x => x.Definition.Id == workflowId && x.Definition.Version == version);
+            if (!result.Any())
+                return null;
+            return result.First().Definition;
+        }
+
+        public int? GetLatestVersion(string workflowId)
+        {
+            var versions = _collection.AsQueryable().Where(x => x.Definition.Id == workflowId);
+            if (!versions.Any())
+                return null;
+
+            return versions.Max(x => x.Definition.Version);
         }
 
         public IEnumerable<Definition> GetAll()

@@ -9,11 +9,10 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="WorkflowCore" Version="1.9.3" />
-    <PackageReference Include="WorkflowCore.Persistence.MongoDB" Version="1.9.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\workflow-core\src\WorkflowCore\WorkflowCore.csproj" />
     <ProjectReference Include="..\Conductor.Domain\Conductor.Domain.csproj" />
     <ProjectReference Include="..\Conductor.Steps\Conductor.Steps.csproj" />
     <ProjectReference Include="..\Conductor.Storage\Conductor.Storage.csproj" />

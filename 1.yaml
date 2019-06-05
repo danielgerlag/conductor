@@ -1,12 +1,17 @@
-Id: Test
+Id: Test2
 Version: 1
-Steps: 
-	- Id: Step1
-	  StepType: EmitLog
-	  Inputs:
-		Message: Hi there
-	  NextStepId: Step2
-	- Id: Step2
-	  StepType: EmitLog
-	  Inputs:
-		Message: Goodbye!
+Steps:
+  - Id: Step1
+    StepType: EmitLog
+    Inputs:
+      Message: '"Hi there"'
+    NextStepId: Step2
+  - Id: Step2
+    StepType: EmitLog
+    Inputs:
+      Message: data["Message"]
+    NextStepId: Step3
+  - Id: Step3
+    StepType: EmitLog
+    Inputs:
+      Message: '"Goodbye!"'

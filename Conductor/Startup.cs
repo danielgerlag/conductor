@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Conductor.Domain;
+using Conductor.Domain.Interfaces;
 using Conductor.Formatters;
 using Conductor.Steps;
 using Conductor.Storage;
@@ -32,13 +33,13 @@ namespace Conductor
         {
             services.AddMvc(options =>
             {
-                options.InputFormatters.Insert(0, new RawRequestBodyInputFormatter());
+                options.InputFormatters.Insert(0, new YamlRequestBodyInputFormatter());
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
             services.AddWorkflow(cfg =>
             {
-                //cfg.use
+                cfg.UseMongoDB(Configuration.GetValue<string>("DbConnectionString"), Configuration.GetValue<string>("DbName"));
             });
             services.ConfigureDomainServices();
             services.AddSteps();
@@ -62,6 +63,8 @@ namespace Conductor
             //app.UseHttpsRedirection();
             app.UseMvc();
             var host = app.ApplicationServices.GetService<IWorkflowHost>();
+            var defService = app.ApplicationServices.GetService<IDefinitionService>();
+            defService.LoadDefinitionsFromStorage();
             host.Start();
         }
     }

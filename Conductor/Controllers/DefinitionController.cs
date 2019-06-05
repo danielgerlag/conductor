@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Conductor.Domain.Interfaces;
+using Conductor.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,16 +26,20 @@ namespace Conductor.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<Definition> Get(string id)
         {
-            return "value";
+            var result = _service.GetDefinition(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Definition value)
         {
             _service.RegisterNewDefinition(value);
             Response.StatusCode = 204;

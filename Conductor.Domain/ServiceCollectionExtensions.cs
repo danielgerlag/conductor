@@ -9,9 +9,9 @@ namespace Conductor.Domain
     {
         public static void ConfigureDomainServices(this IServiceCollection services)
         {
-            services.AddScoped<IDefinitionService, DefinitionService>();
-            services.AddScoped<IWorkflowLoader, WorkflowLoader>();
-            services.AddScoped<IClusterBackplane, LocalBackplane>();
+            services.AddSingleton<IDefinitionService, DefinitionService>();
+            services.AddSingleton<IWorkflowLoader, WorkflowLoader>();
+            services.AddSingleton<IClusterBackplane, LocalBackplane>();
         }
     }
 }
