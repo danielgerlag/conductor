@@ -33,7 +33,8 @@ namespace Conductor
         {
             services.AddMvc(options =>
             {
-                options.InputFormatters.Insert(0, new YamlRequestBodyInputFormatter());
+                options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
+                options.OutputFormatters.Add(new YamlRequestBodyOutputFormatter());
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             

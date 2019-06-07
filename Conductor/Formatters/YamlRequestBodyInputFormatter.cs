@@ -11,9 +11,10 @@ namespace Conductor.Formatters
 {
     public class YamlRequestBodyInputFormatter : InputFormatter
     {
-        public override bool CanRead(InputFormatterContext context)
+        public YamlRequestBodyInputFormatter()
         {
-            return (context.HttpContext.Request.ContentType == "application/x-yaml");
+            SupportedMediaTypes.Add("application/x-yaml");
+            SupportedMediaTypes.Add("application/yaml");
         }
 
         public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context)

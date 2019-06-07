@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\workflow-core\src\WorkflowCore\WorkflowCore.csproj" />
+    <PackageReference Include="WorkflowCore" Version="1.9.3" />
   </ItemGroup>
 
 </Project>
