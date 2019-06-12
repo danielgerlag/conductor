@@ -39,7 +39,7 @@ namespace Conductor.Formatters
                     else
                         return await InputFormatterResult.FailureAsync();
                 }
-                catch
+                catch (Exception ex)
                 {
                     return await InputFormatterResult.FailureAsync();
                 }

@@ -169,19 +169,62 @@ namespace Conductor.Domain.Services
                 var dataParameter = Expression.Parameter(dataType, "data");
                 var contextParameter = Expression.Parameter(typeof(IStepExecutionContext), "context");
                 var environmentVarsParameter = Expression.Parameter(typeof(IDictionary), "environment");
-                var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter, contextParameter, environmentVarsParameter }, typeof(object), input.Value);
-
                 var stepProperty = stepType.GetProperty(input.Key);
 
-                Action<IStepBody, object> acn = (pStep, pData) =>
+                if (input.Value is string)
                 {
-                    object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, null, Environment.GetEnvironmentVariables());
-                    var convertedValue = System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType);
-                    
-                    stepProperty.SetValue(pStep, convertedValue);
-                };
+                    var sourceExpr = DynamicExpressionParser.ParseLambda(new[] {dataParameter, contextParameter, environmentVarsParameter}, typeof(object), (string)input.Value);
 
-                step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
+                    Action<IStepBody, object, IStepExecutionContext> acn = (pStep, pData, pContext) =>
+                    {
+                        object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
+                        var convertedValue = System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType);
+
+                        stepProperty.SetValue(pStep, convertedValue);
+                    };
+
+                    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
+                    continue;
+                }
+
+                if (input.Value is JObject)
+                {
+                    var srcObj = (input.Value as JObject);
+
+                    Action<IStepBody, object, IStepExecutionContext> acn = (pStep, pData, pContext) =>
+                    {
+                        var stack = new Stack<JObject>();
+                        var destObj = JObject.FromObject(srcObj);
+                        stack.Push(destObj);
+
+                        while (stack.Count > 0)
+                        {
+                            var subobj = stack.Pop();
+                            foreach (var prop in subobj.Properties().ToList())
+                            {
+                                if (prop.Name.StartsWith("@"))
+                                {
+                                    var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter, contextParameter, environmentVarsParameter }, typeof(object), prop.Value.ToString());
+                                    object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
+                                    subobj.Remove(prop.Name);
+                                    subobj.Add(prop.Name.TrimStart('@'), JToken.FromObject(resolvedValue));
+                                }
+                            }
+
+                            foreach (var child in subobj.Children<JObject>())
+                                stack.Push(child);
+                        }
+                        
+                        //var convertedValue = System.Convert.ChangeType(destObj, stepProperty.PropertyType);
+                        
+                        stepProperty.SetValue(pStep, destObj);
+                    };
+
+                    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
+                    continue;
+                }
+
+                throw new ArgumentException($"Unknown type for input {input.Key} on {source.Id}");
             }
         }
 

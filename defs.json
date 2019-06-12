@@ -1,0 +1,100 @@
+[
+  {
+    "id": "Test",
+    "version": 1,
+    "steps": [
+      {
+        "stepType": "EmitLog",
+        "id": "Step1",
+        "nextStepId": "Step2",
+        "inputs": {
+          "Message": "\"Hi there\""
+        }
+      },
+      {
+        "stepType": "EmitLog",
+        "id": "Step2",
+        "inputs": {
+          "Message": "\"Goodbye!\""
+        }
+      }
+    ]
+  },
+
+  {
+    "id": "Test3",
+    "version": 1,
+    "steps": [
+      {
+        "stepType": "Add",
+        "id": "Step1",
+        "nextStepId": "Step2",
+        "inputs": {
+          "Value1": "data[\"Value1\"]",
+          "Value2": "data[\"Value2\"]"
+        },
+        "outputs": {
+          "Value3": "step.Result"
+        }
+      },
+      {
+        "stepType": "EmitLog",
+        "id": "Step2",
+        "inputs": {
+          "Message": "\"Answer is \" + data[\"Value3\"]"
+        }
+      }
+    ]
+  },
+
+  {
+    "id": "Test4",
+    "version": 1,
+    "steps": [
+      {
+        "stepType": "EmitLog",
+        "id": "Step1",
+        "inputs": {
+          "Message": "\"Value is \" + environment[\"OS\"]"
+        }
+      }
+    ]
+  },
+
+
+  {
+    "id": "Test6",
+    "version": 1,
+    "steps": [
+      {
+        "stepType": "EmitLog",
+        "id": "Step1",
+        "nextStepId": "Step2",
+        "inputs": {
+          "Message": "\"Hello\""
+        }
+      },
+      {
+        "stepType": "WaitFor",
+        "id": "Step2",
+        "nextStepId": "Step3",
+        "inputs": {
+          "EventName": "\"my-event\"",
+          "EventKey": "\"key\"",
+          "EffectiveDate": "DateTime.Now"
+        },
+        "outputs": {
+          "Response": "step.EventData"
+        }
+      },
+      {
+        "stepType": "EmitLog",
+        "id": "Step3",
+        "inputs": {
+          "Message": "data[\"Response\"]"
+        }
+      }
+    ]
+  }
+
+]

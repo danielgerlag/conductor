@@ -10,6 +10,10 @@ namespace Conductor.Storage.Models
     {
         public ObjectId Id { get; set; }
 
-        public Definition Definition { get; set; }
+        public string ExternalId { get; set; }
+
+        public int Version { get; set; }
+
+        public BsonDocument Definition { get; set; }
     }
 }

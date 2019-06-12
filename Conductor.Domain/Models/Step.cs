@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Text;
+using Newtonsoft.Json.Linq;
 using WorkflowCore.Models;
 
 namespace Conductor.Domain.Models
@@ -27,7 +29,7 @@ namespace Conductor.Domain.Models
 
         public string NextStepId { get; set; }
 
-        public Dictionary<string, string> Inputs { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, object> Inputs { get; set; } = new Dictionary<string, object>();
 
         public Dictionary<string, string> Outputs { get; set; } = new Dictionary<string, string>();
 

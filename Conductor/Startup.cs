@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Conductor.Domain;
 using Conductor.Domain.Interfaces;
 using Conductor.Formatters;
+using Conductor.Mappings;
 using Conductor.Steps;
 using Conductor.Storage;
 using Microsoft.AspNetCore.Builder;
@@ -27,10 +29,15 @@ namespace Conductor
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbConnectionStr = Environment.GetEnvironmentVariable("DBHOST");
+            if (string.IsNullOrEmpty(dbConnectionStr))
+                dbConnectionStr = Configuration.GetValue<string>("DbConnectionString");
+
+            Console.WriteLine($"Using DbConnectionString {dbConnectionStr}");
+
             services.AddMvc(options =>
             {
                 options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
@@ -40,12 +47,19 @@ namespace Conductor
             
             services.AddWorkflow(cfg =>
             {
-                cfg.UseMongoDB(Configuration.GetValue<string>("DbConnectionString"), Configuration.GetValue<string>("DbName"));
+                cfg.UseMongoDB(dbConnectionStr, Configuration.GetValue<string>("DbName"));
             });
             services.ConfigureDomainServices();
             services.AddSteps();
-            services.UseMongoDB(Configuration.GetValue<string>("DbConnectionString"), Configuration.GetValue<string>("DbName"));
-            
+            services.UseMongoDB(dbConnectionStr, Configuration.GetValue<string>("DbName"));
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<APIProfile>();
+            });
+
+            services.AddSingleton<IMapper>(x => new Mapper(config));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

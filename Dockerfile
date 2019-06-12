@@ -1,4 +1,5 @@
 FROM microsoft/dotnet:2.2-aspnetcore-runtime AS base
+ENV DBHOST mongodb://10.225.2.96:27017/
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
