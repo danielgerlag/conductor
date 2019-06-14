@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp.Deserializers;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -26,7 +28,7 @@ namespace Conductor.Steps
         public string ErrorMessage { get; set; }
         public bool IsSuccessful { get; set; }
         public int ResponseCode { get; set; }
-        public JObject ResponseBody { get; set; }
+        public dynamic ResponseBody { get; set; }
 
         public async override Task<ExecutionResult> RunAsync(IStepExecutionContext context)
         {
@@ -59,7 +61,7 @@ namespace Conductor.Steps
                 }
             }
             
-            var response = await client.ExecuteTaskAsync<JObject>(request);
+            var response = await client.ExecuteTaskAsync<dynamic>(request);
             IsSuccessful = response.IsSuccessful;
 
             if (response.IsSuccessful)
@@ -76,4 +78,5 @@ namespace Conductor.Steps
 
         }
     }
+    
 }

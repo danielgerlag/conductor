@@ -78,6 +78,8 @@ namespace Conductor.Storage.Services
             {
                 _collection.ReplaceOne(x => x.ExternalId == definition.Id && x.Version == definition.Version, new StoredDefinition()
                 {
+                    ExternalId = definition.Id,
+                    Version = definition.Version,
                     Definition = doc
                 });
                 return;
@@ -85,6 +87,8 @@ namespace Conductor.Storage.Services
 
             _collection.InsertOne(new StoredDefinition()
             {
+                ExternalId = definition.Id,
+                Version = definition.Version,
                 Definition = doc
             });
         }

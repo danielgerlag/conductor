@@ -178,9 +178,10 @@ namespace Conductor.Domain.Services
                     Action<IStepBody, object, IStepExecutionContext> acn = (pStep, pData, pContext) =>
                     {
                         object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
-                        var convertedValue = System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType);
-
-                        stepProperty.SetValue(pStep, convertedValue);
+                        if (stepProperty.PropertyType.IsEnum)
+                            stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));
+                        else
+                            stepProperty.SetValue(pStep, System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType));
                     };
 
                     step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));

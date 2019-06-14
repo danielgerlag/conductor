@@ -63,7 +63,7 @@ namespace Conductor
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -77,10 +77,12 @@ namespace Conductor
 
             //app.UseHttpsRedirection();
             app.UseMvc();
+            
             var host = app.ApplicationServices.GetService<IWorkflowHost>();
             var defService = app.ApplicationServices.GetService<IDefinitionService>();
             defService.LoadDefinitionsFromStorage();
             host.Start();
+            applicationLifetime.ApplicationStopped.Register(() => host.Stop());
         }
     }
 }
