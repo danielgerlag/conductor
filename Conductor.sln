@@ -14,7 +14,21 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scratch", "Scratch", "{29F7D894-9426-4C1E-8BBD-F87DA689E134}"
 	ProjectSection(SolutionItems) = preProject
 		1.yaml = 1.yaml
+		defs.json = defs.json
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3E1C72D-C63A-4A85-AAC1-AF7C1F072907}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B5BD285A-9A9E-43FB-A603-413582C2AD70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockServer", "tests\MockServer\MockServer.csproj", "{A6943D05-84F2-4FD3-AACC-C66A418624E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.IntegrationTests", "tests\Conductor.IntegrationTests\Conductor.IntegrationTests.csproj", "{A291A05D-5140-47EC-BA51-9BD40F4D2512}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchPad", "tests\ScratchPad\ScratchPad.csproj", "{45D807EA-1D48-4356-9BA2-E93C6A791F3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +52,26 @@ Global
 		{C9DA979C-9D97-4D8B-B297-C0DEC68C9490}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9DA979C-9D97-4D8B-B297-C0DEC68C9490}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9DA979C-9D97-4D8B-B297-C0DEC68C9490}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6943D05-84F2-4FD3-AACC-C66A418624E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6943D05-84F2-4FD3-AACC-C66A418624E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6943D05-84F2-4FD3-AACC-C66A418624E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6943D05-84F2-4FD3-AACC-C66A418624E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A291A05D-5140-47EC-BA51-9BD40F4D2512}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A291A05D-5140-47EC-BA51-9BD40F4D2512}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A291A05D-5140-47EC-BA51-9BD40F4D2512}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A291A05D-5140-47EC-BA51-9BD40F4D2512}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45D807EA-1D48-4356-9BA2-E93C6A791F3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D807EA-1D48-4356-9BA2-E93C6A791F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D807EA-1D48-4356-9BA2-E93C6A791F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D807EA-1D48-4356-9BA2-E93C6A791F3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A6943D05-84F2-4FD3-AACC-C66A418624E2} = {B5BD285A-9A9E-43FB-A603-413582C2AD70}
+		{A291A05D-5140-47EC-BA51-9BD40F4D2512} = {B5BD285A-9A9E-43FB-A603-413582C2AD70}
+		{45D807EA-1D48-4356-9BA2-E93C6A791F3C} = {B5BD285A-9A9E-43FB-A603-413582C2AD70}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B88BB9DA-8644-464E-820C-100F799AD7E2}

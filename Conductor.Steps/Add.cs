@@ -5,13 +5,15 @@ using WorkflowCore.Models;
 
 namespace Conductor.Steps
 {
-    public class EmitLog : StepBodyAsync
+    public class Add : StepBodyAsync
     {
-        public string Message { get; set; }
+        public int Value1 { get; set; }
+        public int Value2 { get; set; }
+        public int Result { get; set; }
 
         public override Task<ExecutionResult> RunAsync(IStepExecutionContext context)
         {
-            Console.WriteLine(Message);
+            Result = Value1 + Value2;
             return Task.FromResult(ExecutionResult.Next());
         }
     }

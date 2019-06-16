@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -167,13 +168,64 @@ namespace Conductor.Domain.Services
             {
                 var dataParameter = Expression.Parameter(dataType, "data");
                 var contextParameter = Expression.Parameter(typeof(IStepExecutionContext), "context");
-                var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter, contextParameter }, typeof(object), input.Value);
+                var environmentVarsParameter = Expression.Parameter(typeof(IDictionary), "environment");
+                var stepProperty = stepType.GetProperty(input.Key);
 
-                var stepParameter = Expression.Parameter(stepType, "step");
-                var targetProperty = Expression.Property(stepParameter, input.Key);
-                var targetExpr = Expression.Lambda(targetProperty, stepParameter);
+                if (input.Value is string)
+                {
+                    var sourceExpr = DynamicExpressionParser.ParseLambda(new[] {dataParameter, contextParameter, environmentVarsParameter}, typeof(object), (string)input.Value);
 
-                step.Inputs.Add(new MemberMapParameter(sourceExpr, targetExpr));
+                    Action<IStepBody, object, IStepExecutionContext> acn = (pStep, pData, pContext) =>
+                    {
+                        object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
+                        if (stepProperty.PropertyType.IsEnum)
+                            stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));
+                        else
+                            stepProperty.SetValue(pStep, System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType));
+                    };
+
+                    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
+                    continue;
+                }
+
+                if (input.Value is JObject)
+                {
+                    var srcObj = (input.Value as JObject);
+
+                    Action<IStepBody, object, IStepExecutionContext> acn = (pStep, pData, pContext) =>
+                    {
+                        var stack = new Stack<JObject>();
+                        var destObj = JObject.FromObject(srcObj);
+                        stack.Push(destObj);
+
+                        while (stack.Count > 0)
+                        {
+                            var subobj = stack.Pop();
+                            foreach (var prop in subobj.Properties().ToList())
+                            {
+                                if (prop.Name.StartsWith("@"))
+                                {
+                                    var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter, contextParameter, environmentVarsParameter }, typeof(object), prop.Value.ToString());
+                                    object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
+                                    subobj.Remove(prop.Name);
+                                    subobj.Add(prop.Name.TrimStart('@'), JToken.FromObject(resolvedValue));
+                                }
+                            }
+
+                            foreach (var child in subobj.Children<JObject>())
+                                stack.Push(child);
+                        }
+                        
+                        //var convertedValue = System.Convert.ChangeType(destObj, stepProperty.PropertyType);
+                        
+                        stepProperty.SetValue(pStep, destObj);
+                    };
+
+                    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
+                    continue;
+                }
+
+                throw new ArgumentException($"Unknown type for input {input.Key} on {source.Id}");
             }
         }
 
@@ -184,38 +236,20 @@ namespace Conductor.Domain.Services
                 var stepParameter = Expression.Parameter(stepType, "step");
                 var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { stepParameter }, typeof(object), output.Value);
 
-                var dataParameter = Expression.Parameter(dataType, "data");
-                Expression targetProperty;
-
-                // Check if our datatype has a matching property
-                var propertyInfo = dataType.GetProperty(output.Key);
-                if (propertyInfo != null)
+                Action<IStepBody, object> acn = (pStep, pData) =>
                 {
-                    targetProperty = Expression.Property(dataParameter, propertyInfo);
-                    var targetExpr = Expression.Lambda(targetProperty, dataParameter);
-                    step.Outputs.Add(new MemberMapParameter(sourceExpr, targetExpr));
-                }
-                else
-                {
-                    // If we did not find a matching property try to find a Indexer with string parameter
-                    propertyInfo = dataType.GetProperty("Item");
-                    targetProperty = Expression.Property(dataParameter, propertyInfo, Expression.Constant(output.Key));
+                    object resolvedValue = sourceExpr.Compile().DynamicInvoke(pStep);
+                    (pData as JObject)[output.Key] = JToken.FromObject(resolvedValue);
+                };
 
-                    Action<IStepBody, object> acn = (pStep, pData) =>
-                    {
-                        object resolvedValue = sourceExpr.Compile().DynamicInvoke(pStep); ;
-                        propertyInfo.SetValue(pData, resolvedValue, new object[] { output.Key });
-                    };
-
-                    step.Outputs.Add(new ActionParameter<IStepBody, object>(acn));
-                }
+                step.Outputs.Add(new ActionParameter<IStepBody, object>(acn));
             }
         }
 
         private Type FindType(string name)
         {
             name = name.Trim();
-            var result = Type.GetType($"WorkflowCore.Primitives.{name} , WorkflowCore", false, true);
+            var result = Type.GetType($"WorkflowCore.Primitives.{name}, WorkflowCore", false, true);
 
             if (result != null)
                 return result;

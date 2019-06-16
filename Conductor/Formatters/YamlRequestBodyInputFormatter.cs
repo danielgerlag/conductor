@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Conductor.Domain.Models;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using SharpYaml.Serialization;
 
 namespace Conductor.Formatters
 {
-    public class RawRequestBodyInputFormatter : InputFormatter
+    public class YamlRequestBodyInputFormatter : InputFormatter
     {
-        public override bool CanRead(InputFormatterContext context)
+        public YamlRequestBodyInputFormatter()
         {
-            return (context.HttpContext.Request.ContentType == "application/json") ? false : true;
+            SupportedMediaTypes.Add("application/x-yaml");
+            SupportedMediaTypes.Add("application/yaml");
         }
 
         public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context)
@@ -25,9 +28,18 @@ namespace Conductor.Formatters
                 try
                 {
                     var content = await reader.ReadToEndAsync();
-                    return await InputFormatterResult.SuccessAsync(content);
+                    
+                    var serializer = new Serializer();
+
+                    if (context.ModelType == typeof(Definition))
+                    {
+                        var definition = serializer.DeserializeInto(content, new Definition());
+                        return await InputFormatterResult.SuccessAsync(definition);
+                    }
+                    else
+                        return await InputFormatterResult.FailureAsync();
                 }
-                catch
+                catch (Exception ex)
                 {
                     return await InputFormatterResult.FailureAsync();
                 }

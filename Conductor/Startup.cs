@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Conductor.Domain;
+using Conductor.Domain.Interfaces;
 using Conductor.Formatters;
+using Conductor.Mappings;
 using Conductor.Steps;
 using Conductor.Storage;
 using Microsoft.AspNetCore.Builder;
@@ -26,28 +29,41 @@ namespace Conductor
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbConnectionStr = Environment.GetEnvironmentVariable("DBHOST");
+            if (string.IsNullOrEmpty(dbConnectionStr))
+                dbConnectionStr = Configuration.GetValue<string>("DbConnectionString");
+
+            Console.WriteLine($"Using DbConnectionString {dbConnectionStr}");
+
             services.AddMvc(options =>
             {
-                options.InputFormatters.Insert(0, new RawRequestBodyInputFormatter());
+                options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
+                options.OutputFormatters.Add(new YamlRequestBodyOutputFormatter());
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
             services.AddWorkflow(cfg =>
             {
-                //cfg.use
+                cfg.UseMongoDB(dbConnectionStr, Configuration.GetValue<string>("DbName"));
             });
             services.ConfigureDomainServices();
             services.AddSteps();
-            services.UseMongoDB(Configuration.GetValue<string>("DbConnectionString"), Configuration.GetValue<string>("DbName"));
-            
+            services.UseMongoDB(dbConnectionStr, Configuration.GetValue<string>("DbName"));
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<APIProfile>();
+            });
+
+            services.AddSingleton<IMapper>(x => new Mapper(config));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -61,8 +77,12 @@ namespace Conductor
 
             //app.UseHttpsRedirection();
             app.UseMvc();
+            
             var host = app.ApplicationServices.GetService<IWorkflowHost>();
+            var defService = app.ApplicationServices.GetService<IDefinitionService>();
+            defService.LoadDefinitionsFromStorage();
             host.Start();
+            applicationLifetime.ApplicationStopped.Register(() => host.Stop());
         }
     }
 }

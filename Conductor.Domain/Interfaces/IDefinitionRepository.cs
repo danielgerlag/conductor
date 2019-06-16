@@ -11,7 +11,7 @@ namespace Conductor.Domain.Interfaces
 
         Definition Find(string workflowId);
         Definition Find(string workflowId, int version);
-
+        int? GetLatestVersion(string workflowId);
 
         void Save(Definition definition);
     }

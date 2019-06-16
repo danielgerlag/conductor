@@ -1,0 +1,13 @@
+﻿version: '3'
+services:
+  conductor:
+    build:
+      context: ../../
+    ports:
+    - "5003:80"
+    links:
+    - mongo
+    environment:
+      DBHOST: mongodb://mongo:27017/
+  mongo:
+    image: mongo

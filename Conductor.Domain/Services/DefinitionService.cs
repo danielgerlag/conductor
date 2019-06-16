@@ -39,14 +39,23 @@ namespace Conductor.Domain.Services
             }
         }
 
-        public void RegisterNewDefinition(string yaml)
+        public void RegisterNewDefinition(Definition definition)
         {
-            var serializer = new Serializer();
-            var definition = serializer.DeserializeInto(yaml, new Definition());
-            _repository.Save(definition);
+            var version = _repository.GetLatestVersion(definition.Id) ?? 0;
+            definition.Version = version + 1;
             _loader.LoadDefinition(definition);
+            _repository.Save(definition);
             _backplane.LoadNewDefinition(definition.Id, definition.Version);
         }
 
+        public void ReplaceVersion(Definition definition)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Definition GetDefinition(string id)
+        {
+            return _repository.Find(id);
+        }
     }
 }
