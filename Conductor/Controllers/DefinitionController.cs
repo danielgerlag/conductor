@@ -44,11 +44,11 @@ namespace Conductor.Controllers
             Response.StatusCode = 204;
         }
                 
-        [HttpPut]
-        public void Put([FromBody] string value)
-        {
-            _service.RegisterNewDefinition(value);
-        }
+        //[HttpPut]
+        //public void Put([FromBody] string value)
+        //{
+        //    _service.RegisterNewDefinition(value);
+        //}
 
         // DELETE api/values/5
         [HttpDelete("{id}")]

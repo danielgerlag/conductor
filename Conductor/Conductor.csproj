@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Conductor.Domain.Scripting\Conductor.Domain.Scripting.csproj" />
     <ProjectReference Include="..\Conductor.Domain\Conductor.Domain.csproj" />
     <ProjectReference Include="..\Conductor.Steps\Conductor.Steps.csproj" />
     <ProjectReference Include="..\Conductor.Storage\Conductor.Storage.csproj" />

@@ -26,9 +26,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B5BD285A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockServer", "tests\MockServer\MockServer.csproj", "{A6943D05-84F2-4FD3-AACC-C66A418624E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.IntegrationTests", "tests\Conductor.IntegrationTests\Conductor.IntegrationTests.csproj", "{A291A05D-5140-47EC-BA51-9BD40F4D2512}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conductor.IntegrationTests", "tests\Conductor.IntegrationTests\Conductor.IntegrationTests.csproj", "{A291A05D-5140-47EC-BA51-9BD40F4D2512}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchPad", "tests\ScratchPad\ScratchPad.csproj", "{45D807EA-1D48-4356-9BA2-E93C6A791F3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScratchPad", "tests\ScratchPad\ScratchPad.csproj", "{45D807EA-1D48-4356-9BA2-E93C6A791F3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Domain.Scripting", "Conductor.Domain.Scripting\Conductor.Domain.Scripting.csproj", "{8DD6BFDB-3050-4E99-953F-B4B6B4667199}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{45D807EA-1D48-4356-9BA2-E93C6A791F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45D807EA-1D48-4356-9BA2-E93C6A791F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45D807EA-1D48-4356-9BA2-E93C6A791F3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DD6BFDB-3050-4E99-953F-B4B6B4667199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DD6BFDB-3050-4E99-953F-B4B6B4667199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DD6BFDB-3050-4E99-953F-B4B6B4667199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DD6BFDB-3050-4E99-953F-B4B6B4667199}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

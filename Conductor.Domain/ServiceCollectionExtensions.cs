@@ -10,6 +10,7 @@ namespace Conductor.Domain
         public static void ConfigureDomainServices(this IServiceCollection services)
         {
             services.AddSingleton<IDefinitionService, DefinitionService>();
+            services.AddSingleton<ILambdaService, LambdaService>();
             services.AddSingleton<IWorkflowLoader, WorkflowLoader>();
             services.AddSingleton<IClusterBackplane, LocalBackplane>();
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Conductor.Domain;
 using Conductor.Domain.Interfaces;
+using Conductor.Domain.Scripting;
 using Conductor.Formatters;
 using Conductor.Mappings;
 using Conductor.Steps;
@@ -50,6 +51,7 @@ namespace Conductor
                 cfg.UseMongoDB(dbConnectionStr, Configuration.GetValue<string>("DbName"));
             });
             services.ConfigureDomainServices();
+            services.ConfigureScripting();
             services.AddSteps();
             services.UseMongoDB(dbConnectionStr, Configuration.GetValue<string>("DbName"));
 
