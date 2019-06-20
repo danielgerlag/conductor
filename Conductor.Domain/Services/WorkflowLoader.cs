@@ -17,14 +17,15 @@ using WorkflowCore.Primitives;
 
 namespace Conductor.Domain.Services
 {
-    
     public class WorkflowLoader : IWorkflowLoader
     {
         private readonly IWorkflowRegistry _registry;
+        private readonly IScriptEngineHost _scriptHost;
 
-        public WorkflowLoader(IWorkflowRegistry registry)
+        public WorkflowLoader(IWorkflowRegistry registry, IScriptEngineHost scriptHost)
         {
             _registry = registry;
+            _scriptHost = scriptHost;
         }
 
         public void LoadDefinition(Definition source)
@@ -35,8 +36,8 @@ namespace Conductor.Domain.Services
 
         private WorkflowDefinition Convert(Definition source)
         {
-            var dataType = typeof(JObject);
-
+            var dataType = typeof(ExpandoObject);
+            
             var result = new WorkflowDefinition
             {
                 Id = source.Id,
@@ -167,21 +168,18 @@ namespace Conductor.Domain.Services
         {
             foreach (var input in source.Inputs)
             {
-                var dataParameter = Expression.Parameter(dataType, "data");
-                var contextParameter = Expression.Parameter(typeof(IStepExecutionContext), "context");
-                var environmentVarsParameter = Expression.Parameter(typeof(IDictionary), "environment");
                 var stepProperty = stepType.GetProperty(input.Key);
 
                 if (input.Value is string)
                 {
-                    var acn = BuildScalarInputAction(input, dataParameter, contextParameter, environmentVarsParameter, stepProperty);
+                    var acn = BuildScalarInputAction(input, stepProperty);
                     step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
                     continue;
                 }
                 
                 if ((input.Value is IDictionary<string, object>) || (input.Value is IDictionary<object, object>))
                 {
-                    var acn = BuildObjectInputAction(input, dataParameter, contextParameter, environmentVarsParameter, stepProperty);
+                    var acn = BuildObjectInputAction(input, stepProperty);
                     step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
                     continue;
                 }
@@ -200,7 +198,7 @@ namespace Conductor.Domain.Services
                 Action<IStepBody, object> acn = (pStep, pData) =>
                 {
                     object resolvedValue = sourceExpr.Compile().DynamicInvoke(pStep);
-                    (pData as JObject)[output.Key] = JToken.FromObject(resolvedValue);
+                    (pData as IDictionary<string, object>)[output.Key] = resolvedValue;
                 };
 
                 step.Outputs.Add(new ActionParameter<IStepBody, object>(acn));
@@ -218,14 +216,19 @@ namespace Conductor.Domain.Services
             return Type.GetType($"Conductor.Steps.{name}, Conductor.Steps", true, true);
         }
 
-        private static Action<IStepBody, object, IStepExecutionContext> BuildScalarInputAction(KeyValuePair<string, object> input, ParameterExpression dataParameter, ParameterExpression contextParameter, ParameterExpression environmentVarsParameter, PropertyInfo stepProperty)
+        private Action<IStepBody, object, IStepExecutionContext> BuildScalarInputAction(KeyValuePair<string, object> input, PropertyInfo stepProperty)
         {
-            var expr = System.Convert.ToString(input.Value);
-            var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter, contextParameter, environmentVarsParameter }, typeof(object), expr);
-
+            var sourceExpr = System.Convert.ToString(input.Value);
+            
             void acn(IStepBody pStep, object pData, IStepExecutionContext pContext)
             {
-                object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
+                object resolvedValue = _scriptHost.EvaluateExpression(sourceExpr, new Dictionary<string, object>()
+                {
+                    ["data"] = pData,
+                    ["context"] = pContext,
+                    ["environment"] = Environment.GetEnvironmentVariables()
+                });
+                    
                 if (stepProperty.PropertyType.IsEnum)
                     stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));
                 else
@@ -234,7 +237,7 @@ namespace Conductor.Domain.Services
             return acn;
         }
 
-        private static Action<IStepBody, object, IStepExecutionContext> BuildObjectInputAction(KeyValuePair<string, object> input, ParameterExpression dataParameter, ParameterExpression contextParameter, ParameterExpression environmentVarsParameter, PropertyInfo stepProperty)
+        private Action<IStepBody, object, IStepExecutionContext> BuildObjectInputAction(KeyValuePair<string, object> input, PropertyInfo stepProperty)
         {
             void acn(IStepBody pStep, object pData, IStepExecutionContext pContext)
             {
@@ -249,8 +252,13 @@ namespace Conductor.Domain.Services
                     {
                         if (prop.Name.StartsWith("@"))
                         {
-                            var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter, contextParameter, environmentVarsParameter }, typeof(object), prop.Value.ToString());
-                            object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
+                            var sourceExpr = prop.Value.ToString();
+                            object resolvedValue = _scriptHost.EvaluateExpression(sourceExpr, new Dictionary<string, object>()
+                            {
+                                ["data"] = pData,
+                                ["context"] = pContext,
+                                ["environment"] = Environment.GetEnvironmentVariables()
+                            });
                             subobj.Remove(prop.Name);
                             subobj.Add(prop.Name.TrimStart('@'), JToken.FromObject(resolvedValue));
                         }

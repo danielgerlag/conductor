@@ -29,8 +29,8 @@ namespace Conductor.Storage.Services
             {
                 x.MapIdProperty(y => y.Id)
                     .SetIdGenerator(new StringObjectIdGenerator());
-                x.MapProperty(y => y.Data)
-                    .SetSerializer(new DataObjectSerializer());
+                x.MapProperty(y => y.Data);
+                    //.SetSerializer(new DataObjectSerializer());
                 x.MapProperty(y => y.Description);
                 x.MapProperty(y => y.Reference);
                 x.MapProperty(y => y.WorkflowDefinitionId);

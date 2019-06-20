@@ -25,6 +25,14 @@ namespace Conductor.Domain.Scripting
             SanitizeScope(inputs);
         }
 
+        public dynamic EvaluateExpression(string expression, IDictionary<string, object> inputs)
+        {
+            var engine = _engineFactory.GetExpressionEngine();
+            var source = engine.CreateScriptSourceFromString(expression, SourceCodeKind.Expression);
+            var scope = engine.CreateScope(inputs);
+            return source.Execute(scope);
+        }
+
         private void SanitizeScope(IDictionary<string, object> scope)
         {
             scope.Remove("__builtins__");

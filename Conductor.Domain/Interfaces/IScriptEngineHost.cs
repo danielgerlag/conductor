@@ -8,5 +8,6 @@ namespace Conductor.Domain.Interfaces
     public interface IScriptEngineHost
     {
         void Execute(Resource resource, IDictionary<string, object> inputs);
+        dynamic EvaluateExpression(string expression, IDictionary<string, object> inputs);
     }
 }

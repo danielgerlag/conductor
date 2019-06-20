@@ -7,9 +7,13 @@ namespace Conductor.Domain.Scripting
 {
     class ScriptEngineFactory : IScriptEngineFactory
     {
-        public ScriptEngine GetEngine(string contentType)
+        private Dictionary<string, ScriptEngine> _engines = new Dictionary<string, ScriptEngine>()
         {
-            return IronPython.Hosting.Python.CreateEngine();
-        }
+            [@"text/x-python"] = IronPython.Hosting.Python.CreateEngine(),
+            [string.Empty] = IronPython.Hosting.Python.CreateEngine()
+        };
+
+        public ScriptEngine GetEngine(string contentType) => _engines[contentType];
+        public ScriptEngine GetExpressionEngine() => _engines[string.Empty];
     }
 }

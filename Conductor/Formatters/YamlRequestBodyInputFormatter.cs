@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Conductor.Domain.Models;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Newtonsoft.Json.Linq;
 using SharpYaml.Serialization;
 
 namespace Conductor.Formatters
@@ -36,8 +37,14 @@ namespace Conductor.Formatters
                         var definition = serializer.DeserializeInto(content, new Definition());
                         return await InputFormatterResult.SuccessAsync(definition);
                     }
-                    else
-                        return await InputFormatterResult.FailureAsync();
+
+                    if (context.ModelType == typeof(JObject))
+                    {
+                        var definition = serializer.DeserializeInto(content, new JObject());
+                        return await InputFormatterResult.SuccessAsync(definition);
+                    }
+
+                    return await InputFormatterResult.FailureAsync();
                 }
                 catch (Exception ex)
                 {
