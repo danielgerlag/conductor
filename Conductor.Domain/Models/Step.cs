@@ -29,7 +29,7 @@ namespace Conductor.Domain.Models
 
         public string NextStepId { get; set; }
 
-        public Dictionary<string, object> Inputs { get; set; } = new Dictionary<string, object>();
+        public ExpandoObject Inputs { get; set; } = new ExpandoObject();
 
         public Dictionary<string, string> Outputs { get; set; } = new Dictionary<string, string>();
 

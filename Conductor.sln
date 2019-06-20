@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scratch", "Scratch", "{29F7D894-9426-4C1E-8BBD-F87DA689E134}"
 	ProjectSection(SolutionItems) = preProject
 		1.yaml = 1.yaml
+		2.yml = 2.yml
 		defs.json = defs.json
 	EndProjectSection
 EndProject

@@ -19,7 +19,8 @@ namespace Conductor.IntegrationTests
                 .UseCompose()
                 .FromFile(@"docker-compose.yml")
                 .RemoveOrphans()
-                .WaitForHttp("conductor", @"http://localhost:5003/api/values")
+                .WaitForHttp("conductor1", @"http://localhost:5101/api/info")
+                .WaitForHttp("conductor2", @"http://localhost:5102/api/info")
                 .Build().Start();
         }
 

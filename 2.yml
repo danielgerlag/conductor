@@ -1,0 +1,16 @@
+Id: lambda4
+Steps:
+  - Id: Step1
+    Inputs:
+      Name: '"add"'
+      Variables:
+        '@a': data["Value1"]
+        '@b': data["Value2"]
+    NextStepId: Step2
+    Outputs:
+      Result: step.Variables["result"]
+    StepType: Lambda
+  - Id: Step2
+    Inputs:
+      Message: '"L4 Answer is " + data["Result"]'
+    StepType: EmitLog

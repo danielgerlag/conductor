@@ -12,7 +12,6 @@ namespace Conductor.Domain
             services.AddSingleton<IDefinitionService, DefinitionService>();
             services.AddSingleton<ILambdaService, LambdaService>();
             services.AddSingleton<IWorkflowLoader, WorkflowLoader>();
-            services.AddSingleton<IClusterBackplane, LocalBackplane>();
         }
     }
 }

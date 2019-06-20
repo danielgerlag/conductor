@@ -17,7 +17,7 @@ namespace Conductor.IntegrationTests
         [Fact]
         public void Test1()
         {
-            var client = new RestClient(@"http://localhost:5003");
+            var client = new RestClient(@"http://localhost:5101");
             var request = new RestRequest(@"/api/values", Method.GET);
             request.AddHeader("Accept", @"application/json");
             var response = client.Execute(request);

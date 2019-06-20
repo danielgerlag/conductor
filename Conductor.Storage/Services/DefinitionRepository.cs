@@ -9,6 +9,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 namespace Conductor.Storage.Services
@@ -44,7 +45,7 @@ namespace Conductor.Storage.Services
             var result = _collection.Find(x => x.ExternalId == workflowId && x.Version == version);
             if (!result.Any())
                 return null;
-
+            
             var json = result.First().Definition.ToJson();
             return JsonConvert.DeserializeObject<Definition>(json);
         }

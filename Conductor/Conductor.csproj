@@ -5,6 +5,7 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <UserSecretsId>0b178d89-9937-49c8-b1f1-efb5f96e516d</UserSecretsId>
+    <Version>0.1.0-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="WorkflowCore" Version="1.9.4" />
+    <PackageReference Include="WorkflowCore.Providers.Redis" Version="1.9.1" />
   </ItemGroup>
 
   <ItemGroup>

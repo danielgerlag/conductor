@@ -17,6 +17,7 @@ namespace Conductor.Mappings
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.CreateTime))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.Version, opt => opt.MapFrom(src => src.Version))
+                .ForMember(dest => dest.Data, opt => opt.MapFrom(src => src.Data))
                 .ForMember(dest => dest.WorkflowId, opt => opt.MapFrom(src => src.Id));
         }
     }

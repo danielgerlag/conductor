@@ -1,13 +1,28 @@
 ﻿version: '3'
 services:
-  conductor:
+  conductor1:
     build:
       context: ../../
     ports:
-    - "5003:80"
+    - "5101:80"
     links:
     - mongo
+    - redis
     environment:
       DBHOST: mongodb://mongo:27017/
+      REDIS: redis:6379
+  conductor2:
+    build:
+      context: ../../
+    ports:
+    - "5102:80"
+    links:
+    - mongo
+    - redis
+    environment:
+      DBHOST: mongodb://mongo:27017/
+      REDIS: redis:6379
   mongo:
     image: mongo
+  redis:
+    image: redis
