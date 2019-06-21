@@ -14,19 +14,19 @@ using Xunit;
 namespace Conductor.IntegrationTests.Scenarios
 {
     [Collection("Conductor")]
-    public class BasicScenario : Scenario
+    public class HttpScenario : Scenario
     {
 
-        public BasicScenario(Setup setup) : base(setup)
+        public HttpScenario(Setup setup) : base(setup)
         {
         }
 
         [Fact]
-        public async void Scenario()
+        public async void should_get()
         {
             dynamic inputs = new ExpandoObject();
-            inputs.Value1 = "data.Value1";
-            inputs.Value2 = "data.Value2";
+            inputs.BaseUrl = @"""http://demo7149346.mockable.io/""";
+            inputs.Resource = @"""ping""";
 
             var definition = new Definition()
             {
@@ -36,11 +36,12 @@ namespace Conductor.IntegrationTests.Scenarios
                     new Step()
                     {
                         Id = "step1",
-                        StepType = "Add",
+                        StepType = "HttpRequest",
                         Inputs = inputs,
                         Outputs = new Dictionary<string, string>()
                         {
-                            ["Result"] = "step.Result"
+                            ["ResponseCode"] = "step.ResponseCode",
+                            ["ResponseBody"] = "step.ResponseBody"
                         }
                     }
                 }
@@ -53,14 +54,14 @@ namespace Conductor.IntegrationTests.Scenarios
             Thread.Sleep(1000);
 
             var startRequest = new RestRequest($"/workflow/{definition.Id}", Method.POST);
-            startRequest.AddJsonBody(new { Value1 = 2, Value2 = 3 });
+            startRequest.AddJsonBody(new { });
             var startResponse = _client.Execute<WorkflowInstance>(startRequest);
             startResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var instance = await WaitForComplete(startResponse.Data.WorkflowId);
             instance.Status.Should().Be("Complete");
             var data = JObject.FromObject(instance.Data);
-            data["Result"].Value<int>().Should().Be(5);
+            data["ResponseCode"].Value<int>().Should().Be(200);
         }
         
     }
