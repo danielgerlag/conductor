@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -17,9 +18,9 @@ namespace Conductor.Steps
         public string BaseUrl { get; set; }
         public string Resource { get; set; }
 
-        public JObject Headers { get; set; }
-        public JObject Parameters { get; set; }
-        public JObject Body { get; set; }
+        public IDictionary<string, object> Headers { get; set; }
+        public IDictionary<string, object> Parameters { get; set; }
+        public ExpandoObject Body { get; set; }
 
         public DataFormat Format { get; set; } = DataFormat.Json;
         public Method Method { get; set; } = Method.GET;
@@ -37,14 +38,14 @@ namespace Conductor.Steps
 
             if (Headers != null)
             {
-                foreach (var header in Headers.Properties())
-                    request.AddHeader(header.Name, header.Value.Value<string>());
+                foreach (var header in Headers)
+                    request.AddHeader(header.Key, Convert.ToString(header.Value));
             }
 
             if (Parameters != null)
             {
-                foreach (var param in Parameters.Properties())
-                    request.AddQueryParameter(param.Name, param.Value.Value<string>());
+                foreach (var param in Parameters)
+                    request.AddQueryParameter(param.Key, Convert.ToString(param.Value));
             }
 
             if (Body != null)

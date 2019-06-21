@@ -25,15 +25,15 @@ Steps:
     Inputs:
       Name: '"add"'
       Variables:
-        '@a': data["Value1"]
-        '@b': data["Value2"]
+        '@a': data.Value1
+        '@b': data.Value2
     NextStepId: Step2
     Outputs:
       Result: step.Variables["c"]    
   - Id: Step2
     StepType: EmitLog
     Inputs:
-      Message: '"Answer is " + data["Result"]'    
+      Message: '"Answer is " + str(data.Result)'
 ```
 
 Now, lets test it by invoking a new instance of our workflow

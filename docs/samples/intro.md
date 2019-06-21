@@ -74,7 +74,7 @@ Steps:
 - Id: Step1
   StepType: EmitLog
   Inputs:
-    Message: data["CustomMessage"]
+    Message: data.CustomMessage
     Level: '"Information"'
 ```
 

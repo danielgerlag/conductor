@@ -14,7 +14,7 @@ namespace Conductor.Steps
         private ILambdaService _service;
 
         public string Name { get; set; }
-        public JObject Variables { get; set; }
+        public IDictionary<string, object> Variables { get; set; }
 
         public Lambda(ILambdaService service)
         {
@@ -26,11 +26,11 @@ namespace Conductor.Steps
             var vars = new Dictionary<string, object>();
 
             if (Variables != null)
-                vars = Variables.ToObject<Dictionary<string, object>>();
+                vars = new Dictionary<string, object>(Variables);
 
             _service.ExecuteLambda(Name, vars);
 
-            Variables = JObject.FromObject(vars);
+            Variables = new Dictionary<string, object>(vars);
 
             return ExecutionResult.Next();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,6 +42,12 @@ namespace Conductor.Formatters
                     if (context.ModelType == typeof(JObject))
                     {
                         var definition = serializer.DeserializeInto(content, new JObject());
+                        return await InputFormatterResult.SuccessAsync(definition);
+                    }
+
+                    if (context.ModelType == typeof(ExpandoObject))
+                    {
+                        var definition = serializer.DeserializeInto(content, new ExpandoObject());
                         return await InputFormatterResult.SuccessAsync(definition);
                     }
 

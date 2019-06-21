@@ -16,11 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Scenarios\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Conductor.Domain\Conductor.Domain.csproj" />
+    <ProjectReference Include="..\..\Conductor\Conductor.csproj" />
   </ItemGroup>
 
   <ItemGroup>

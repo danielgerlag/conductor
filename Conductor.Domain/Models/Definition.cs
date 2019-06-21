@@ -20,5 +20,6 @@ namespace Conductor.Domain.Models
         public TimeSpan? DefaultErrorRetryInterval { get; set; }
 
         public List<Step> Steps { get; set; } = new List<Step>();
+        
     }
 }

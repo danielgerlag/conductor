@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -76,9 +75,13 @@ namespace Conductor.Domain.Services
 
                 if (!string.IsNullOrEmpty(nextStep.CancelCondition))
                 {
-                    var cancelExprType = typeof(Expression<>).MakeGenericType(typeof(Func<,>).MakeGenericType(dataType, typeof(bool)));
-                    var dataParameter = Expression.Parameter(dataType, "data");
-                    var cancelExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter }, typeof(bool), nextStep.CancelCondition);
+                    Func<ExpandoObject, bool> cancelFunc = (data) => _scriptHost.EvaluateExpression<bool>(nextStep.CancelCondition, new Dictionary<string, object>()
+                    {
+                        ["data"] = data,
+                        ["environment"] = Environment.GetEnvironmentVariables()
+                    });
+
+                    Expression<Func<ExpandoObject, bool>> cancelExpr = (data) => cancelFunc(data);
                     targetStep.CancelCondition = cancelExpr;
                 }
 
@@ -192,12 +195,13 @@ namespace Conductor.Domain.Services
         {
             foreach (var output in source.Outputs)
             {
-                var stepParameter = Expression.Parameter(stepType, "step");
-                var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { stepParameter }, typeof(object), output.Value);
-
                 Action<IStepBody, object> acn = (pStep, pData) =>
                 {
-                    object resolvedValue = sourceExpr.Compile().DynamicInvoke(pStep);
+                    object resolvedValue = _scriptHost.EvaluateExpression(output.Value, new Dictionary<string, object>()
+                    {
+                        ["step"] = pStep,
+                        ["data"] = pData
+                    });
                     (pData as IDictionary<string, object>)[output.Key] = resolvedValue;
                 };
 
@@ -268,10 +272,9 @@ namespace Conductor.Domain.Services
                         stack.Push(child);
                 }
 
-                stepProperty.SetValue(pStep, destObj);
+                stepProperty.SetValue(pStep, destObj.ToObject<ExpandoObject>());
             }
             return acn;
         }
-
     }
 }

@@ -33,6 +33,11 @@ namespace Conductor.Domain.Scripting
             return source.Execute(scope);
         }
 
+        public T EvaluateExpression<T>(string expression, IDictionary<string, object> inputs)
+        {
+            return EvaluateExpression(expression, inputs);
+        }
+
         private void SanitizeScope(IDictionary<string, object> scope)
         {
             scope.Remove("__builtins__");

@@ -17,7 +17,7 @@ Content-Type: application/json
         "BaseUrl": "\"http://demo7149346.mockable.io/\"",
         "Resource": "\"ping\"",
         "Headers": {
-          "Authorization": ""
+          "@Authorization": ""
         }
       },
       "outputs": {
@@ -105,7 +105,7 @@ steps:
     Method: '"POST"'
     Body:
       Value1: 1
-      '@Value2': data["Value2"]
+      '@Value2': data.Value2
   outputs:
     ResponseCode: step.ResponseCode
     ResponseBody: step.ResponseBody
