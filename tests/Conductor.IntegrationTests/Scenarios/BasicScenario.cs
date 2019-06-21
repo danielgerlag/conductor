@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Conductor.Domain.Models;
 using Conductor.Models;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using Xunit;
 
@@ -19,8 +20,7 @@ namespace Conductor.IntegrationTests.Scenarios
 
         public BasicScenario(Setup setup)
         {
-            //_client = new RestClient(@"http://localhost:5101/api");
-            _client = new RestClient(@"https://localhost:5001/api");
+            _client = new RestClient(setup.Server1);
         }
 
         [Fact]
@@ -61,6 +61,8 @@ namespace Conductor.IntegrationTests.Scenarios
 
             var instance = await WaitForComplete(startResponse.Data.WorkflowId);
             instance.Status.Should().Be("Complete");
+            var data = JObject.FromObject(instance.Data);
+            data["Result"].Value<int>().Should().Be(5);
         }
 
         private async Task<WorkflowInstance> WaitForComplete(string workflowId)

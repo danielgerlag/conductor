@@ -30,5 +30,8 @@ namespace Conductor.IntegrationTests
             _svc.Dispose();
         }
 
+        public string Server1 => "http://localhost:5101/api";
+        public string Server2 => "http://localhost:5102/api";
+
     }
 }
