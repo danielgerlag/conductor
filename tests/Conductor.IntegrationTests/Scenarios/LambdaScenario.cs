@@ -26,6 +26,7 @@ namespace Conductor.IntegrationTests.Scenarios
         {
             dynamic inputs = new ExpandoObject();
             inputs.Name = @"""add""";
+            inputs.Variables = new Dictionary<string, object>();
             inputs.Variables["@a"] = @"data.Value1";
             inputs.Variables["@b"] = @"data.Value1";
 
@@ -47,8 +48,9 @@ namespace Conductor.IntegrationTests.Scenarios
                 }
             };
 
-            var createLambdaRequest = new RestRequest(@"/lambda", Method.POST);
+            var createLambdaRequest = new RestRequest(@"/lambda/add", Method.POST);
             createLambdaRequest.AddParameter(string.Empty, "c = a + b", "text/x-python", ParameterType.RequestBody);
+            createLambdaRequest.AddHeader("Content-Type", "text/x-python");
             var lambdaResponse = _client.Execute(createLambdaRequest);
             lambdaResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 

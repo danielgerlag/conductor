@@ -26,8 +26,8 @@ namespace Conductor.IntegrationTests
 
         public void Dispose()
         {
-            _svc.Stop();
-            _svc.Dispose();
+            _svc?.Stop();
+            _svc?.Dispose();
         }
 
         public string Server1 => "http://localhost:5101/api";
