@@ -28,7 +28,7 @@ namespace Conductor.IntegrationTests.Scenarios
             inputs.Name = @"""add""";
             inputs.Variables = new Dictionary<string, object>();
             inputs.Variables["@a"] = @"data.Value1";
-            inputs.Variables["@b"] = @"data.Value1";
+            inputs.Variables["@b"] = @"data.Value2";
 
             var definition = new Definition()
             {
