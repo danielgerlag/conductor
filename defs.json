@@ -95,6 +95,35 @@
         }
       }
     ]
+  },
+
+  {
+    "id": "lambda1",
+    "version": 1,
+    "steps": [
+      {
+        "stepType": "Lambda",
+        "id": "Step1",
+        "nextStepId": "Step2",
+        "inputs": {
+          "Name": "\"add\"",
+          "Variables": {
+            "a": 2,
+            "b": 3
+          }
+        },
+        "outputs": {
+          "Result": "step.Variables[\"result\"]"
+        }
+      },
+      {
+        "stepType": "EmitLog",
+        "id": "Step2",
+        "inputs": {
+          "Message": "\"Answer is \" + data[\"Result\"]"
+        }
+      }
+    ]
   }
 
 ]

@@ -14,6 +14,7 @@ namespace Conductor.Storage
             var client = new MongoClient(mongoUrl);
             var db = client.GetDatabase(databaseName);
             services.AddTransient<IDefinitionRepository, DefinitionRepository>(x => new DefinitionRepository(db));
+            services.AddTransient<IResourceRepository, ResourceRepository>(x => new ResourceRepository(db));
         }
 
         public static WorkflowOptions UseMongoDB(this WorkflowOptions options, string mongoUrl, string databaseName)

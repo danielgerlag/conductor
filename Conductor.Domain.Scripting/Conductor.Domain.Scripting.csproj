@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IronPython" Version="2.7.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Conductor.Domain\Conductor.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

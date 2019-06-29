@@ -1,0 +1,227 @@
+{
+	"info": {
+		"_postman_id": "786c4392-8669-4255-a011-f55b63ffcb9d",
+		"name": "Conductor",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register Workflow",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"lambda1\",\n    \"version\": 1,\n    \"steps\": [\n        {\n            \"stepType\": \"Lambda\",\n            \"id\": \"Step1\",\n            \"nextStepId\": \"Step2\",\n            \"inputs\": {\n            \t\"Name\": \"\\\"add\\\"\",\n            \t\"Variables\": {\n            \t\t\"a\": 2,\n            \t\t\"b\": 3\n            \t}\n            },\n            \"outputs\": {\n            \t\"Result\": \"step.Variables[\\\"result\\\"]\"\n            }\n        },\n        {\n\t        \"stepType\": \"EmitLog\",\n\t        \"id\": \"Step2\",\n\t        \"inputs\": {\n\t          \"Message\": \"\\\"Answer is \\\" + data[\\\"Result\\\"]\"\n\t    \t}\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/definition",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"definition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start Workflow",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"Message\": \"BOO!!!\",\n\t\"Value1\": 2,\n\t\"Value2\": 3,\n\t\"List1\": [ 1, 2, 4 ]\n}"
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/workflow/lambda1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"workflow",
+						"lambda1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lambda",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "text/x-python"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "def add(a, b):\r\n   return a + b"
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/lambda/py1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"lambda",
+						"py1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lambda",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "text/x-python",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5001/api/lambda/py1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"lambda",
+						"py1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Publish Event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\": \"data from event 123\"\n}"
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/event/my-event/key",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"event",
+						"my-event",
+						"key"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Definition",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/x-yaml",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/x-yaml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5001/api/definition/Test3",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"definition",
+						"Test3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Workflow",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/x-yaml",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5001/api/workflow/5d0ab0ff23576b61e4afbcfb",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"workflow",
+						"5d0ab0ff23576b61e4afbcfb"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

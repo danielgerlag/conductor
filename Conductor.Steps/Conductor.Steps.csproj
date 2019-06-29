@@ -9,4 +9,8 @@
     <PackageReference Include="WorkflowCore" Version="1.9.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Conductor.Domain\Conductor.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

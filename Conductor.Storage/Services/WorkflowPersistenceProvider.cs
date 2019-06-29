@@ -29,8 +29,8 @@ namespace Conductor.Storage.Services
             {
                 x.MapIdProperty(y => y.Id)
                     .SetIdGenerator(new StringObjectIdGenerator());
-                x.MapProperty(y => y.Data)
-                    .SetSerializer(new DataObjectSerializer());
+                x.MapProperty(y => y.Data);
+                    //.SetSerializer(new DataObjectSerializer());
                 x.MapProperty(y => y.Description);
                 x.MapProperty(y => y.Reference);
                 x.MapProperty(y => y.WorkflowDefinitionId);
@@ -79,13 +79,13 @@ namespace Conductor.Storage.Services
             }
         }
 
-        private IMongoCollection<WorkflowInstance> WorkflowInstances => _database.GetCollection<WorkflowInstance>("wfc.workflows");
+        private IMongoCollection<WorkflowInstance> WorkflowInstances => _database.GetCollection<WorkflowInstance>("Workflows");
 
-        private IMongoCollection<EventSubscription> EventSubscriptions => _database.GetCollection<EventSubscription>("wfc.subscriptions");
+        private IMongoCollection<EventSubscription> EventSubscriptions => _database.GetCollection<EventSubscription>("Subscriptions");
 
-        private IMongoCollection<Event> Events => _database.GetCollection<Event>("wfc.events");
+        private IMongoCollection<Event> Events => _database.GetCollection<Event>("Events");
 
-        private IMongoCollection<ExecutionError> ExecutionErrors => _database.GetCollection<ExecutionError>("wfc.execution_errors");
+        private IMongoCollection<ExecutionError> ExecutionErrors => _database.GetCollection<ExecutionError>("ExecutionErrors");
 
         public async Task<string> CreateNewWorkflow(WorkflowInstance workflow)
         {

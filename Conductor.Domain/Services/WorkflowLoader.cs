@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
@@ -15,14 +16,15 @@ using WorkflowCore.Primitives;
 
 namespace Conductor.Domain.Services
 {
-    
     public class WorkflowLoader : IWorkflowLoader
     {
         private readonly IWorkflowRegistry _registry;
+        private readonly IScriptEngineHost _scriptHost;
 
-        public WorkflowLoader(IWorkflowRegistry registry)
+        public WorkflowLoader(IWorkflowRegistry registry, IScriptEngineHost scriptHost)
         {
             _registry = registry;
+            _scriptHost = scriptHost;
         }
 
         public void LoadDefinition(Definition source)
@@ -33,8 +35,8 @@ namespace Conductor.Domain.Services
 
         private WorkflowDefinition Convert(Definition source)
         {
-            var dataType = typeof(JObject);
-
+            var dataType = typeof(ExpandoObject);
+            
             var result = new WorkflowDefinition
             {
                 Id = source.Id,
@@ -48,7 +50,6 @@ namespace Conductor.Domain.Services
 
             return result;
         }
-
 
         private WorkflowStepCollection ConvertSteps(ICollection<Step> source, Type dataType)
         {
@@ -74,9 +75,13 @@ namespace Conductor.Domain.Services
 
                 if (!string.IsNullOrEmpty(nextStep.CancelCondition))
                 {
-                    var cancelExprType = typeof(Expression<>).MakeGenericType(typeof(Func<,>).MakeGenericType(dataType, typeof(bool)));
-                    var dataParameter = Expression.Parameter(dataType, "data");
-                    var cancelExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter }, typeof(bool), nextStep.CancelCondition);
+                    Func<ExpandoObject, bool> cancelFunc = (data) => _scriptHost.EvaluateExpression<bool>(nextStep.CancelCondition, new Dictionary<string, object>()
+                    {
+                        ["data"] = data,
+                        ["environment"] = Environment.GetEnvironmentVariables()
+                    });
+
+                    Expression<Func<ExpandoObject, bool>> cancelExpr = (data) => cancelFunc(data);
                     targetStep.CancelCondition = cancelExpr;
                 }
 
@@ -166,61 +171,18 @@ namespace Conductor.Domain.Services
         {
             foreach (var input in source.Inputs)
             {
-                var dataParameter = Expression.Parameter(dataType, "data");
-                var contextParameter = Expression.Parameter(typeof(IStepExecutionContext), "context");
-                var environmentVarsParameter = Expression.Parameter(typeof(IDictionary), "environment");
                 var stepProperty = stepType.GetProperty(input.Key);
 
                 if (input.Value is string)
                 {
-                    var sourceExpr = DynamicExpressionParser.ParseLambda(new[] {dataParameter, contextParameter, environmentVarsParameter}, typeof(object), (string)input.Value);
-
-                    Action<IStepBody, object, IStepExecutionContext> acn = (pStep, pData, pContext) =>
-                    {
-                        object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
-                        if (stepProperty.PropertyType.IsEnum)
-                            stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));
-                        else
-                            stepProperty.SetValue(pStep, System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType));
-                    };
-
+                    var acn = BuildScalarInputAction(input, stepProperty);
                     step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
                     continue;
                 }
-
-                if (input.Value is JObject)
+                
+                if ((input.Value is IDictionary<string, object>) || (input.Value is IDictionary<object, object>))
                 {
-                    var srcObj = (input.Value as JObject);
-
-                    Action<IStepBody, object, IStepExecutionContext> acn = (pStep, pData, pContext) =>
-                    {
-                        var stack = new Stack<JObject>();
-                        var destObj = JObject.FromObject(srcObj);
-                        stack.Push(destObj);
-
-                        while (stack.Count > 0)
-                        {
-                            var subobj = stack.Pop();
-                            foreach (var prop in subobj.Properties().ToList())
-                            {
-                                if (prop.Name.StartsWith("@"))
-                                {
-                                    var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { dataParameter, contextParameter, environmentVarsParameter }, typeof(object), prop.Value.ToString());
-                                    object resolvedValue = sourceExpr.Compile().DynamicInvoke(pData, pContext, Environment.GetEnvironmentVariables());
-                                    subobj.Remove(prop.Name);
-                                    subobj.Add(prop.Name.TrimStart('@'), JToken.FromObject(resolvedValue));
-                                }
-                            }
-
-                            foreach (var child in subobj.Children<JObject>())
-                                stack.Push(child);
-                        }
-                        
-                        //var convertedValue = System.Convert.ChangeType(destObj, stepProperty.PropertyType);
-                        
-                        stepProperty.SetValue(pStep, destObj);
-                    };
-
+                    var acn = BuildObjectInputAction(input, stepProperty);
                     step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
                     continue;
                 }
@@ -228,18 +190,19 @@ namespace Conductor.Domain.Services
                 throw new ArgumentException($"Unknown type for input {input.Key} on {source.Id}");
             }
         }
-
+        
         private void AttachOutputs(Step source, Type dataType, Type stepType, WorkflowStep step)
         {
             foreach (var output in source.Outputs)
             {
-                var stepParameter = Expression.Parameter(stepType, "step");
-                var sourceExpr = DynamicExpressionParser.ParseLambda(new[] { stepParameter }, typeof(object), output.Value);
-
                 Action<IStepBody, object> acn = (pStep, pData) =>
                 {
-                    object resolvedValue = sourceExpr.Compile().DynamicInvoke(pStep);
-                    (pData as JObject)[output.Key] = JToken.FromObject(resolvedValue);
+                    object resolvedValue = _scriptHost.EvaluateExpression(output.Value, new Dictionary<string, object>()
+                    {
+                        ["step"] = pStep,
+                        ["data"] = pData
+                    });
+                    (pData as IDictionary<string, object>)[output.Key] = resolvedValue;
                 };
 
                 step.Outputs.Add(new ActionParameter<IStepBody, object>(acn));
@@ -257,5 +220,61 @@ namespace Conductor.Domain.Services
             return Type.GetType($"Conductor.Steps.{name}, Conductor.Steps", true, true);
         }
 
+        private Action<IStepBody, object, IStepExecutionContext> BuildScalarInputAction(KeyValuePair<string, object> input, PropertyInfo stepProperty)
+        {
+            var sourceExpr = System.Convert.ToString(input.Value);
+            
+            void acn(IStepBody pStep, object pData, IStepExecutionContext pContext)
+            {
+                object resolvedValue = _scriptHost.EvaluateExpression(sourceExpr, new Dictionary<string, object>()
+                {
+                    ["data"] = pData,
+                    ["context"] = pContext,
+                    ["environment"] = Environment.GetEnvironmentVariables()
+                });
+                    
+                if (stepProperty.PropertyType.IsEnum)
+                    stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));
+                else
+                    stepProperty.SetValue(pStep, System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType));
+            }
+            return acn;
+        }
+
+        private Action<IStepBody, object, IStepExecutionContext> BuildObjectInputAction(KeyValuePair<string, object> input, PropertyInfo stepProperty)
+        {
+            void acn(IStepBody pStep, object pData, IStepExecutionContext pContext)
+            {
+                var stack = new Stack<JObject>();
+                var destObj = JObject.FromObject(input.Value);
+                stack.Push(destObj);
+
+                while (stack.Count > 0)
+                {
+                    var subobj = stack.Pop();
+                    foreach (var prop in subobj.Properties().ToList())
+                    {
+                        if (prop.Name.StartsWith("@"))
+                        {
+                            var sourceExpr = prop.Value.ToString();
+                            object resolvedValue = _scriptHost.EvaluateExpression(sourceExpr, new Dictionary<string, object>()
+                            {
+                                ["data"] = pData,
+                                ["context"] = pContext,
+                                ["environment"] = Environment.GetEnvironmentVariables()
+                            });
+                            subobj.Remove(prop.Name);
+                            subobj.Add(prop.Name.TrimStart('@'), JToken.FromObject(resolvedValue));
+                        }
+                    }
+
+                    foreach (var child in subobj.Children<JObject>())
+                        stack.Push(child);
+                }
+
+                stepProperty.SetValue(pStep, destObj.ToObject<ExpandoObject>());
+            }
+            return acn;
+        }
     }
 }
