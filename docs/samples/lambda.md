@@ -1,5 +1,6 @@
 ## Using lambdas in your workflow
 
+Coductor also allows you to define lambda's or scripts that can be used within your workflows.  Currently, the only supported language is Python.  More languages will be implemented in the future.
 
 The following call creates a lambda function called `add`, which is a Python script that sets c to a + b
 ```

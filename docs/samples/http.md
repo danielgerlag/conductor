@@ -1,6 +1,6 @@
 ## Making Http requests in your workflow
 
-
+Let's define a workflow using the built-in `HttpRequest` step.
 
 ```http
 POST /api/definition

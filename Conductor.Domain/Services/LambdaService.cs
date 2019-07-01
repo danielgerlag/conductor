@@ -20,6 +20,9 @@ namespace Conductor.Domain.Services
 
         public void SaveLambdaResource(Resource resource)
         {
+            if (resource.ContentType != @"text/x-python")
+                throw new ArgumentException();
+
             _resourceRepository.Save(Bucket.Lambda, resource);
         }
 
