@@ -74,6 +74,8 @@ Outputs:
 
 ### If
 
+Use the `If` step type to branch on a condition expression.
+
 ```yml
 Id: if-test
 Steps:
@@ -100,6 +102,8 @@ Steps:
 
 ### While
 
+Use the `While` step type to loop on a condition expression.
+
 ```yml
 Id: while-test
 Steps:
@@ -116,6 +120,9 @@ Steps:
 
 ### ForEach
 
+Use the `ForEach` step type to iterate on a collection expression.
+Note: `ForEach` iterates in parallel.
+
 ```yml
 Id: foreach-test
 Steps:
@@ -131,6 +138,8 @@ Steps:
 ```
 
 ### Parallel
+
+Use the `Parallel` step type to branch into multiple parallel sequences.
 
 ```yml
 Id: parallel-test
@@ -166,6 +175,8 @@ Steps:
 
 ### Delay
 
+Use the `Delay` step type to wait a specified time based on an expresion.
+
 ```yml
 Id: delay-test
 Steps:
@@ -181,6 +192,8 @@ Steps:
 ```
 
 ### Recur
+
+Use the `Recur` step type to trigger a recurring background sequence of steps.
 
 ```yml
 Id: recur-test
@@ -200,6 +213,8 @@ Steps:
 
 ### Schedule
 
+Use the `Schedule` step type to schedule a future set of steps to execute after a specified interval.
+
 ```yml
 Id: schedule-test
 Steps:
@@ -217,6 +232,8 @@ Steps:
 
 ### WaitFor
 
+Use the `WaitFor` step type to pause your workflow and wait for an external event.
+
 ```yml
 Id: waitfor-test
 Steps:
@@ -233,3 +250,6 @@ Steps:
   Inputs:
     Message: 'data.EventData'
 ```
+
+TODO: Event API
+...

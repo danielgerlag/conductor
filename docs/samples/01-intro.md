@@ -1,12 +1,26 @@
 ## Introduction
 
-Conductor is a workflow server built upon [Workflow Core](https://github.com/danielgerlag/workflow-core) that enables you to coordinate multiple services and scripts into workflows so that you can rapidly create complex workflow applications. Workflows are made up of a series of steps, with an internal data object shared between steps to pass information around. Conductor automatically triggers and tracks each step, and retries when there are errors, so your application executes in order and as expected.
+Conductor is a workflow server built upon [Workflow Core](https://github.com/danielgerlag/workflow-core) that enables you to coordinate multiple services and scripts into workflows so that you can rapidly create complex workflow applications. Workflows are made up of a series of steps, with an internal data object shared between them to pass information around.  Conductor automatically triggers and tracks each step, and retries when there are errors, so your application executes in order and as expected.
 
 Workflows are written in either JSON or YAML and then added to Conductor's internal registry via the definition API.  Then you use the workflow API to invoke them with or without custom data.
 
 ### Installation
 
-...
+Conductor is available as a Docker image - `danielgerlag/conductor`
+
+```shell
+> docker run danielgerlag/conductor ...
+```
+Conductor uses MongoDB as it's datastore, you will also need an instance of MongoDB in order to run Conductor.
+If you wish to run a fleet of Conductor nodes, then you also need to have a Redis instance, which they will use as a backplane.  This is not required if you are only running one instance.
+
+#### Environment Variables to configure
+
+You can configure the database and Redis backplane by setting environment variables.
+```
+DBHOST: <<insert connection string to your MongoDB server>>
+REDIS: <<insert connection string to your Redis server>> (optional)
+```
 
 ### Defining a workflow
 
@@ -102,3 +116,10 @@ Content-Type: application/x-yaml
 ```yaml
 CustomMessage: foobar
 ```
+
+## Further reading
+* [Workflow Primitives](02-primitives.md)
+* [Http requests](03-http.md)
+* [Lambdas](04-lambda.md)
+* [API Reference](99-api-reference.md)
+* [Roadmap](roadmap.md)
