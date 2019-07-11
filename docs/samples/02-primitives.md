@@ -234,6 +234,8 @@ Steps:
 
 Use the `WaitFor` step type to pause your workflow and wait for an external event.
 
+The following example will wait for an external event of name `my-event` with a key of `5`.  You can of course, choose a name and key based on data in the custom data object of your workflow instance, using a Python expression.
+
 ```yml
 Id: waitfor-test
 Steps:
@@ -241,8 +243,8 @@ Steps:
   StepType: WaitFor
   NextStepId: Step2
   Inputs:
-    EventName: '...'
-    EventKey: '...'
+    EventName: '"my-event"'
+    EventKey: '5'
   Outputs:
     EventData: step.EventData
 - Id: Step2
@@ -251,5 +253,57 @@ Steps:
     Message: 'data.EventData'
 ```
 
-TODO: Event API
-...
+We can then use the event API to publish an event of a given name and key so that all workflows that are listening for it will be notified and recieve any data associated with the event.
+
+First, let's start a new workflow instance.
+```
+POST /api/workflow/waitfor-test
+{}
+```
+Response:
+```json
+{
+    "workflowId": "5d274481ec9ce50001bc9c34",
+    "data": {},
+    "definitionId": "waitfor-test",
+    "version": 2,
+    "status": "Runnable",
+    "reference": null,
+    "startTime": "2019-07-11T14:15:29.86Z",
+    "endTime": null
+}
+```
+
+Then, let's publish an event with a name of `my-event` and a key of 5.  We'll also pass the string `"test"` as data on the event.
+
+```
+POST /api/event/my-event/5
+```
+```
+"test"
+```
+
+This will notify all workflows that are waiting on this particular name/key combo and pass `"test"` to them.  The outcome of this particular example will store the data from the event in the workflow's own internal data object.
+
+So, if we query the status of the workflow, we will see:
+```
+GET /api/workflow/5d274481ec9ce50001bc9c34
+```
+Response:
+```json
+{
+    "workflowId": "5d274481ec9ce50001bc9c34",
+    "data": {
+        "EventData": "test"
+    },
+    "definitionId": "waitfor-test",
+    "version": 2,
+    "status": "Complete",
+    "reference": null,
+    "startTime": "2019-07-11T14:15:29.86Z",
+    "endTime": "2019-07-11T14:15:30.185Z"
+}
+```
+
+
+TODO: effective date

@@ -26,6 +26,7 @@ Steps:
     Level: '"Information"'
 ```
 
+Posting to a definition ID that already exists, will create a second version of that workflow definition and all existing workflows that were started on the old verison, will continue on the old version but all workflows that are started after this will run on the new version.
 
 
 ### Workflow API
@@ -47,13 +48,84 @@ Content-Type: application/x-yaml
 CustomMessage: foobar
 ```
 
+##### Response
+
+```json
+{
+    "workflowId": "5d26ae05ec9ce50001bc9c2a",
+    "data": {
+        "CustomMessage": "foobar"
+    },
+    "definitionId": "HelloWorld",
+    "version": 1,
+    "status": "Runnable",
+    "reference": null,
+    "startTime": "2019-07-11T03:33:25.203Z",
+    "endTime": null
+}
+```
+
 #### Querying a workflow
+
+If you have the `workflowId` that you get back when you start a workflow, you can query it's status via the API.
+
+```
+GET /api/workflow/<<WorkflowId>>
+```
+
+##### Response
+
+```json
+{
+    "workflowId": "5d26ae05ec9ce50001bc9c2a",
+    "data": {
+        "CustomMessage": "foobar"
+    },
+    "definitionId": "HelloWorld",
+    "version": 1,
+    "status": "Runnable",
+    "reference": null,
+    "startTime": "2019-07-11T03:33:25.203Z",
+    "endTime": null
+}
+```
 
 #### Suspending a workflow
 
+You can suspend a workflow with a `PUT`
+
+```
+PUT /api/workflow/<<WorkflowId>>/suspend
+```
+
+
 #### Resuming a workflow
 
+You can resume a suspended a workflow with a `PUT`
+
+```
+PUT /api/workflow/<<WorkflowId>>/resume
+```
+
+#### Terminting a workflow
+
+You can abort a workflow with a `DELETE`
+
+```
+DELETE /api/workflow/<<WorkflowId>>
+```
+
+
 ### Event API
+
+You can publish an event with a particular name and key and attach some data to all workflows that may be listening to it.  Use the event API.
+
+```
+POST /api/event/<<name>>/<<key>>
+```
+```
+<<data>>
+```
 
 
 ### Lambda API
@@ -73,5 +145,13 @@ c = a + b
 
 #### Viewing a lambda
 
+```
+GET /api/lambda/<<id>>
+```
+
+
 ### Diagnostic API
 
+```
+GET /api/info
+```

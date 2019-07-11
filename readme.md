@@ -68,10 +68,6 @@ Now, when we start a new instance of the workflow, we also initialize it with so
 
 ```
 POST /api/workflow/Hello2
-Content-Type: application/json
-```
-```
-POST /api/workflow/Hello2
 Content-Type: application/x-yaml
 ```
 ```yaml

@@ -50,7 +50,7 @@ or
 POST /api/definition
 Content-Type: application/json
 ```
-```yml
+```json
 {
   "Id": "Hello1",
   "Steps": [
