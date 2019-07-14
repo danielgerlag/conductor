@@ -1,4 +1,4 @@
-## Conductor
+# Conductor
 
 Conductor is a workflow server built upon [Workflow Core](https://github.com/danielgerlag/workflow-core) that enables you to coordinate multiple services and scripts into workflows so that you can rapidly create complex workflow applications. Workflows are made up of a series of steps, with an internal data object shared between them to pass information around.  Conductor automatically runs and tracks each step, and retries when there are errors.
 
@@ -44,7 +44,7 @@ services:
     image: mongo
 ```
 
-### Defining a workflow
+### Quick example
 
 We'll start by defining a simple workflow that will log "Hello world" as it's first step and then "Goodbye!!!" as it's second and final step.  We `POST` the definition to `api/definition` in either `YAML` or `JSON`.
 
@@ -96,6 +96,11 @@ Content-Type: application/x-yaml
 CustomMessage: foobar
 ```
 
+## Status
+
+This project is currently in aphla status.  I'm seeking passionate and talented to help get it to v1.  Please [contact me](mailto:daniel@gerlag.ca) if you are interested in getting involved.
+
+
 ## Further reading
 * [Introduction](docs/01-intro.md)
 * [Workflow Primitives](docs/02-primitives.md)
@@ -103,3 +108,8 @@ CustomMessage: foobar
 * [Lambdas](docs/04-lambda.md)
 * [API Reference](docs/99-api-reference.md)
 * [Roadmap](docs/roadmap.md)
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
