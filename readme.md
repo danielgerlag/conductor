@@ -98,7 +98,7 @@ CustomMessage: foobar
 
 ## Status
 
-This project is currently in aphla status.  I'm seeking passionate and talented to help get it to v1.  Please [contact me](mailto:daniel@gerlag.ca) if you are interested in getting involved.
+This project is currently in aphla status.  I'm seeking passionate and talented people to help get it to v1.  Please [contact me](mailto:daniel@gerlag.ca) if you are interested in getting involved.
 
 
 ## Further reading
