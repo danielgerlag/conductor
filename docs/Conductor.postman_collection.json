@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "786c4392-8669-4255-a011-f55b63ffcb9d",
+		"_postman_id": "294796e1-6634-4339-8d80-5d3f461241ae",
 		"name": "Conductor",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -21,12 +21,10 @@
 					"raw": "{\n    \"id\": \"lambda1\",\n    \"version\": 1,\n    \"steps\": [\n        {\n            \"stepType\": \"Lambda\",\n            \"id\": \"Step1\",\n            \"nextStepId\": \"Step2\",\n            \"inputs\": {\n            \t\"Name\": \"\\\"add\\\"\",\n            \t\"Variables\": {\n            \t\t\"a\": 2,\n            \t\t\"b\": 3\n            \t}\n            },\n            \"outputs\": {\n            \t\"Result\": \"step.Variables[\\\"result\\\"]\"\n            }\n        },\n        {\n\t        \"stepType\": \"EmitLog\",\n\t        \"id\": \"Step2\",\n\t        \"inputs\": {\n\t          \"Message\": \"\\\"Answer is \\\" + data[\\\"Result\\\"]\"\n\t    \t}\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/definition",
-					"protocol": "https",
+					"raw": "{{conductor}}/api/definition",
 					"host": [
-						"localhost"
+						"{{conductor}}"
 					],
-					"port": "5001",
 					"path": [
 						"api",
 						"definition"
@@ -51,16 +49,14 @@
 					"raw": "{\n\t\"Message\": \"BOO!!!\",\n\t\"Value1\": 2,\n\t\"Value2\": 3,\n\t\"List1\": [ 1, 2, 4 ]\n}"
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/workflow/lambda1",
-					"protocol": "https",
+					"raw": "{{conductor}}/api/workflow/Hello1",
 					"host": [
-						"localhost"
+						"{{conductor}}"
 					],
-					"port": "5001",
 					"path": [
 						"api",
 						"workflow",
-						"lambda1"
+						"Hello1"
 					]
 				}
 			},
@@ -138,20 +134,18 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"data\": \"data from event 123\"\n}"
+					"raw": "\"test\""
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/event/my-event/key",
-					"protocol": "https",
+					"raw": "{{conductor}}/api/event/my-event/my-key",
 					"host": [
-						"localhost"
+						"{{conductor}}"
 					],
-					"port": "5001",
 					"path": [
 						"api",
 						"event",
 						"my-event",
-						"key"
+						"my-key"
 					]
 				}
 			},
@@ -208,16 +202,77 @@
 					}
 				],
 				"url": {
-					"raw": "https://localhost:5001/api/workflow/5d0ab0ff23576b61e4afbcfb",
-					"protocol": "https",
+					"raw": "{{conductor}}/api/workflow/5d26b2fdec9ce50001bc9c2e",
 					"host": [
-						"localhost"
+						"{{conductor}}"
 					],
-					"port": "5001",
 					"path": [
 						"api",
 						"workflow",
-						"5d0ab0ff23576b61e4afbcfb"
+						"5d26b2fdec9ce50001bc9c2e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Suspend Workflow",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/x-yaml",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{conductor}}/api/workflow/5d26b15cec9ce50001bc9c2c/suspend",
+					"host": [
+						"{{conductor}}"
+					],
+					"path": [
+						"api",
+						"workflow",
+						"5d26b15cec9ce50001bc9c2c",
+						"suspend"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Terminate Workflow",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/x-yaml",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{conductor}}/api/workflow/5d26b15cec9ce50001bc9c2c",
+					"host": [
+						"{{conductor}}"
+					],
+					"path": [
+						"api",
+						"workflow",
+						"5d26b15cec9ce50001bc9c2c"
 					]
 				}
 			},
