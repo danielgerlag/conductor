@@ -1,5 +1,11 @@
 ## API Reference
 
+* [Definitions](#definition-api)
+* [Workflows](#workflow-api)
+* [Events](#event-api)
+* [Lambdas](#lambda-api)
+* [Diagnostics](#diagnostic-api)
+
 ### Definition API
 
 #### Create or update a definition
