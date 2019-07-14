@@ -1,6 +1,6 @@
 # Conductor
 
-Conductor is a workflow server built upon [Workflow Core](https://github.com/danielgerlag/workflow-core) that enables you to coordinate multiple services and scripts into workflows so that you can rapidly create complex workflow applications. Workflows are made up of a series of steps, with an internal data object shared between them to pass information around.  Conductor automatically runs and tracks each step, and retries when there are errors.
+Conductor is a workflow server built upon [Workflow Core](https://github.com/danielgerlag/workflow-core) that enables you to coordinate multiple services and scripts into workflows so that you can rapidly create complex workflow applications.  Workflows are composed of a series of steps, with an internal data object shared between them to pass information around.  Conductor automatically runs and tracks each step, and retries when there are errors.
 
 Workflows are written in either JSON or YAML and then added to Conductor's internal registry via the definition API.  Then you use the workflow API to invoke them with or without custom data.
 
