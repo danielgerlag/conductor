@@ -6,11 +6,11 @@ EXPOSE 443
 
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
-COPY ["Conductor/Conductor.csproj", "Conductor/"]
-COPY ["Conductor.Steps/Conductor.Steps.csproj", "Conductor.Steps/"]
-COPY ["Conductor.Domain/Conductor.Domain.csproj", "Conductor.Domain/"]
-COPY ["Conductor.Domain.Scripting/Conductor.Domain.Scripting.csproj", "Conductor.Domain.Scripting/"]
-COPY ["Conductor.Storage/Conductor.Storage.csproj", "Conductor.Storage/"]
+COPY ["src/Conductor/Conductor.csproj", "Conductor/"]
+COPY ["src/Conductor.Steps/Conductor.Steps.csproj", "Conductor.Steps/"]
+COPY ["src/Conductor.Domain/Conductor.Domain.csproj", "Conductor.Domain/"]
+COPY ["src/Conductor.Domain.Scripting/Conductor.Domain.Scripting.csproj", "Conductor.Domain.Scripting/"]
+COPY ["src/Conductor.Storage/Conductor.Storage.csproj", "Conductor.Storage/"]
 RUN dotnet restore "Conductor/Conductor.csproj"
 COPY . .
 WORKDIR "/src/Conductor"

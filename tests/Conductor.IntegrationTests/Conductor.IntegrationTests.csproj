@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Conductor.Domain\Conductor.Domain.csproj" />
-    <ProjectReference Include="..\..\Conductor\Conductor.csproj" />
+    <ProjectReference Include="..\..\src\Conductor.Domain\Conductor.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Conductor\Conductor.csproj" />
   </ItemGroup>
 
   <ItemGroup>
