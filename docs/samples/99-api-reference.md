@@ -120,6 +120,8 @@ DELETE /api/workflow/<<WorkflowId>>
 
 You can publish an event with a particular name and key and attach some data to all workflows that may be listening to it.  Use the event API.
 
+** Currently, only scalar values are supported for the attached data **
+
 ```
 POST /api/event/<<name>>/<<key>>
 ```

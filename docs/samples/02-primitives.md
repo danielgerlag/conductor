@@ -72,6 +72,11 @@ Outputs:
   ResponseBody: step.ResponseBody
 ```
 
+### Error handling
+
+TODO
+
+
 ### If
 
 Use the `If` step type to branch on a condition expression.
