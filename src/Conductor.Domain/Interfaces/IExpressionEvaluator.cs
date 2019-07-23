@@ -1,6 +1,6 @@
 using WorkflowCore.Interface;
 
-namespace Conductor.Domain.Services
+namespace Conductor.Domain.Interfaces
 {
     public interface IExpressionEvaluator
     {

@@ -20,11 +20,13 @@ namespace Conductor.Domain.Services
     {
         private readonly IWorkflowRegistry _registry;
         private readonly IScriptEngineHost _scriptHost;
+        private readonly IExpressionEvaluator _expressionEvaluator;
 
-        public WorkflowLoader(IWorkflowRegistry registry, IScriptEngineHost scriptHost)
+        public WorkflowLoader(IWorkflowRegistry registry, IScriptEngineHost scriptHost, IExpressionEvaluator expressionEvaluator)
         {
             _registry = registry;
             _scriptHost = scriptHost;
+            _expressionEvaluator = expressionEvaluator;
         }
 
         public void LoadDefinition(Definition source)
@@ -226,13 +228,8 @@ namespace Conductor.Domain.Services
             
             void acn(IStepBody pStep, object pData, IStepExecutionContext pContext)
             {
-                object resolvedValue = _scriptHost.EvaluateExpression(sourceExpr, new Dictionary<string, object>()
-                {
-                    ["data"] = pData,
-                    ["context"] = pContext,
-                    ["environment"] = Environment.GetEnvironmentVariables()
-                });
-                    
+                var resolvedValue = _expressionEvaluator.EvaluateExpression(sourceExpr, pData, pContext);
+
                 if (stepProperty.PropertyType.IsEnum)
                     stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));
                 else
@@ -240,6 +237,8 @@ namespace Conductor.Domain.Services
             }
             return acn;
         }
+
+        
 
         private Action<IStepBody, object, IStepExecutionContext> BuildObjectInputAction(KeyValuePair<string, object> input, PropertyInfo stepProperty)
         {
@@ -257,12 +256,7 @@ namespace Conductor.Domain.Services
                         if (prop.Name.StartsWith("@"))
                         {
                             var sourceExpr = prop.Value.ToString();
-                            object resolvedValue = _scriptHost.EvaluateExpression(sourceExpr, new Dictionary<string, object>()
-                            {
-                                ["data"] = pData,
-                                ["context"] = pContext,
-                                ["environment"] = Environment.GetEnvironmentVariables()
-                            });
+                            var resolvedValue = _expressionEvaluator.EvaluateExpression(sourceExpr, pData, pContext);;
                             subobj.Remove(prop.Name);
                             subobj.Add(prop.Name.TrimStart('@'), JToken.FromObject(resolvedValue));
                         }
@@ -276,5 +270,6 @@ namespace Conductor.Domain.Services
             }
             return acn;
         }
+        
     }
 }
