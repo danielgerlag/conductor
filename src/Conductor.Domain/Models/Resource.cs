@@ -20,5 +20,5 @@ namespace Conductor.Domain.Models
 
     }
 
-    public enum Bucket { Lambda, Protobuf, File };
+    public enum Bucket { Lambda, Step, Protobuf, File };
 }
