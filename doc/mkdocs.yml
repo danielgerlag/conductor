@@ -1,5 +1,9 @@
-site_name: My Docs
+site_name: Conductor
 nav:
-    - Home: index.md
-    - About: about.md
+    - Getting started: index.md
+    - Fundamentals: primitives.md
+    - Http Requests: http-walkthru.md
+    - Lambdas: lambda.md
+    - API Reference: api-reference.md
+    - Roadmap: roadmap.md
 theme: readthedocs
