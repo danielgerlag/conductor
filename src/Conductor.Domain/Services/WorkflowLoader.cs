@@ -244,6 +244,12 @@ namespace Conductor.Domain.Services
             {
                 var resolvedValue = _expressionEvaluator.EvaluateExpression(sourceExpr, pData, pContext);
 
+                if (pStep is CustomStep)
+                {
+                    (pStep as CustomStep)[input.Key] = resolvedValue;
+                    return;
+                }
+
                 if (stepProperty.PropertyType.IsEnum)
                     stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));
                 else

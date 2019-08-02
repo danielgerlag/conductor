@@ -14,6 +14,7 @@ namespace Conductor.Domain
             services.AddSingleton<IWorkflowLoader, WorkflowLoader>();
             services.AddSingleton<ICustomStepService, CustomStepService>();
             services.AddSingleton<IExpressionEvaluator, ExpressionEvaluator>();
+            services.AddTransient<CustomStep>();
         }
     }
 }
