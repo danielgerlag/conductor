@@ -7,6 +7,6 @@ namespace Conductor.Domain.Interfaces
     {
         void SaveStepResource(Resource resource);
         Resource GetStepResource(string name);
-        //void ExecuteLambda(string name, IDictionary<string, object> scope);
+        void Execute(Resource resource, IDictionary<string, object> scope);
     }
 }

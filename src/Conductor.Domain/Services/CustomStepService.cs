@@ -31,10 +31,9 @@ namespace Conductor.Domain.Services
             return _resourceRepository.Find(Bucket.Lambda, name);
         }
 
-        //public void ExecuteLambda(string name, IDictionary<string, object> scope)
-        //{
-        //    var resource = GetLambdaResource(name);
-        //    _scriptHost.Execute(resource, scope);
-        //}
+        public void Execute(Resource resource, IDictionary<string, object> scope)
+        {
+            _scriptHost.Execute(resource, scope);
+        }
     }
 }
