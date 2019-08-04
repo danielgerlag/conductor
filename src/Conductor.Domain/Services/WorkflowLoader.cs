@@ -181,16 +181,22 @@ namespace Conductor.Domain.Services
             {
                 var stepProperty = stepType.GetProperty(input.Key);
 
-                if (input.Value is string)
-                {
-                    var acn = BuildScalarInputAction(input, stepProperty);
-                    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
-                    continue;
-                }
-                
+                //if (input.Value is string)
+                //{
+                //    var acn = BuildScalarInputAction(input, stepProperty);
+                //    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
+                //    continue;
+                //}
+
                 if ((input.Value is IDictionary<string, object>) || (input.Value is IDictionary<object, object>))
                 {
                     var acn = BuildObjectInputAction(input, stepProperty);
+                    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
+                    continue;
+                }
+                else
+                {
+                    var acn = BuildScalarInputAction(input, stepProperty);
                     step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
                     continue;
                 }
