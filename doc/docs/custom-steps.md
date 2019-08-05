@@ -1,10 +1,10 @@
-# Using lambdas in your workflow
+# Using custom steps in your workflow
 
-Conductor also allows you to define lambda's or scripts that can be used within your workflows.  Currently, the only supported language is Python.  More languages will be implemented in the future.
+Conductor also allows you to define your own steps that can be used within your workflows.  Currently, the only supported language is Python.  More languages will be implemented in the future.
 
-The following call creates a lambda function called `add`, which is a Python script that sets c to a + b
+The following call creates a step called `add`, which is a Python script that sets c to a + b
 ```
-POST /api/lambda/add
+POST /api/step/add
 Content-Type: text/x-python
 ```
 ```python
@@ -12,25 +12,23 @@ c = a + b
 ```
 
 
-Next, we create a workflow definiton that invokes our `add` lambda with values from the internal data object of the workflow and outputs the result to a log.
+Next, we create a workflow definiton that invokes our `add` step with values from the internal data object of the workflow and outputs the result to a log.
 
 ```http
 POST /api/definition
 Content-Type: application/yaml
 ```
 ```yml
-Id: MyLambdaWorkflow
+Id: MyStepWorkflow
 Steps:
   - Id: Step1
     StepType: Lambda
     Inputs:
-      Name: '"add"'
-      Variables:
-        '@a': data.Value1
-        '@b': data.Value2
+      a: data.Value1
+      b: data.Value2
     NextStepId: Step2
     Outputs:
-      Result: step.Variables["c"]    
+      Result: step["c"]    
   - Id: Step2
     StepType: EmitLog
     Inputs:
@@ -39,7 +37,7 @@ Steps:
 
 Now, lets test it by invoking a new instance of our workflow
 ```
-POST /api/workflow/MyLambdaWorkflow
+POST /api/workflow/MyStepWorkflow
 Content-Type: application/json
 ```
 ```json

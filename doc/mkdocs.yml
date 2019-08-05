@@ -3,7 +3,7 @@ nav:
     - Getting started: index.md
     - Fundamentals: primitives.md
     - Http Requests: http-walkthru.md
-    - Lambdas: lambda.md
+    - Custom Steps: custom-steps.md
     - API Reference: api-reference.md
     - Roadmap: roadmap.md
 theme: readthedocs

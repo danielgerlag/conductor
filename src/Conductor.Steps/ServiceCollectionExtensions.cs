@@ -7,7 +7,6 @@ namespace Conductor.Steps
     {
         public static void AddSteps(this IServiceCollection services)
         {
-            services.AddTransient<Lambda>();
             services.AddTransient<HttpRequest>();
             services.AddTransient<EmitLog>();
         }
