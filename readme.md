@@ -102,7 +102,7 @@ This project is currently in aphla status.  I'm seeking passionate and talented 
 
 
 ## Further reading
-* [Documentation](https://readthedocs.org/projects/conductor-core/)
+* [Documentation](https://conductor-core.readthedocs.io/en/latest/)
 
 
 ## License
