@@ -3,7 +3,7 @@
 * [Definitions](#definition-api)
 * [Workflows](#workflow-api)
 * [Events](#event-api)
-* [Lambdas](#lambda-api)
+* [Custom Steps](#steps-api)
 * [Diagnostics](#diagnostic-api)
 
 # Definition API
@@ -136,25 +136,25 @@ POST /api/event/<<name>>/<<key>>
 ```
 
 
-# Lambda API
+# Steps API
 
-Conductor also allows you to define lambda's or scripts that can be used within your workflows.  Currently, the only supported language is Python.  More languages will be implemented in the future.
+Conductor also allows you to define your own steps that can be used within your workflows.  Currently, the only supported language is Python.  More languages will be implemented in the future.
 
-## Creating a lambda
+## Creating a step
 
-The following call creates a lambda function called `add`, which is a Python script that sets c to a + b
+The following call creates a step called `add`, which is a Python script that sets c to a + b
 ```
-POST /api/lambda/add
+POST /api/step/add
 Content-Type: text/x-python
 ```
 ```python
 c = a + b
 ```
 
-## Viewing a lambda
+## Viewing a step
 
 ```
-GET /api/lambda/<<id>>
+GET /api/step/<<id>>
 ```
 
 
