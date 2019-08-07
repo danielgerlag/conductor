@@ -21,12 +21,14 @@ namespace Conductor.Domain.Services
         private readonly IWorkflowRegistry _registry;
         private readonly IScriptEngineHost _scriptHost;
         private readonly IExpressionEvaluator _expressionEvaluator;
+        private readonly ICustomStepService _stepService;
 
-        public WorkflowLoader(IWorkflowRegistry registry, IScriptEngineHost scriptHost, IExpressionEvaluator expressionEvaluator)
+        public WorkflowLoader(IWorkflowRegistry registry, IScriptEngineHost scriptHost, IExpressionEvaluator expressionEvaluator, ICustomStepService stepService)
         {
             _registry = registry;
             _scriptHost = scriptHost;
             _expressionEvaluator = expressionEvaluator;
+            _stepService = stepService;
         }
 
         public void LoadDefinition(Definition source)
@@ -68,6 +70,10 @@ namespace Conductor.Domain.Services
                 var stepType = FindType(nextStep.StepType);
                 var containerType = typeof(WorkflowStep<>).MakeGenericType(stepType);
                 var targetStep = (containerType.GetConstructor(new Type[] { }).Invoke(null) as WorkflowStep);
+                if (stepType == typeof(CustomStep))
+                {
+                    targetStep.Inputs.Add(new ActionParameter<CustomStep, object>((pStep, pData) => pStep["__custom_step__"] = nextStep.StepType));
+                }
 
                 if (nextStep.Saga)
                 {
@@ -175,16 +181,15 @@ namespace Conductor.Domain.Services
             {
                 var stepProperty = stepType.GetProperty(input.Key);
 
-                if (input.Value is string)
-                {
-                    var acn = BuildScalarInputAction(input, stepProperty);
-                    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
-                    continue;
-                }
-                
                 if ((input.Value is IDictionary<string, object>) || (input.Value is IDictionary<object, object>))
                 {
                     var acn = BuildObjectInputAction(input, stepProperty);
+                    step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
+                    continue;
+                }
+                else
+                {
+                    var acn = BuildScalarInputAction(input, stepProperty);
                     step.Inputs.Add(new ActionParameter<IStepBody, object>(acn));
                     continue;
                 }
@@ -219,7 +224,15 @@ namespace Conductor.Domain.Services
             if (result != null)
                 return result;
 
-            return Type.GetType($"Conductor.Steps.{name}, Conductor.Steps", true, true);
+            result = Type.GetType($"Conductor.Steps.{name}, Conductor.Steps", false, true);
+
+            if (result != null)
+                return result;
+
+            if (_stepService.GetStepResource(name) != null)
+                return typeof(CustomStep);
+
+            throw new ArgumentException($"Step type {name} not found");
         }
 
         private Action<IStepBody, object, IStepExecutionContext> BuildScalarInputAction(KeyValuePair<string, object> input, PropertyInfo stepProperty)
@@ -229,6 +242,12 @@ namespace Conductor.Domain.Services
             void acn(IStepBody pStep, object pData, IStepExecutionContext pContext)
             {
                 var resolvedValue = _expressionEvaluator.EvaluateExpression(sourceExpr, pData, pContext);
+
+                if (pStep is CustomStep)
+                {
+                    (pStep as CustomStep)[input.Key] = resolvedValue;
+                    return;
+                }
 
                 if (stepProperty.PropertyType.IsEnum)
                     stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));

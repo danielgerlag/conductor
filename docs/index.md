@@ -1,10 +1,10 @@
-## Introduction
+# Introduction
 
 Conductor is a workflow server built upon [Workflow Core](https://github.com/danielgerlag/workflow-core) that enables you to coordinate multiple services and scripts into workflows so that you can rapidly create complex workflow applications. Workflows are made up of a series of steps, with an internal data object shared between them to pass information around.  Conductor automatically runs and tracks each step, and retries when there are errors.
 
 Workflows are written in either JSON or YAML and then added to Conductor's internal registry via the definition API.  Then you use the workflow API to invoke them with or without custom data.
 
-### Installation
+# Installation
 
 Conductor is available as a Docker image - `danielgerlag/conductor`
 
@@ -12,16 +12,17 @@ Conductor uses MongoDB as it's datastore, you will also need an instance of Mong
 
 Use this command to start a container (with the API available on port 5001) that points to `mongodb://my-mongo-server:27017/` as it's datastore.
 
-```bash
+```
 $ docker run -p 127.0.0.1:5001:80/tcp --env DBHOST=mongodb://my-mongo-server:27017/ danielgerlag/conductor
 ```
 
 If you wish to run a fleet of Conductor nodes, then you also need to have a Redis instance, which they will use as a backplane.  This is not required if you are only running one instance.
 Simply have all your conductor instances point to the same MongoDB and Redis instance, and they will operate as a load balanced fleet.
 
-#### Environment Variables to configure
+## Environment Variables to configure
 
 You can configure the database and Redis backplane by setting environment variables.
+
 ```
 DBHOST: <<insert connection string to your MongoDB server>>
 REDIS: <<insert connection string to your Redis server>> (optional)
@@ -44,7 +45,9 @@ services:
     image: mongo
 ```
 
-### Defining a workflow
+# Getting started
+
+## Creating your first workflow
 
 We'll start by defining a simple workflow that will log "Hello world" as it's first step and then "Goodbye!!!" as it's second and final step.  We `POST` the definition to `api/definition` in either `YAML` or `JSON`.
 
@@ -138,10 +141,3 @@ Content-Type: application/x-yaml
 ```yaml
 CustomMessage: foobar
 ```
-
-## Further reading
-* [Workflow Primitives](02-primitives.md)
-* [Http requests](03-http.md)
-* [Lambdas](04-lambda.md)
-* [API Reference](99-api-reference.md)
-* [Roadmap](roadmap.md)

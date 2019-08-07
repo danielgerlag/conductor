@@ -1,0 +1,9 @@
+site_name: Conductor
+nav:
+    - Getting started: index.md
+    - Fundamentals: primitives.md
+    - Custom Steps: custom-steps.md
+    - Http Requests: http-walkthru.md
+    - API Reference: api-reference.md
+    - Roadmap: roadmap.md
+theme: readthedocs

@@ -14,10 +14,10 @@ using Xunit;
 namespace Conductor.IntegrationTests.Scenarios
 {
     [Collection("Conductor")]
-    public class LambdaScenario : Scenario
+    public class CustomStepScenario : Scenario
     {
 
-        public LambdaScenario(Setup setup) : base(setup)
+        public CustomStepScenario(Setup setup) : base(setup)
         {
         }
 
@@ -25,10 +25,9 @@ namespace Conductor.IntegrationTests.Scenarios
         public async void Scenario()
         {
             dynamic inputs = new ExpandoObject();
-            inputs.Name = @"""add""";
-            inputs.Variables = new Dictionary<string, object>();
-            inputs.Variables["@a"] = @"data.Value1";
-            inputs.Variables["@b"] = @"data.Value2";
+
+            inputs.a = @"data.Value1";
+            inputs.b = @"data.Value2";
 
             var definition = new Definition()
             {
@@ -38,21 +37,21 @@ namespace Conductor.IntegrationTests.Scenarios
                     new Step()
                     {
                         Id = "step1",
-                        StepType = "Lambda",
+                        StepType = "test-add",
                         Inputs = inputs,
                         Outputs = new Dictionary<string, string>()
                         {
-                            ["Result"] = @"step.Variables[""c""]"
+                            ["Result"] = @"step[""c""]"
                         }
                     }
                 }
             };
 
-            var createLambdaRequest = new RestRequest(@"/lambda/add", Method.POST);
-            createLambdaRequest.AddParameter(string.Empty, "c = a + b", "text/x-python", ParameterType.RequestBody);
-            createLambdaRequest.AddHeader("Content-Type", "text/x-python");
-            var lambdaResponse = _client.Execute(createLambdaRequest);
-            lambdaResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var createStepRequest = new RestRequest(@"/step/test-add", Method.POST);
+            createStepRequest.AddParameter(string.Empty, "c = a + b", "text/x-python", ParameterType.RequestBody);
+            createStepRequest.AddHeader("Content-Type", "text/x-python");
+            var stepResponse = _client.Execute(createStepRequest);
+            stepResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var registerRequest = new RestRequest(@"/definition", Method.POST);
             registerRequest.AddJsonBody(definition);

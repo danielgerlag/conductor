@@ -6,6 +6,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <UserSecretsId>0b178d89-9937-49c8-b1f1-efb5f96e516d</UserSecretsId>
     <Version>0.1.0-alpha</Version>
+    <StartupObject>Conductor.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

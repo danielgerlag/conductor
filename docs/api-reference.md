@@ -1,4 +1,4 @@
-## API Reference
+
 
 * [Definitions](#definition-api)
 * [Workflows](#workflow-api)
@@ -6,9 +6,9 @@
 * [Lambdas](#lambda-api)
 * [Diagnostics](#diagnostic-api)
 
-### Definition API
+# Definition API
 
-#### Create or update a definition
+## Create or update a definition
 
 We `POST` the definition to `api/definition` in either `YAML` or `JSON`.
 
@@ -35,9 +35,9 @@ Steps:
 Posting to a definition ID that already exists, will create a second version of that workflow definition and all existing workflows that were started on the old verison, will continue on the old version but all workflows that are started after this will run on the new version.
 
 
-### Workflow API
+# Workflow API
 
-#### Start a workflow
+## Start a workflow
 
 To start a workflow, submit a `POST` to `/api/workflow/<<DefinitionId>>`, where the body of the request will be the initial data object passed to the new workflow instance.
 
@@ -54,7 +54,7 @@ Content-Type: application/x-yaml
 CustomMessage: foobar
 ```
 
-##### Response
+#### Response
 
 ```json
 {
@@ -71,7 +71,7 @@ CustomMessage: foobar
 }
 ```
 
-#### Querying a workflow
+## Querying a workflow
 
 If you have the `workflowId` that you get back when you start a workflow, you can query it's status via the API.
 
@@ -79,7 +79,7 @@ If you have the `workflowId` that you get back when you start a workflow, you ca
 GET /api/workflow/<<WorkflowId>>
 ```
 
-##### Response
+#### Response
 
 ```json
 {
@@ -96,7 +96,7 @@ GET /api/workflow/<<WorkflowId>>
 }
 ```
 
-#### Suspending a workflow
+## Suspending a workflow
 
 You can suspend a workflow with a `PUT`
 
@@ -105,7 +105,7 @@ PUT /api/workflow/<<WorkflowId>>/suspend
 ```
 
 
-#### Resuming a workflow
+## Resuming a workflow
 
 You can resume a suspended a workflow with a `PUT`
 
@@ -113,7 +113,7 @@ You can resume a suspended a workflow with a `PUT`
 PUT /api/workflow/<<WorkflowId>>/resume
 ```
 
-#### Terminting a workflow
+## Terminting a workflow
 
 You can abort a workflow with a `DELETE`
 
@@ -122,7 +122,7 @@ DELETE /api/workflow/<<WorkflowId>>
 ```
 
 
-### Event API
+# Event API
 
 You can publish an event with a particular name and key and attach some data to all workflows that may be listening to it.  Use the event API.
 
@@ -136,11 +136,11 @@ POST /api/event/<<name>>/<<key>>
 ```
 
 
-### Lambda API
+# Lambda API
 
 Conductor also allows you to define lambda's or scripts that can be used within your workflows.  Currently, the only supported language is Python.  More languages will be implemented in the future.
 
-#### Creating a lambda
+## Creating a lambda
 
 The following call creates a lambda function called `add`, which is a Python script that sets c to a + b
 ```
@@ -151,14 +151,14 @@ Content-Type: text/x-python
 c = a + b
 ```
 
-#### Viewing a lambda
+## Viewing a lambda
 
 ```
 GET /api/lambda/<<id>>
 ```
 
 
-### Diagnostic API
+# Diagnostic API
 
 ```
 GET /api/info

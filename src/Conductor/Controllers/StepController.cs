@@ -13,11 +13,11 @@ namespace Conductor.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LambdaController : ControllerBase
+    public class StepController : ControllerBase
     {
-        private readonly ILambdaService _service;
+        private readonly ICustomStepService _service;
 
-        public LambdaController(ILambdaService service)
+        public StepController(ICustomStepService service)
         {
             _service = service;
         }
@@ -26,14 +26,14 @@ namespace Conductor.Controllers
         [HttpGet("{name}")]
         public IActionResult Get(string name)
         {
-            var resource = _service.GetLambdaResource(name);
+            var resource = _service.GetStepResource(name);
 
             if (resource == null)
                 return NotFound();
 
 
             Response.Headers["Content-Type"] = resource.ContentType;
-            return new LambdaResourceResult(resource);
+            return new StepResourceResult(resource);
         }
 
         [HttpPost("{name}")]
@@ -47,18 +47,18 @@ namespace Conductor.Controllers
                     ContentType = Request.ContentType,
                     Content = sr.ReadToEnd()
                 };
-                _service.SaveLambdaResource(resource);
+                _service.SaveStepResource(resource);
                 Response.StatusCode = 200;
             }   
         }
 
     }
 
-    public class LambdaResourceResult : IActionResult
+    public class StepResourceResult : IActionResult
     {
         private readonly Resource _resource;
 
-        public LambdaResourceResult(Resource resource)
+        public StepResourceResult(Resource resource)
         {
             _resource = resource;
         }

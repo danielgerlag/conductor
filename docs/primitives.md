@@ -1,6 +1,4 @@
-## Workflow primitives
-
-### Input / Output Expressions
+# Input / Output Expressions
 
 When setting input and output values on your steps, you can either specify constant values or an expression.
 
@@ -16,13 +14,17 @@ Inputs:
 ```
 
 There are several variables that are available to your expression
+
 * data
+  
   This gives you access to the internal data object specific to your workflow.
   eg. If you passed an object that had a `MyValue` field when you invoked your workflow, you could access it like this
   ```python
   data.MyValue
   ```
+  
 * context
+  
   This gives you access to some contextual information about your workflow.
   eg. Get the wotkflow id.
   ```python
@@ -32,7 +34,9 @@ There are several variables that are available to your expression
   ```python
   context.Item
   ```
+
 * environment
+  
   This gives you access to the system evironment variables.
   ```
   environment["VARIABLE_NAME"]
@@ -62,7 +66,7 @@ Inputs:
       '@Value2': data.Value2
 ```
 
-#### Outputs
+## Outputs
 
 When mapping outputs from a step, the Key represents a field on your data object that is global to your workflow instance, and the expression allows you to map result values produced by the step after it has run.
 eg. This sets `ResponseCode` and `ResponseBody` on your workflow wide data object to the corresponding values return by the step.
@@ -72,12 +76,12 @@ Outputs:
   ResponseBody: step.ResponseBody
 ```
 
-### Error handling
+# Error handling
 
 TODO
 
 
-### If
+# If
 
 Use the `If` step type to branch on a condition expression.
 
@@ -105,7 +109,7 @@ Steps:
     Message: '"Your value is " + str(data.MyValue)'
 ```
 
-### While
+# While
 
 Use the `While` step type to loop on a condition expression.
 
@@ -123,7 +127,7 @@ Steps:
         Counter: 'data.Counter + 1'
 ```
 
-### ForEach
+# ForEach
 
 Use the `ForEach` step type to iterate on a collection expression.
 Note: `ForEach` iterates in parallel.
@@ -142,7 +146,7 @@ Steps:
         Message: 'context.Item'    
 ```
 
-### Parallel
+# Parallel
 
 Use the `Parallel` step type to branch into multiple parallel sequences.
 
@@ -178,7 +182,7 @@ Steps:
 ```
 
 
-### Delay
+# Delay
 
 Use the `Delay` step type to wait a specified time based on an expresion.
 
@@ -196,7 +200,7 @@ Steps:
     Message: '"done"'
 ```
 
-### Recur
+# Recur
 
 Use the `Recur` step type to trigger a recurring background sequence of steps.
 
@@ -215,8 +219,7 @@ Steps:
         Message: '"doing recurring work..."'
 ```
 
-
-### Schedule
+# Schedule
 
 Use the `Schedule` step type to schedule a future set of steps to execute after a specified interval.
 
@@ -234,8 +237,7 @@ Steps:
         Message: '"doing scheduled work..."'
 ```
 
-
-### WaitFor
+# WaitFor
 
 Use the `WaitFor` step type to pause your workflow and wait for an external event.
 
