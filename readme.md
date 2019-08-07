@@ -102,12 +102,7 @@ This project is currently in aphla status.  I'm seeking passionate and talented 
 
 
 ## Further reading
-* [Introduction](docs/01-intro.md)
-* [Workflow Primitives](docs/02-primitives.md)
-* [Http requests](docs/03-http.md)
-* [Lambdas](docs/04-lambda.md)
-* [API Reference](docs/99-api-reference.md)
-* [Roadmap](docs/roadmap.md)
+* [Documentation](https://readthedocs.org/projects/conductor-core/)
 
 
 ## License
