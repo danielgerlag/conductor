@@ -1,0 +1,159 @@
+2019-09-08 20:00:47.612 +02:00 [INF] Starting IdentityServer4 version 2.5.3.0
+2019-09-08 20:00:48.065 +02:00 [INF] Using the default authentication scheme idsrv for IdentityServer
+2019-09-08 20:00:48.066 +02:00 [DBG] Using idsrv as default ASP.NET Core scheme for authentication
+2019-09-08 20:00:48.066 +02:00 [DBG] Using idsrv as default ASP.NET Core scheme for sign-in
+2019-09-08 20:00:48.066 +02:00 [DBG] Using idsrv as default ASP.NET Core scheme for sign-out
+2019-09-08 20:00:48.066 +02:00 [DBG] Using idsrv as default ASP.NET Core scheme for challenge
+2019-09-08 20:00:48.066 +02:00 [DBG] Using idsrv as default ASP.NET Core scheme for forbid
+2019-09-08 20:00:48.293 +02:00 [DBG] Starting grant removal
+2019-09-08 20:00:48.432 +02:00 [DBG] Login Url: /Account/Login
+2019-09-08 20:00:48.434 +02:00 [DBG] Login Return Url Parameter: ReturnUrl
+2019-09-08 20:00:48.434 +02:00 [DBG] Logout Url: /Account/Logout
+2019-09-08 20:00:48.435 +02:00 [DBG] ConsentUrl Url: /consent
+2019-09-08 20:00:48.435 +02:00 [DBG] Consent Return Url Parameter: returnUrl
+2019-09-08 20:00:48.435 +02:00 [DBG] Error Url: /home/error
+2019-09-08 20:00:48.435 +02:00 [DBG] Error Id Parameter: errorId
+2019-09-08 20:00:51.210 +02:00 [DBG] Request path /.well-known/openid-configuration matched to endpoint type Discovery
+2019-09-08 20:00:51.213 +02:00 [DBG] Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryEndpoint
+2019-09-08 20:00:51.213 +02:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryEndpoint for /.well-known/openid-configuration
+2019-09-08 20:00:51.218 +02:00 [DBG] Start discovery request
+2019-09-08 20:00:53.981 +02:00 [DBG] Found ["openid","profile","ConductorApi"] as all scopes in database
+2019-09-08 20:01:12.251 +02:00 [DBG] Request path /connect/authorize matched to endpoint type Authorize
+2019-09-08 20:01:12.261 +02:00 [DBG] Endpoint enabled: Authorize, successfully created handler: IdentityServer4.Endpoints.AuthorizeEndpoint
+2019-09-08 20:01:12.261 +02:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.AuthorizeEndpoint for /connect/authorize
+2019-09-08 20:01:12.267 +02:00 [DBG] Start authorize request
+2019-09-08 20:01:12.303 +02:00 [DBG] No user present in authorize request
+2019-09-08 20:01:12.313 +02:00 [DBG] Start authorize request protocol validation
+2019-09-08 20:01:12.781 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:12.793 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:12.838 +02:00 [ERR] scope is missing
+{"ClientId":"ConductorApi_Swagger","ClientName":"Conductor Api Swagger Ui","RedirectUri":"http://localhost:5001/swagger/oauth2-redirect.html","AllowedRedirectUris":["http://localhost:5001/swagger/oauth2-redirect.html","http://localhost:5001/swagger/o2c.html"],"SubjectId":"anonymous","ResponseType":"token","ResponseMode":"fragment","GrantType":"implicit","RequestedScopes":"","State":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjEyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk=","UiLocales":null,"Nonce":null,"AuthenticationContextReferenceClasses":null,"DisplayMode":null,"PromptMode":null,"MaxAge":null,"LoginHint":null,"SessionId":null,"Raw":{"response_type":"token","client_id":"ConductorApi_Swagger","redirect_uri":"http://localhost:5001/swagger/oauth2-redirect.html","state":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjEyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk="},"$type":"AuthorizeRequestValidationLog"}
+2019-09-08 20:01:12.847 +02:00 [ERR] Request validation failed
+2019-09-08 20:01:12.847 +02:00 [INF] {"ClientId":"ConductorApi_Swagger","ClientName":"Conductor Api Swagger Ui","RedirectUri":"http://localhost:5001/swagger/oauth2-redirect.html","AllowedRedirectUris":["http://localhost:5001/swagger/oauth2-redirect.html","http://localhost:5001/swagger/o2c.html"],"SubjectId":"anonymous","ResponseType":"token","ResponseMode":"fragment","GrantType":"implicit","RequestedScopes":"","State":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjEyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk=","UiLocales":null,"Nonce":null,"AuthenticationContextReferenceClasses":null,"DisplayMode":null,"PromptMode":null,"MaxAge":null,"LoginHint":null,"SessionId":null,"Raw":{"response_type":"token","client_id":"ConductorApi_Swagger","redirect_uri":"http://localhost:5001/swagger/oauth2-redirect.html","state":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjEyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk="},"$type":"AuthorizeRequestValidationLog"}
+2019-09-08 20:01:12.873 +02:00 [INF] {"ClientId":"ConductorApi_Swagger","ClientName":"Conductor Api Swagger Ui","RedirectUri":"http://localhost:5001/swagger/oauth2-redirect.html","Endpoint":"Authorize","SubjectId":null,"Scopes":"","GrantType":"implicit","Error":"invalid_request","ErrorDescription":"Invalid scope","Category":"Token","Name":"Token Issued Failure","EventType":"Failure","Id":2001,"Message":null,"ActivityId":"80000015-0001-ff00-b63f-84710c7967bb","TimeStamp":"2019-09-08T18:01:12.0000000Z","ProcessId":2120,"LocalIpAddress":"::1:5000","RemoteIpAddress":"::1","$type":"TokenIssuedFailureEvent"}
+2019-09-08 20:01:22.214 +02:00 [DBG] Request path /connect/authorize matched to endpoint type Authorize
+2019-09-08 20:01:22.215 +02:00 [DBG] Endpoint enabled: Authorize, successfully created handler: IdentityServer4.Endpoints.AuthorizeEndpoint
+2019-09-08 20:01:22.215 +02:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.AuthorizeEndpoint for /connect/authorize
+2019-09-08 20:01:22.215 +02:00 [DBG] Start authorize request
+2019-09-08 20:01:22.215 +02:00 [DBG] No user present in authorize request
+2019-09-08 20:01:22.216 +02:00 [DBG] Start authorize request protocol validation
+2019-09-08 20:01:22.227 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:22.227 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:22.286 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:22.380 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:22.396 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:22.398 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:22.410 +02:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2019-09-08 20:01:22.411 +02:00 [DBG] ValidatedAuthorizeRequest
+{"ClientId":"ConductorApi_Swagger","ClientName":"Conductor Api Swagger Ui","RedirectUri":"http://localhost:5001/swagger/oauth2-redirect.html","AllowedRedirectUris":["http://localhost:5001/swagger/oauth2-redirect.html","http://localhost:5001/swagger/o2c.html"],"SubjectId":"anonymous","ResponseType":"token","ResponseMode":"fragment","GrantType":"implicit","RequestedScopes":"ConductorApi","State":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjIyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk=","UiLocales":null,"Nonce":null,"AuthenticationContextReferenceClasses":null,"DisplayMode":null,"PromptMode":null,"MaxAge":null,"LoginHint":null,"SessionId":null,"Raw":{"response_type":"token","client_id":"ConductorApi_Swagger","redirect_uri":"http://localhost:5001/swagger/oauth2-redirect.html","scope":"ConductorApi","state":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjIyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk="},"$type":"AuthorizeRequestValidationLog"}
+2019-09-08 20:01:22.423 +02:00 [INF] Showing login: User is not authenticated
+2019-09-08 20:01:22.474 +02:00 [DBG] Start authorize request protocol validation
+2019-09-08 20:01:22.477 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:22.477 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:22.479 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:22.482 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:22.483 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:22.486 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:22.486 +02:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2019-09-08 20:01:22.492 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:22.493 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:30.813 +02:00 [DBG] Start authorize request protocol validation
+2019-09-08 20:01:30.816 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:30.816 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:30.818 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:30.822 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:30.825 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:30.829 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:30.829 +02:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2019-09-08 20:01:30.831 +02:00 [INF] {"Username":"bob","Provider":null,"ProviderUserId":null,"SubjectId":"541F6104-3D8E-490B-8668-38173B40801C","DisplayName":"bob","Endpoint":"UI","ClientId":null,"Category":"Authentication","Name":"User Login Success","EventType":"Success","Id":1000,"Message":null,"ActivityId":"80000019-0001-ff00-b63f-84710c7967bb","TimeStamp":"2019-09-08T18:01:30.0000000Z","ProcessId":2120,"LocalIpAddress":"::1:5000","RemoteIpAddress":"::1","$type":"UserLoginSuccessEvent"}
+2019-09-08 20:01:30.848 +02:00 [DBG] Augmenting SignInContext
+2019-09-08 20:01:30.851 +02:00 [DBG] Adding idp claim with value: local
+2019-09-08 20:01:30.851 +02:00 [DBG] Adding amr claim with value: pwd
+2019-09-08 20:01:30.866 +02:00 [INF] AuthenticationScheme: idsrv signed in.
+2019-09-08 20:01:30.873 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:30.873 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:30.882 +02:00 [DBG] Request path /connect/authorize/callback matched to endpoint type Authorize
+2019-09-08 20:01:30.884 +02:00 [DBG] Endpoint enabled: Authorize, successfully created handler: IdentityServer4.Endpoints.AuthorizeCallbackEndpoint
+2019-09-08 20:01:30.884 +02:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.AuthorizeCallbackEndpoint for /connect/authorize/callback
+2019-09-08 20:01:30.893 +02:00 [DBG] Start authorize callback request
+2019-09-08 20:01:30.897 +02:00 [DBG] User in authorize request: 541F6104-3D8E-490B-8668-38173B40801C
+2019-09-08 20:01:30.897 +02:00 [DBG] Start authorize request protocol validation
+2019-09-08 20:01:30.900 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:30.900 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:30.901 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:30.907 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:30.908 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:30.911 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:30.912 +02:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2019-09-08 20:01:30.912 +02:00 [DBG] ValidatedAuthorizeRequest
+{"ClientId":"ConductorApi_Swagger","ClientName":"Conductor Api Swagger Ui","RedirectUri":"http://localhost:5001/swagger/oauth2-redirect.html","AllowedRedirectUris":["http://localhost:5001/swagger/oauth2-redirect.html","http://localhost:5001/swagger/o2c.html"],"SubjectId":"541F6104-3D8E-490B-8668-38173B40801C","ResponseType":"token","ResponseMode":"fragment","GrantType":"implicit","RequestedScopes":"ConductorApi","State":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjIyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk=","UiLocales":null,"Nonce":null,"AuthenticationContextReferenceClasses":null,"DisplayMode":null,"PromptMode":null,"MaxAge":null,"LoginHint":null,"SessionId":"905c3ddb13f0d22f26c3aca893c49617","Raw":{"response_type":"token","client_id":"ConductorApi_Swagger","redirect_uri":"http://localhost:5001/swagger/oauth2-redirect.html","scope":"ConductorApi","state":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjIyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk="},"$type":"AuthorizeRequestValidationLog"}
+2019-09-08 20:01:30.913 +02:00 [DBG] IsActive called from: AuthorizeEndpoint
+2019-09-08 20:01:30.983 +02:00 [DBG] VdP8Ua4a+60mwovQW6X5E4/8A92yZ0GR90gb98NetuU= found in database: false
+2019-09-08 20:01:30.983 +02:00 [DBG] user_consent grant with value: ConductorApi_Swagger|541F6104-3D8E-490B-8668-38173B40801C not found in store.
+2019-09-08 20:01:30.983 +02:00 [DBG] Found no prior consent from consent store, consent is required
+2019-09-08 20:01:30.983 +02:00 [INF] Showing consent: User has not yet consented
+2019-09-08 20:01:31.017 +02:00 [DBG] Start authorize request protocol validation
+2019-09-08 20:01:31.021 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:31.021 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:31.023 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:31.028 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:31.030 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:31.034 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:31.034 +02:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2019-09-08 20:01:31.038 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:31.038 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:31.040 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:31.043 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:33.067 +02:00 [DBG] Start authorize request protocol validation
+2019-09-08 20:01:33.072 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:33.072 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:33.075 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:33.079 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:33.080 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:33.082 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:33.082 +02:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2019-09-08 20:01:33.084 +02:00 [INF] {"SubjectId":"541F6104-3D8E-490B-8668-38173B40801C","ClientId":"ConductorApi_Swagger","RequestedScopes":["ConductorApi"],"GrantedScopes":["ConductorApi"],"ConsentRemembered":true,"Category":"Grants","Name":"Consent granted","EventType":"Information","Id":4000,"Message":null,"ActivityId":"8000001d-0001-ff00-b63f-84710c7967bb","TimeStamp":"2019-09-08T18:01:33.0000000Z","ProcessId":2120,"LocalIpAddress":"::1:5000","RemoteIpAddress":"::1","$type":"ConsentGrantedEvent"}
+2019-09-08 20:01:33.113 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:33.113 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:33.118 +02:00 [DBG] Request path /connect/authorize/callback matched to endpoint type Authorize
+2019-09-08 20:01:33.120 +02:00 [DBG] Endpoint enabled: Authorize, successfully created handler: IdentityServer4.Endpoints.AuthorizeCallbackEndpoint
+2019-09-08 20:01:33.120 +02:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.AuthorizeCallbackEndpoint for /connect/authorize/callback
+2019-09-08 20:01:33.120 +02:00 [DBG] Start authorize callback request
+2019-09-08 20:01:33.125 +02:00 [DBG] User in authorize request: 541F6104-3D8E-490B-8668-38173B40801C
+2019-09-08 20:01:33.125 +02:00 [DBG] Start authorize request protocol validation
+2019-09-08 20:01:33.128 +02:00 [DBG] ConductorApi_Swagger found in database: true
+2019-09-08 20:01:33.128 +02:00 [DBG] client configuration validation for client ConductorApi_Swagger succeeded.
+2019-09-08 20:01:33.130 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:33.133 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:33.136 +02:00 [DBG] Found [] identity scopes in database
+2019-09-08 20:01:33.143 +02:00 [DBG] Found ["ConductorApi"] API scopes in database
+2019-09-08 20:01:33.143 +02:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2019-09-08 20:01:33.144 +02:00 [DBG] ValidatedAuthorizeRequest
+{"ClientId":"ConductorApi_Swagger","ClientName":"Conductor Api Swagger Ui","RedirectUri":"http://localhost:5001/swagger/oauth2-redirect.html","AllowedRedirectUris":["http://localhost:5001/swagger/oauth2-redirect.html","http://localhost:5001/swagger/o2c.html"],"SubjectId":"541F6104-3D8E-490B-8668-38173B40801C","ResponseType":"token","ResponseMode":"fragment","GrantType":"implicit","RequestedScopes":"ConductorApi","State":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjIyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk=","UiLocales":null,"Nonce":null,"AuthenticationContextReferenceClasses":null,"DisplayMode":null,"PromptMode":null,"MaxAge":null,"LoginHint":null,"SessionId":"905c3ddb13f0d22f26c3aca893c49617","Raw":{"response_type":"token","client_id":"ConductorApi_Swagger","redirect_uri":"http://localhost:5001/swagger/oauth2-redirect.html","scope":"ConductorApi","state":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjIyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk="},"$type":"AuthorizeRequestValidationLog"}
+2019-09-08 20:01:33.144 +02:00 [DBG] IsActive called from: AuthorizeEndpoint
+2019-09-08 20:01:33.147 +02:00 [DBG] VdP8Ua4a+60mwovQW6X5E4/8A92yZ0GR90gb98NetuU= found in database: false
+2019-09-08 20:01:33.147 +02:00 [DBG] user_consent grant with value: ConductorApi_Swagger|541F6104-3D8E-490B-8668-38173B40801C not found in store.
+2019-09-08 20:01:33.147 +02:00 [DBG] Found no prior consent from consent store, consent is required
+2019-09-08 20:01:33.159 +02:00 [INF] User consented to scopes: ["ConductorApi"]
+2019-09-08 20:01:33.162 +02:00 [DBG] User indicated to remember consent for scopes: ["ConductorApi"]
+2019-09-08 20:01:33.166 +02:00 [DBG] Client allows remembering consent, and consent given. Updating consent store for subject: 541F6104-3D8E-490B-8668-38173B40801C
+2019-09-08 20:01:33.193 +02:00 [DBG] VdP8Ua4a+60mwovQW6X5E4/8A92yZ0GR90gb98NetuU= not found in database
+2019-09-08 20:01:33.455 +02:00 [DBG] Creating Implicit Flow response.
+2019-09-08 20:01:33.473 +02:00 [DBG] Getting claims for access token for client: ConductorApi_Swagger
+2019-09-08 20:01:33.474 +02:00 [DBG] Getting claims for access token for subject: 541F6104-3D8E-490B-8668-38173B40801C
+2019-09-08 20:01:33.483 +02:00 [DBG] Get profile called for subject 541F6104-3D8E-490B-8668-38173B40801C from client Conductor Api Swagger Ui with claim types ["name","website","role"] via ClaimsProviderAccessToken
+2019-09-08 20:01:33.486 +02:00 [DBG] Issued claims: ["name","website","role"]
+2019-09-08 20:01:38.052 +02:00 [INF] {"ClientId":"ConductorApi_Swagger","ClientName":"Conductor Api Swagger Ui","RedirectUri":"http://localhost:5001/swagger/oauth2-redirect.html","Endpoint":"Authorize","SubjectId":"541F6104-3D8E-490B-8668-38173B40801C","Scopes":"ConductorApi","GrantType":"implicit","Tokens":[{"TokenType":"access_token","TokenValue":"****BjMQ","$type":"Token"}],"Category":"Token","Name":"Token Issued Success","EventType":"Success","Id":2000,"Message":null,"ActivityId":"8000001e-0001-ff00-b63f-84710c7967bb","TimeStamp":"2019-09-08T18:01:38.0000000Z","ProcessId":2120,"LocalIpAddress":"::1:5000","RemoteIpAddress":"::1","$type":"TokenIssuedSuccessEvent"}
+2019-09-08 20:01:38.054 +02:00 [DBG] Authorize endpoint response
+{"SubjectId":"541F6104-3D8E-490B-8668-38173B40801C","ClientId":"ConductorApi_Swagger","RedirectUri":"http://localhost:5001/swagger/oauth2-redirect.html","State":"U3VuIFNlcCAwOCAyMDE5IDIwOjAxOjIyIEdNVCswMjAwIChoZXVyZSBk4oCZw6l0w6kgZOKAmUV1cm9wZSBjZW50cmFsZSk=","Scope":"ConductorApi","Error":null,"ErrorDescription":null,"$type":"AuthorizeResponseLog"}
+2019-09-08 20:01:38.073 +02:00 [DBG] Augmenting SignInContext
+2019-09-08 20:01:38.074 +02:00 [INF] AuthenticationScheme: idsrv signed in.
+2019-09-08 20:01:53.502 +02:00 [DBG] Request path /.well-known/openid-configuration matched to endpoint type Discovery
+2019-09-08 20:01:53.502 +02:00 [DBG] Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryEndpoint
+2019-09-08 20:01:53.502 +02:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryEndpoint for /.well-known/openid-configuration
+2019-09-08 20:01:53.502 +02:00 [DBG] Start discovery request
+2019-09-08 20:01:53.509 +02:00 [DBG] Found ["openid","profile","ConductorApi"] as all scopes in database
+2019-09-08 20:01:53.622 +02:00 [DBG] Request path /.well-known/openid-configuration/jwks matched to endpoint type Discovery
+2019-09-08 20:01:53.623 +02:00 [DBG] Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryKeyEndpoint
+2019-09-08 20:01:53.623 +02:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryKeyEndpoint for /.well-known/openid-configuration/jwks
+2019-09-08 20:01:53.627 +02:00 [DBG] Start key discovery request

@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Conductor.Configuration;
+using Conductor.Configuration.Settings;
 using Conductor.Domain;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Scripting;
 using Conductor.Domain.Services;
 using Conductor.Formatters;
+using Conductor.Helpers;
 using Conductor.Mappings;
 using Conductor.Steps;
 using Conductor.Storage;
@@ -51,7 +54,17 @@ namespace Conductor
                 options.OutputFormatters.Add(new YamlRequestBodyOutputFormatter());
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
+
+            services.Configure<AuthenticationSettings>(Configuration.GetSection(ApplicationConstants.AuthenticationSettings));
+            // Explicitly register the settings object so IOptions not required (optional)
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
+
+#if UseAuthentication
+            // Authentication using IdentityServer4
+            AuthenticationConfiguration.Configure(services);
+#endif
+
+
             services.AddWorkflow(cfg =>
             {
                 cfg.UseMongoDB(dbConnectionStr, Configuration.GetValue<string>("DbName"));
@@ -78,6 +91,20 @@ namespace Conductor
 
             services.AddSingleton<IMapper>(x => new Mapper(config));
 
+            // Swagger API documentation
+            SwaggerConfiguration.ConfigureService(services);
+
+
+            services.AddCors(setup =>
+            {
+                setup.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyOrigin();
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,6 +119,14 @@ namespace Conductor
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
+
+#if UseAuthentication
+            // Authentication
+            app.UseAuthentication();
+#endif
+
+            //Cunfigure the Swagger API documentation
+            SwaggerConfiguration.Configure(app);
 
             //app.UseHttpsRedirection();
             app.UseMvc();
