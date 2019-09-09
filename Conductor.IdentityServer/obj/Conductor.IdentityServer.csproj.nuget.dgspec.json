@@ -1,31 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\aaisa\\Documents\\WEBMED\\Projects\\conductor\\Conductor.IdentityServer\\Conductor.IdentityServer.csproj": {}
+    "C:\\GitRepo\\Projects\\conductor\\Conductor.IdentityServer\\Conductor.IdentityServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\aaisa\\Documents\\WEBMED\\Projects\\conductor\\Conductor.IdentityServer\\Conductor.IdentityServer.csproj": {
+    "C:\\GitRepo\\Projects\\conductor\\Conductor.IdentityServer\\Conductor.IdentityServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\aaisa\\Documents\\WEBMED\\Projects\\conductor\\Conductor.IdentityServer\\Conductor.IdentityServer.csproj",
+        "projectUniqueName": "C:\\GitRepo\\Projects\\conductor\\Conductor.IdentityServer\\Conductor.IdentityServer.csproj",
         "projectName": "Conductor.IdentityServer",
-        "projectPath": "C:\\Users\\aaisa\\Documents\\WEBMED\\Projects\\conductor\\Conductor.IdentityServer\\Conductor.IdentityServer.csproj",
-        "packagesPath": "C:\\Users\\aaisa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\aaisa\\Documents\\WEBMED\\Projects\\conductor\\Conductor.IdentityServer\\obj\\",
+        "projectPath": "C:\\GitRepo\\Projects\\conductor\\Conductor.IdentityServer\\Conductor.IdentityServer.csproj",
+        "packagesPath": "C:\\Users\\Ahmed\\.nuget\\packages\\",
+        "outputPath": "C:\\GitRepo\\Projects\\conductor\\Conductor.IdentityServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\aaisa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.2"
         ],
         "sources": {
-          "C:\\Packages": {},
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "\\\\10.2.5.65\\Common\\NuGet\\packages\\": {},
+          "http://go.microsoft.com/fwlink/?LinkID=206669": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

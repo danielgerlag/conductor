@@ -1,6 +1,7 @@
 ﻿using Conductor.Configuration.Settings;
 using Conductor.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -32,19 +33,15 @@ namespace Conductor.ActionFilters
         /// </summary>
         /// <param name="operation">Current swagger request</param>
         /// <param name="context">Request context</param>
-        public void Apply(Operation operation, OperationFilterContext context)
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var hasAuthorize = context.ControllerActionDescriptor.GetControllerAndActionAttributes(true).OfType<AuthorizeAttribute>().Any();
+            var authAttributes = context.MethodInfo.DeclaringType.GetCustomAttributes(true).Union(context.MethodInfo.GetCustomAttributes(true)).OfType<AuthorizeAttribute>();
+            var hasAuthorize = authAttributes.Any();
 
             if (hasAuthorize)
             {
-                operation.Responses.Add("401", new Response { Description = "Unauthorized" });
-                operation.Responses.Add("403", new Response { Description = "Forbidden" });
-
-                operation.Security = new List<IDictionary<string, IEnumerable<string>>>
-                {
-                    new Dictionary<string, IEnumerable<string>> {{ ApplicationConstants.OAuth2 , new[] { _authenticationSettings.Scope } }}
-                };
+                operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
+                operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
             }
         }
     }

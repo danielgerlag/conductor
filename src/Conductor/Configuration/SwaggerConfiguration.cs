@@ -2,8 +2,10 @@
 using Conductor.Configuration.Settings;
 using Conductor.Helpers;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
@@ -34,22 +36,22 @@ namespace Conductor.Configuration
             {
                 // TODO: Need to push hardcoded strings to resource file
                 c.SwaggerDoc("v1",
-                new Info
+                new OpenApiInfo
                 {
                     Title = "Conductor Api",
                     Version = "v1.0",
                     Description = "Dotnet core workflow server",
-                    TermsOfService = "TODO: Add Terms of service",
-                    Contact = new Contact
+                    Contact = new OpenApiContact
                     {
                         Name = "Daniel Gerlag",
                         Email = "TODO: Add Contact email",
-                        Url = "https://github.com/danielgerlag/conductor"
+                        Url = new Uri("https://github.com/danielgerlag/conductor")
                     },
-                    License = new License
+                    License = new OpenApiLicense
                     {
                         Name = "MIT License",
-                        Url = "https://opensource.org/licenses/MIT"
+                        Url = new Uri("https://opensource.org/licenses/MIT")
+
                     }
                 });
 
@@ -66,11 +68,18 @@ namespace Conductor.Configuration
                 var authenticationServerUri = GenericHelper.GetUriFromEnvironmentVariable(ApplicationConstants.AuthenticationAuthority);
                 var authorizationUri = GenericHelper.CombineUri(authenticationServerUri, authenticationSettings.AuthorizationUrl);
 
-                c.AddSecurityDefinition(ApplicationConstants.OAuth2, new OAuth2Scheme
+                c.AddSecurityDefinition(ApplicationConstants.OAuth2, new OpenApiSecurityScheme
                 {
-                    Flow = IdentityModel.OidcConstants.GrantTypes.Implicit,
-                    AuthorizationUrl = authorizationUri.ToString(),
-                    Scopes = new Dictionary<string, string> { { authenticationSettings.Scope, ApplicationConstants.ApiDescription } }
+                    Type = SecuritySchemeType.OAuth2,
+                    Description = "Request a token using your UserName and Password",
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        Implicit = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri(authorizationUri.ToString()),
+                            Scopes = new Dictionary<string, string> { { authenticationSettings.Scope, ApplicationConstants.ApiDescription } }
+                        }
+                    }
                 });
                 #endregion
 
@@ -81,21 +90,25 @@ namespace Conductor.Configuration
         /// Configures the specified application.
         /// </summary>
         /// <param name="app">The application.</param>
-        public static void Configure(IApplicationBuilder app)
+        public static void Configure(IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
-
-            // This will redirect default url to Swagger url
-            var option = new RewriteOptions();
-            option.AddRedirect("^$", "swagger");
-            app.UseRewriter(option);
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Conductor Api v1.0");
-                c.OAuthClientId(ApplicationConstants.SwaggerClientId);
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    foreach (var description in provider.ApiVersionDescriptions)
+                    {
+                        c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                    }
+                    c.OAuthClientId(ApplicationConstants.SwaggerClientId);
                 c.OAuthAppName("Conductor Api Swagger Ui");
-            });
+                c.RoutePrefix = "";
+                c.DefaultModelExpandDepth(2);
+                c.DefaultModelRendering(Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model);
+                c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+                c.EnableDeepLinking();
+                c.DisplayOperationId();
+
+                });
         }
     }
 }
