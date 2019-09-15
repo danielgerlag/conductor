@@ -1,3 +1,5 @@
 /*.user
 /.vs
 /.idea
+
+*.cache
