@@ -1,4 +1,5 @@
 ﻿using Conductor.Helpers;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -15,9 +16,9 @@ namespace Conductor.ActionFilters
     public class SwaggerExcludeFilter : ISchemaFilter
     {
         /// <inherit/>
-        public void Apply(Schema model, SchemaFilterContext context)
+        public void Apply(OpenApiSchema model, SchemaFilterContext context)
         {
-            var excludeProperties = context.SystemType?.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(SwaggerExcludeAttribute)));
+            var excludeProperties = context.Type?.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(SwaggerExcludeAttribute)));
             if (excludeProperties != null)
             {
                 foreach (var property in excludeProperties)
@@ -31,6 +32,5 @@ namespace Conductor.ActionFilters
                 }
             }
         }
-
     }
 }

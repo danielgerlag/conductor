@@ -20,7 +20,6 @@
     "Conductor": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger/index.html",
       "environmentVariables": {
         "AUTHENTICATION_AUTHORITY": "http://localhost:5000/",
         "ASPNETCORE_ENVIRONMENT": "Development"

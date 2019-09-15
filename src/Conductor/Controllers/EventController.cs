@@ -13,6 +13,7 @@ using WorkflowCore.Interface;
 
 namespace Conductor.Controllers
 {
+    [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [ApiController]
 #if UseAuthentication
