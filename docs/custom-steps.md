@@ -22,7 +22,7 @@ Content-Type: application/yaml
 Id: MyStepWorkflow
 Steps:
   - Id: Step1
-    StepType: Lambda
+    StepType: add
     Inputs:
       a: data.Value1
       b: data.Value2
