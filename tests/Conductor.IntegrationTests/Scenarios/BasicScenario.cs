@@ -36,7 +36,7 @@ namespace Conductor.IntegrationTests.Scenarios
                     new Step()
                     {
                         Id = "step1",
-                        StepType = "Add",
+                        StepType = "AddTest",
                         Inputs = inputs,
                         Outputs = new Dictionary<string, string>()
                         {

@@ -37,7 +37,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPost("{name}")]
-        public void Post(string name)
+        public async void Post(string name)
         {
             using (var sr = new StreamReader(Request.Body))
             {
@@ -45,7 +45,7 @@ namespace Conductor.Controllers
                 {
                     Name = name,
                     ContentType = Request.ContentType,
-                    Content = sr.ReadToEnd()
+                    Content = await sr.ReadToEndAsync()
                 };
                 _service.SaveStepResource(resource);
                 Response.StatusCode = 200;
