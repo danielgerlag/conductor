@@ -51,6 +51,7 @@ namespace Conductor.Storage.Services
                 x.MapProperty(y => y.StepId);
                 x.MapProperty(y => y.WorkflowId);
                 x.MapProperty(y => y.SubscribeAsOf);
+                x.MapProperty(y => y.SubscriptionData);
             });
 
             BsonClassMap.RegisterClassMap<Event>(x =>

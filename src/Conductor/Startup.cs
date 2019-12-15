@@ -13,13 +13,14 @@ using Conductor.Steps;
 using Conductor.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+//using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WorkflowCore.Interface;
+using Newtonsoft.Json;
 
 namespace Conductor
 {
@@ -43,16 +44,15 @@ namespace Conductor
             if (string.IsNullOrEmpty(redisConnectionStr))
                 redisConnectionStr = Configuration.GetValue<string>("RedisConnectionString");
 
-
-
             services.AddMvc(options =>
             {
                 options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
                 options.OutputFormatters.Add(new YamlRequestBodyOutputFormatter());
                 options.EnableEndpointRouting = false;
             })
+            .AddNewtonsoftJson()
             .SetCompatibilityVersion(CompatibilityVersion.Latest);
-            
+
             services.AddWorkflow(cfg =>
             {
                 cfg.UseMongoDB(dbConnectionStr, Configuration.GetValue<string>("DbName"));
