@@ -49,8 +49,9 @@ namespace Conductor
             {
                 options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
                 options.OutputFormatters.Add(new YamlRequestBodyOutputFormatter());
+                options.EnableEndpointRouting = false;
             })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            .SetCompatibilityVersion(CompatibilityVersion.Latest);
             
             services.AddWorkflow(cfg =>
             {
