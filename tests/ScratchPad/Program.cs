@@ -5,113 +5,231 @@ using System.IO;
 using System.Threading.Tasks;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
+using Org.BouncyCastle.Utilities.IO.Pem;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using System.Security.Cryptography;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Asn1.Nist;
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Asn1.Sec;
 
 namespace ScratchPad
 {
     class Program
     {
+        static string PrivateKey = "MHcCAQEEIEVB7uPYNa0BSvKQPhXVPf0cVilo88STthQrwzIEHnfSoAoGCCqGSM49AwEHoUQDQgAEGlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==";
+        //static string PublicKey = "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBpZkp9ShVxbEFtRo4r09XBEvQA/0pf26sHGKnbAxUS+G+enGBiuNdxRTzUUEvE8KK4AQxyCUotbaAydfVs4S18=";
+        static string RealPublicKey = "GlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==";
+
+        static string Key2 = "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgevZzL1gdAFr88hb2OF/2NxApJCzGCEDdfSp6VQO30hyhRANCAAQRWz+jn65BtOMvdyHKcvjBeBSDZH2r1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G";
+        static string Key2Pub = "hcEuk1hs8QsZT24s96dnlORoFLF+Alh1wxVkKdSs0mH8CM7SEAOhONKi8xM1/kEDufovcKwvvxx+z3r1SvNpGA==";
+
         static void Main(string[] args)
         {
-            Test().Wait();
-            //Console.WriteLine(Environment.CurrentDirectory);
+            MakeToken();
+            //var token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJmaXJzdE5hbWUiOiJ0ZXN0IiwibGFzdE5hbWUiOiJ0ZXN0IiwibmJmIjoxNTc2NDQyODg5LCJleHAiOjE1NzY3MDIwODksImlhdCI6MTU3NjQ0Mjg4OX0.VK05y04Uxjsev8_kxOyk5UtkWJTwBWnJ47_riM5EwYEibJiusfbI_34PD2AM4iYiP_5RxkUIc6TiG2LG2FdbWg";
+            //Console.WriteLine(VerifyToken(token));
+        }
+
+        static void MakeToken()
+        {
+            var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var now = DateTime.UtcNow;
+
+            //var keyDataStr = File.ReadAllText(@"C:\dev\jwt\test1.key");
+            //var tr = new System.IO.StringReader(keyDataStr);
+            //var pr = new Org.BouncyCastle.OpenSsl.PemReader(tr);
+            //var pem = pr.ReadPemObject();
+            var e1 = ECDsa.Create(); // (ECCurve.NamedCurves.nistP256);
+            //var privKey = Convert.FromBase64String(PrivateKey);
+            var privKey = Convert.FromBase64String(Key2);
+            e1.ImportECPrivateKey(privKey, out int rb1);
+
+            var params1 = e1.ExportParameters(false);
+            var pubStr = Convert.ToBase64String(params1.Q.X.Concat(params1.Q.Y).ToArray());
+            Console.WriteLine(pubStr);
+            Console.WriteLine();
+
+
+            var key = new ECDsaSecurityKey(e1);           
+            
+            var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
+            
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                new Claim( "email", "test@test.com" ),
+                new Claim( "firstName", "test" ),
+                new Claim( "lastName", "test" )
+            }),
+                Expires = now.AddDays(3),                
+                SigningCredentials = sc,
+            };
+            
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            var tokenString = tokenHandler.WriteToken(token);
+
+            Console.WriteLine(tokenString);
+
             Console.ReadLine();
         }
 
-        static async Task Test()
-        {
-            var docker = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
-            var net = await docker.Networks.CreateNetworkAsync(new NetworksCreateParameters() { Name = "testnet3" } );
-            
-            var mongoContainerId = await StartMongo(docker, "conductor-tests-mongo");
-            await docker.Networks.ConnectNetworkAsync(net.ID, new NetworkConnectParameters() {Container = mongoContainerId});
+        public static bool VerifyToken(string jwt)
+        {            
+            string[] jwtParts = jwt.Split('.');
 
-            var ms = new FileStream(@"D:\dev\Conductor\Conductor.tar", FileMode.Open);
-            
-            var build = await docker.Images.BuildImageFromDockerfileAsync(ms, new ImageBuildParameters()
+            //var sha256 = SHA256.Create();
+            //var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(jwtParts[0] + '.' + jwtParts[1]));
+            //var a = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken()
+            //Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.CreateEncodedSignature()
+
+            //var keyDataStr = "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBpZkp9ShVxbEFtRo4r09XBEvQA/0pf26sHGKnbAxUS+G+enGBiuNdxRTzUUEvE8KK4AQxyCUotbaAydfVs4S18=";  //File.ReadAllText(@"C:\dev\jwt\test1.key.pub");
+            var pubKey = Convert.FromBase64String(RealPublicKey);  //(RealPublicKey);
+            var e1 = ECDsa.Create();
+            e1.ImportParameters(new ECParameters()
             {
-                Tags = new List<string>() { "poc" }
+                Curve = ECCurve.NamedCurves.nistP256,
+                Q = new ECPoint()
+                {
+                    X = pubKey.Take(32).ToArray(),
+                    Y = pubKey.Skip(32).Take(32).ToArray()
+                }
             });
 
-            using (StreamReader sr = new StreamReader(build))
-            {
-                string line;
-                // Read and display lines from the file until the end of 
-                // the file is reached.
-                while ((line = sr.ReadLine()) != null)
-                {
-                    Console.WriteLine(line);
-                }
-            }
+            var key = new ECDsaSecurityKey(e1);
+            var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
 
-            var hostCfg = new HostConfig();
-            var pb = new PortBinding
+            var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(jwt);
+
+            var tvp = new TokenValidationParameters()
             {
-                HostIP = "0.0.0.0",
-                HostPort = "8001"
+                IssuerSigningKey = key,
+                ValidateAudience = false,
+                ValidateIssuer = false
             };
+            var cp = tokenHandler.ValidateToken(jwt, tvp, out var vt);
+            
+            
 
-            hostCfg.PortBindings = new Dictionary<string, IList<PortBinding>>();
-            hostCfg.PortBindings.Add($"{80}/tcp", new PortBinding[] { pb });
+            return false;
 
-            var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters()
+        }
+
+
+        private static ECDsa LoadPrivateKey(byte[] key)
+        {
+            var privKeyInt = new Org.BouncyCastle.Math.BigInteger(+1, key);
+            var parameters = SecNamedCurves.GetByName("secp256r1");
+            var ecPoint = parameters.G.Multiply(privKeyInt);
+            var privKeyX = ecPoint.Normalize().XCoord.ToBigInteger().ToByteArrayUnsigned();
+            var privKeyY = ecPoint.Normalize().YCoord.ToBigInteger().ToByteArrayUnsigned();
+
+            return ECDsa.Create(new ECParameters
             {
-                Name = "conductor-tests",
-                Image = "poc",
-                Env = new List<string>() { $"DBHOST=mongodb://conductor-tests-mongo:27017/" },
-                HostConfig = hostCfg,
-                NetworkingConfig = new NetworkingConfig()
+                Curve = ECCurve.NamedCurves.nistP256,
+                D = privKeyInt.ToByteArrayUnsigned(),                
+                Q = new ECPoint
                 {
-                    EndpointsConfig = new Dictionary<string, EndpointSettings>()
-                    {
-                        {"", new EndpointSettings()
-                        {
-                            Links = new List<string>() { mongoContainerId },
-                            NetworkID = net.ID
-                        } },
-                    }
+                    X = privKeyX,
+                    Y = privKeyY
                 }
             });
-
-            await docker.Networks.ConnectNetworkAsync(net.ID, new NetworkConnectParameters() { Container = container.ID });
-            var started = await docker.Containers.StartContainerAsync(container.ID, new ContainerStartParameters());
-            
-
-
-            Console.WriteLine("YAY!!!!");
-            await Task.Delay(0);
-            
-            //net.
         }
 
-        static async Task<string> StartMongo(DockerClient docker, string name)
+        private static byte[] FromHexString(string hex)
         {
-            //await docker.Images.CreateImageAsync(new ImagesCreateParameters() { FromImage = "mongo" }, null, new Progress<JSONMessage>());
+            var numberChars = hex.Length;
+            var hexAsBytes = new byte[numberChars / 2];
+            for (var i = 0; i < numberChars; i += 2)
+                hexAsBytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
 
-
-            var existing = await docker.Containers.ListContainersAsync(new ContainersListParameters() { All = true });
-            var old = existing.FirstOrDefault(x => x.Names.Any(y => y == $"/{name}"));
-
-            //if (old != null)
-            //{
-            //    old.ID
-            //}
-            //existing[0].
-
-            
-
-            var container = await docker.Containers.CreateContainerAsync(new CreateContainerParameters()
-            {
-                Image = $"mongo",
-                Name = name
-            });
-            
-            var started = await docker.Containers.StartContainerAsync(container.ID, new ContainerStartParameters());
-            if (started)
-            {
-                return container.ID;
-            }
-
-            throw new InvalidOperationException();
+            return hexAsBytes;
         }
+
+        private static ECDsa LoadPublicKey(byte[] key)
+        {
+            var pubKeyX = key.Skip(1).Take(32).ToArray();
+            var pubKeyY = key.Skip(33).ToArray();
+
+            return ECDsa.Create(new ECParameters
+            {
+                Curve = ECCurve.NamedCurves.nistP256,
+                Q = new ECPoint
+                {
+                    X = pubKeyX,
+                    Y = pubKeyY
+                }
+            });
+        }
+
+
+        private readonly DerObjectIdentifier _curveId = SecObjectIdentifiers.SecP256k1;
+
+        public byte[] GeneratePrivateKey()
+        {
+            return SecureRandom.GetNextBytes(SecureRandom.GetInstance("SHA256PRNG"), 32);
+        }
+
+        public byte[] BuildPrivateKeyFromPhrase(string phrase)
+        {
+            using (var hasher = System.Security.Cryptography.SHA256.Create())
+            {
+                var privateKey = hasher.ComputeHash(Encoding.Unicode.GetBytes(phrase));
+                return privateKey;
+            }
+        }
+
+        public byte[] GetPublicKey(byte[] privateKey)
+        {
+            var privKeyInt = new BigInteger(privateKey);
+            var parameters = NistNamedCurves.GetByOid(_curveId);
+            var qa = parameters.G.Multiply(privKeyInt);
+
+            return qa.GetEncoded();
+        }
+
+        public byte[] Sign(byte[] data, byte[] privateKey)
+        {
+            var cp = GetPrivateKeyParameters(privateKey);
+            var signer = SignerUtilities.GetSigner("ECDSA");
+            signer.Init(true, cp);
+            signer.BlockUpdate(data, 0, data.Length);
+            return signer.GenerateSignature();
+        }
+
+        public bool Verify(byte[] data, byte[] sig, byte[] publicKey)
+        {
+            var cp = GetPublicKeyParams(publicKey);
+            var signer = SignerUtilities.GetSigner("ECDSA");
+            signer.Init(false, cp);
+            signer.BlockUpdate(data, 0, data.Length);
+            return signer.VerifySignature(sig);
+        }
+
+        private ECPrivateKeyParameters GetPrivateKeyParameters(byte[] privateKey)
+        {
+            var parameters = NistNamedCurves.GetByOid(_curveId);
+            var privKeyInt = new BigInteger(privateKey);
+            var dp = new ECDomainParameters(parameters.Curve, parameters.G, parameters.N);
+            return new ECPrivateKeyParameters("ECDSA", privKeyInt, dp);
+        }
+
+        private ECPublicKeyParameters GetPublicKeyParams(byte[] publicKey)
+        {
+            var parameters = NistNamedCurves.GetByOid(_curveId);
+            var dp = new ECDomainParameters(parameters.Curve, parameters.G, parameters.N);
+            var q = parameters.Curve.DecodePoint(publicKey);
+            return new ECPublicKeyParameters("ECDSA", q, dp);
+        }
+
+
     }
 }
