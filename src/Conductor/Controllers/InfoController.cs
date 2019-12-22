@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Conductor.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Conductor.Controllers
@@ -14,6 +15,7 @@ namespace Conductor.Controllers
     public class InfoController : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public ActionResult<DiagnosticInfo> Get()
         {
             var process = Process.GetCurrentProcess();

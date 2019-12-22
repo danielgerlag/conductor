@@ -46,8 +46,8 @@ namespace ScratchPad
             //var pr = new Org.BouncyCastle.OpenSsl.PemReader(tr);
             //var pem = pr.ReadPemObject();
             var e1 = ECDsa.Create(); // (ECCurve.NamedCurves.nistP256);
-            //var privKey = Convert.FromBase64String(PrivateKey);
-            var privKey = Convert.FromBase64String(Key2);
+            var privKey = Convert.FromBase64String(PrivateKey);
+            //var privKey = Convert.FromBase64String(Key2);
             e1.ImportECPrivateKey(privKey, out int rb1);
 
             var params1 = e1.ExportParameters(false);
@@ -68,7 +68,7 @@ namespace ScratchPad
                 new Claim( "firstName", "test" ),
                 new Claim( "lastName", "test" )
             }),
-                Expires = now.AddDays(3),                
+                Expires = now.AddYears(3),                
                 SigningCredentials = sc,
             };
             
