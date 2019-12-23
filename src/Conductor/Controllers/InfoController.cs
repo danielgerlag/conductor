@@ -14,7 +14,7 @@ namespace Conductor.Controllers
     [ApiController]
     public class InfoController : ControllerBase
     {
-        [HttpGet]        
+        [HttpGet]
         public ActionResult<DiagnosticInfo> Get()
         {
             var process = Process.GetCurrentProcess();

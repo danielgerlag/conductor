@@ -56,13 +56,9 @@ namespace Conductor
         public static AuthenticationBuilder AddBypassAuth(this AuthenticationBuilder builder)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var privateKey = Convert.FromBase64String("MHcCAQEEIEVB7uPYNa0BSvKQPhXVPf0cVilo88STthQrwzIEHnfSoAoGCCqGSM49AwEHoUQDQgAEGlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==");
-
-            var e1 = ECDsa.Create();            
-            e1.ImportECPrivateKey(privateKey, out int rb1);
-
-            var key = new ECDsaSecurityKey(e1);
-            var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
+            var secret = Convert.FromBase64String("MHcCAQEEIEVB7uPYNa0BSvKQPhXVPf0cVilo88STthQrwzIEHnfSoAoGCCqGSM49AwEHoUQDQgAEGlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==");
+            var securityKey = new SymmetricSecurityKey(secret);
+            var sc = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -82,9 +78,10 @@ namespace Conductor
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = false,
-                    IssuerSigningKey = new ECDsaSecurityKey(e1),
+                    IssuerSigningKey = securityKey,
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
                 };
                 options.RequireHttpsMetadata = false;
                 options.Events = new JwtBearerEvents()
