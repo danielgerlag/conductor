@@ -24,16 +24,17 @@ namespace ScratchPad
     {
         static string PrivateKey = "MHcCAQEEIEVB7uPYNa0BSvKQPhXVPf0cVilo88STthQrwzIEHnfSoAoGCCqGSM49AwEHoUQDQgAEGlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==";
         //static string PublicKey = "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBpZkp9ShVxbEFtRo4r09XBEvQA/0pf26sHGKnbAxUS+G+enGBiuNdxRTzUUEvE8KK4AQxyCUotbaAydfVs4S18=";
-        static string RealPublicKey = "GlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==";
+        //static string RealPublicKey = "GlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==";
+        static string RealPublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==";
 
         static string Key2 = "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgevZzL1gdAFr88hb2OF/2NxApJCzGCEDdfSp6VQO30hyhRANCAAQRWz+jn65BtOMvdyHKcvjBeBSDZH2r1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G";
         static string Key2Pub = "hcEuk1hs8QsZT24s96dnlORoFLF+Alh1wxVkKdSs0mH8CM7SEAOhONKi8xM1/kEDufovcKwvvxx+z3r1SvNpGA==";
 
         static void Main(string[] args)
         {
-            MakeToken();
-            //var token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJmaXJzdE5hbWUiOiJ0ZXN0IiwibGFzdE5hbWUiOiJ0ZXN0IiwibmJmIjoxNTc2NDQyODg5LCJleHAiOjE1NzY3MDIwODksImlhdCI6MTU3NjQ0Mjg4OX0.VK05y04Uxjsev8_kxOyk5UtkWJTwBWnJ47_riM5EwYEibJiusfbI_34PD2AM4iYiP_5RxkUIc6TiG2LG2FdbWg";
-            //Console.WriteLine(VerifyToken(token));
+            //MakeToken();
+            var token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.tyh-VfuzIxCyGYDlkBA7DfyjrqmSHu6pQ2hoZuFqUSLPNY2N0mpHb3nk5K17HWP_3cYHBw7AhHale5wky6-sVA";
+            Console.WriteLine(VerifyToken(token));
         }
 
         static void MakeToken()
@@ -93,15 +94,16 @@ namespace ScratchPad
             //var keyDataStr = "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBpZkp9ShVxbEFtRo4r09XBEvQA/0pf26sHGKnbAxUS+G+enGBiuNdxRTzUUEvE8KK4AQxyCUotbaAydfVs4S18=";  //File.ReadAllText(@"C:\dev\jwt\test1.key.pub");
             var pubKey = Convert.FromBase64String(RealPublicKey);  //(RealPublicKey);
             var e1 = ECDsa.Create();
-            e1.ImportParameters(new ECParameters()
-            {
-                Curve = ECCurve.NamedCurves.nistP256,
-                Q = new ECPoint()
-                {
-                    X = pubKey.Take(32).ToArray(),
-                    Y = pubKey.Skip(32).Take(32).ToArray()
-                }
-            });
+            e1.ImportSubjectPublicKeyInfo(pubKey, out int br);
+            //e1.ImportParameters(new ECParameters()
+            //{
+            //    Curve = ECCurve.NamedCurves.nistP256,
+            //    Q = new ECPoint()
+            //    {
+            //        X = pubKey.Take(32).ToArray(),
+            //        Y = pubKey.Skip(32).Take(32).ToArray()
+            //    }
+            //});
 
             var key = new ECDsaSecurityKey(e1);
             var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
@@ -113,7 +115,8 @@ namespace ScratchPad
             {
                 IssuerSigningKey = key,
                 ValidateAudience = false,
-                ValidateIssuer = false
+                ValidateIssuer = false,
+                ValidateLifetime = false
             };
             var cp = tokenHandler.ValidateToken(jwt, tvp, out var vt);
             

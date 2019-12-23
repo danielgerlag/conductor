@@ -21,32 +21,23 @@ namespace Conductor.Auth
     {
         public static AuthenticationBuilder AddJwtAuth(this AuthenticationBuilder builder, IConfiguration config)
         {
-            builder.AddJwtBearer(options =>
-             {
-                 var publicKey = Convert.FromBase64String(config.GetValue<string>("AuthPublicKey"));
-                 var e1 = ECDsa.Create();
-                 e1.ImportParameters(new ECParameters()
-                 {
-                     Curve = ECCurve.NamedCurves.nistP256,
-                     Q = new ECPoint()
-                     {
-                         X = publicKey.Take(32).ToArray(),
-                         Y = publicKey.Skip(32).Take(32).ToArray()
-                     }
-                 });
+            var publicKey = Convert.FromBase64String(config.GetValue<string>("AuthPublicKey"));
+            var e1 = ECDsa.Create();
+            e1.ImportSubjectPublicKeyInfo(publicKey, out int br);
+            var signingKey = new ECDsaSecurityKey(e1);
 
+            builder.AddJwtBearer(options =>
+             {                 
                  options.IncludeErrorDetails = true;
+                 options.RequireHttpsMetadata = false;
 
                  options.TokenValidationParameters = new TokenValidationParameters
                  {
                      ValidateIssuerSigningKey = true,
-                     IssuerSigningKey = new ECDsaSecurityKey(e1),
+                     IssuerSigningKey = signingKey,
                      ValidateIssuer = false,
                      ValidateAudience = false
                  };
-
-                 options.RequireHttpsMetadata = false;
-                 options.SaveToken = true;
 
                  options.Validate();
              });
