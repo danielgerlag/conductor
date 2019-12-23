@@ -55,7 +55,7 @@ namespace ScratchPad
             Console.WriteLine(pubStr);
             Console.WriteLine();
 
-
+            //ClaimTypes.Role
             var key = new ECDsaSecurityKey(e1);           
             
             var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);

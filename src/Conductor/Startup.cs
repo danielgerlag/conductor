@@ -56,60 +56,18 @@ namespace Conductor
             })
             .AddNewtonsoftJson()
             .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            
+            var authConfig = services.AddAuthentication(options =>
+            {                
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            });
 
             if (Configuration.GetValue<bool>("AuthEnabled"))
-            {
-                services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                    .AddJwtBearer(options =>
-                    {
-                        var publicKey = Convert.FromBase64String(Configuration.GetValue<string>("IssuerKey"));
-                        var e1 = ECDsa.Create();
-                        e1.ImportParameters(new ECParameters()
-                        {
-                            Curve = ECCurve.NamedCurves.nistP256,
-                            Q = new ECPoint()
-                            {
-                                X = publicKey.Take(32).ToArray(),
-                                Y = publicKey.Skip(32).Take(32).ToArray()
-                            }
-                        });
+                authConfig.AddJwtAuth(Configuration);
+            else
+                authConfig.AddBypassAuth();
 
-
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new ECDsaSecurityKey(e1),
-                            ValidateIssuer = false,
-                            ValidateAudience = false
-                        };
-                        options.Events = new JwtBearerEvents()
-                        {
-                            OnChallenge = context =>
-                            {
-
-                                return Task.CompletedTask;
-                            },
-                            OnMessageReceived = context =>
-                            {
-                                context.Token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJmaXJzdE5hbWUiOiJ0ZXN0IiwibGFzdE5hbWUiOiJ0ZXN0IiwibmJmIjoxNTc3MDQ4NDk3LCJleHAiOjE2NzE3NDI4OTcsImlhdCI6MTU3NzA0ODQ5N30.S2UtNp4MybQgOKz43_oC5aLeeN6DKL24UIKZ1_UPcHd9DB0j7gP6SEkutpmAXVb6YQvWcVl2LIo6BdkWXD4F_g";
-                                return Task.CompletedTask;
-                            },
-                            OnAuthenticationFailed = context =>
-                            {
-                                return Task.CompletedTask;
-                            },
-                            
-                        };
-                        options.RequireHttpsMetadata = false;
-                        options.SaveToken = true;
-
-                        options.Validate();
-                    });
-            }
 
             services.AddWorkflow(cfg =>
             {
@@ -151,12 +109,10 @@ namespace Conductor
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
-
+                        
+            app.UseAuthentication();
             //app.UseHttpsRedirection();
             app.UseMvc();
-            app.UseAuthentication();
-            app.UseAuthorization();
-
 
             app.UseCors(x => x
                 .AllowAnyOrigin()
