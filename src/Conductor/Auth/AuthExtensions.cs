@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,7 +15,7 @@ using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace Conductor
+namespace Conductor.Auth
 {
     public static class AuthExtensions
     {
@@ -22,7 +23,7 @@ namespace Conductor
         {
             builder.AddJwtBearer(options =>
              {
-                 var publicKey = Convert.FromBase64String(config.GetValue<string>("IssuerKey"));
+                 var publicKey = Convert.FromBase64String(config.GetValue<string>("AuthPublicKey"));
                  var e1 = ECDsa.Create();
                  e1.ImportParameters(new ECParameters()
                  {
@@ -56,16 +57,17 @@ namespace Conductor
         public static AuthenticationBuilder AddBypassAuth(this AuthenticationBuilder builder)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var secret = Convert.FromBase64String("MHcCAQEEIEVB7uPYNa0BSvKQPhXVPf0cVilo88STthQrwzIEHnfSoAoGCCqGSM49AwEHoUQDQgAEGlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==");
-            var securityKey = new SymmetricSecurityKey(secret);
+            var securityKey = new SymmetricSecurityKey(new byte[121]);
             var sc = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim( ClaimTypes.Role, "admin" ),
-                    new Claim( ClaimTypes.Role, "user" ),
+                    new Claim( ClaimTypes.Role, Roles.Admin),
+                    new Claim( ClaimTypes.Role, Roles.Author),
+                    new Claim( ClaimTypes.Role, Roles.Controller),
+                    new Claim( ClaimTypes.Role, Roles.Viewer),
                 }),
                 SigningCredentials = sc,
             };

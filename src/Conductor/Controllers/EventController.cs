@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using Conductor.Auth;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -23,6 +25,7 @@ namespace Conductor.Controllers
             _workflowController = workflowController;
         }
 
+        [Authorize(Roles = Roles.Controller)]
         [HttpPost("{name}/{key}")]
         public async Task Post(string name, string key, [FromBody] object data)
         {
