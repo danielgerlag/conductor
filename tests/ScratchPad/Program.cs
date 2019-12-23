@@ -33,7 +33,7 @@ namespace ScratchPad
         static void Main(string[] args)
         {
             //MakeToken();
-            var token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.tyh-VfuzIxCyGYDlkBA7DfyjrqmSHu6pQ2hoZuFqUSLPNY2N0mpHb3nk5K17HWP_3cYHBw7AhHale5wky6-sVA";
+            var token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkFkbWluIiwiQXV0aG9yIiwiQ29udHJvbGxlciIsIlZpZXdlciJdLCJleHAiOjQ3MzI3OTY2NDQsImlhdCI6MTU3NzEyMzA0NH0.CQB0QCLgBxWPqlq48tMzR8eyNbguTkpQK4n9GL6ynzM-SNL9sxO7zTPwbDEXTIJYQc2nk0VemE2FlYO057DV1A";
             Console.WriteLine(VerifyToken(token));
         }
 
@@ -65,11 +65,13 @@ namespace ScratchPad
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                new Claim( "email", "test@test.com" ),
-                new Claim( "firstName", "test" ),
-                new Claim( "lastName", "test" )
-            }),
-                Expires = now.AddYears(3),                
+                    new Claim(ClaimTypes.Role, "Admin"),
+                    new Claim(ClaimTypes.Role, "Author"),
+                    new Claim(ClaimTypes.Role, "Controller"),
+                    new Claim(ClaimTypes.Role, "Viewer"),
+                }),
+
+                Expires = now.AddYears(100),
                 SigningCredentials = sc,
             };
             
@@ -106,14 +108,15 @@ namespace ScratchPad
             //});
 
             var key = new ECDsaSecurityKey(e1);
-            var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
+            //var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
 
             var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-            var token = tokenHandler.ReadJwtToken(jwt);
+            //var token = tokenHandler.ReadJwtToken(jwt);
 
             var tvp = new TokenValidationParameters()
             {
                 IssuerSigningKey = key,
+                ValidateIssuerSigningKey = true,
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateLifetime = false

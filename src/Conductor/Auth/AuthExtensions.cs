@@ -36,7 +36,8 @@ namespace Conductor.Auth
                      ValidateIssuerSigningKey = true,
                      IssuerSigningKey = signingKey,
                      ValidateIssuer = false,
-                     ValidateAudience = false
+                     ValidateAudience = false,
+                     RequireExpirationTime = false                     
                  };
 
                  options.Validate();
@@ -55,10 +56,10 @@ namespace Conductor.Auth
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim( ClaimTypes.Role, Roles.Admin),
-                    new Claim( ClaimTypes.Role, Roles.Author),
-                    new Claim( ClaimTypes.Role, Roles.Controller),
-                    new Claim( ClaimTypes.Role, Roles.Viewer),
+                    new Claim(ClaimTypes.Role, Roles.Admin),
+                    new Claim(ClaimTypes.Role, Roles.Author),
+                    new Claim(ClaimTypes.Role, Roles.Controller),
+                    new Claim(ClaimTypes.Role, Roles.Viewer),
                 }),
                 SigningCredentials = sc,
             };
