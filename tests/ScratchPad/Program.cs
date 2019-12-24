@@ -22,9 +22,7 @@ namespace ScratchPad
 {
     class Program
     {
-        static string PrivateKey = "MHcCAQEEIEVB7uPYNa0BSvKQPhXVPf0cVilo88STthQrwzIEHnfSoAoGCCqGSM49AwEHoUQDQgAEGlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==";
-        //static string PublicKey = "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBpZkp9ShVxbEFtRo4r09XBEvQA/0pf26sHGKnbAxUS+G+enGBiuNdxRTzUUEvE8KK4AQxyCUotbaAydfVs4S18=";
-        //static string RealPublicKey = "GlmSn1KFXFsQW1GjivT1cES9AD/Sl/bqwcYqdsDFRL4b56cYGK413FFPNRQS8TworgBDHIJSi1toDJ19WzhLXw==";
+        static string PrivateKey = "MHQCAQEEIA2OjSVFJwR/tsoo0VtrgAfUXu+lRXRXOA10eS/UF5tloAcGBSuBBAAKoUQDQgAEIOD1lD7PkLyHGj3n/+d564tc5s4eqrox5OinvTL5mekSR1GFTSpEvOELYWLqSfADkRNgDuR0g9cBVmaNtFwiIA==";
         static string RealPublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==";
 
         static string Key2 = "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgevZzL1gdAFr88hb2OF/2NxApJCzGCEDdfSp6VQO30hyhRANCAAQRWz+jn65BtOMvdyHKcvjBeBSDZH2r1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G";
@@ -32,9 +30,9 @@ namespace ScratchPad
 
         static void Main(string[] args)
         {
-            //MakeToken();
-            var token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkFkbWluIiwiQXV0aG9yIiwiQ29udHJvbGxlciIsIlZpZXdlciJdLCJleHAiOjQ3MzI3OTY2NDQsImlhdCI6MTU3NzEyMzA0NH0.CQB0QCLgBxWPqlq48tMzR8eyNbguTkpQK4n9GL6ynzM-SNL9sxO7zTPwbDEXTIJYQc2nk0VemE2FlYO057DV1A";
-            Console.WriteLine(VerifyToken(token));
+            MakeToken();
+            //var token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkFkbWluIiwiQXV0aG9yIiwiQ29udHJvbGxlciIsIlZpZXdlciJdLCJleHAiOjQ3MzI3OTY2NDQsImlhdCI6MTU3NzEyMzA0NH0.CQB0QCLgBxWPqlq48tMzR8eyNbguTkpQK4n9GL6ynzM-SNL9sxO7zTPwbDEXTIJYQc2nk0VemE2FlYO057DV1A";
+            //Console.WriteLine(VerifyToken(token));
         }
 
         static void MakeToken()
@@ -61,14 +59,13 @@ namespace ScratchPad
             
             var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
             
+            
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Role, "Admin"),
-                    new Claim(ClaimTypes.Role, "Author"),
-                    new Claim(ClaimTypes.Role, "Controller"),
-                    new Claim(ClaimTypes.Role, "Viewer"),
+                    new Claim("scope", "admin author viewer")
                 }),
 
                 Expires = now.AddYears(100),
@@ -109,7 +106,7 @@ namespace ScratchPad
 
             var key = new ECDsaSecurityKey(e1);
             //var sc = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
-
+            //SecurityAlgorithms.
             var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
             //var token = tokenHandler.ReadJwtToken(jwt);
 

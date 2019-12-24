@@ -23,14 +23,14 @@ namespace Conductor.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Roles.Author)]
+        [Authorize(Policy = Policies.Author)]
         public ActionResult<IEnumerable<string>> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = Roles.Author)]
+        [Authorize(Policy = Policies.Author)]
         public ActionResult<Definition> Get(string id)
         {
             var result = _service.GetDefinition(id);
@@ -42,7 +42,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Roles.Author)]
+        [Authorize(Policy = Policies.Author)]
         public void Post([FromBody] Definition value)
         {
             _service.RegisterNewDefinition(value);
@@ -57,7 +57,7 @@ namespace Conductor.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = Roles.Author)]
+        [Authorize(Policy = Policies.Author)]
         public void Delete(int id)
         {
         }

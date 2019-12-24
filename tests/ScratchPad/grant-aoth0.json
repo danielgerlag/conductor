@@ -1,0 +1,15 @@
+﻿{
+  "iss": "https://dev-u0y0i8nq.auth0.com/",
+  "sub": "amTIIg9IHQILWVn4wUJqrJPpg3kEqDiV@clients",
+  "aud": "Test",
+  "iat": 1577146113,
+  "exp": 1577232513,
+  "azp": "amTIIg9IHQILWVn4wUJqrJPpg3kEqDiV",
+  "scope": "scope1 test:dostuff wtf",
+  "gty": "client-credentials",
+  "permissions": [
+    "scope1",
+    "test:dostuff",
+    "wtf"
+  ]
+}

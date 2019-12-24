@@ -21,13 +21,16 @@ namespace Conductor.Auth
     {
         public static AuthenticationBuilder AddJwtAuth(this AuthenticationBuilder builder, IConfiguration config)
         {
-            var publicKey = Convert.FromBase64String(config.GetValue<string>("AuthPublicKey"));
+            var publicKeyBase64 = Environment.GetEnvironmentVariable("PUBLICKEY");
+            if (string.IsNullOrEmpty(publicKeyBase64))
+                publicKeyBase64 = config.GetValue<string>("AuthPublicKey");
+            var publicKey = Convert.FromBase64String(publicKeyBase64);
             var e1 = ECDsa.Create();
             e1.ImportSubjectPublicKeyInfo(publicKey, out int br);
             var signingKey = new ECDsaSecurityKey(e1);
 
             builder.AddJwtBearer(options =>
-             {                 
+             {
                  options.IncludeErrorDetails = true;
                  options.RequireHttpsMetadata = false;
 
@@ -37,7 +40,15 @@ namespace Conductor.Auth
                      IssuerSigningKey = signingKey,
                      ValidateIssuer = false,
                      ValidateAudience = false,
-                     RequireExpirationTime = false                     
+                     RequireExpirationTime = false
+                 };
+                 options.Events = new JwtBearerEvents()
+                 {
+                     OnTokenValidated = context =>
+                     {
+                         
+                         return Task.CompletedTask;
+                     }
                  };
 
                  options.Validate();
@@ -56,10 +67,10 @@ namespace Conductor.Auth
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Role, Roles.Admin),
-                    new Claim(ClaimTypes.Role, Roles.Author),
-                    new Claim(ClaimTypes.Role, Roles.Controller),
-                    new Claim(ClaimTypes.Role, Roles.Viewer),
+                    new Claim(ClaimTypes.Role, Policies.Admin),
+                    new Claim(ClaimTypes.Role, Policies.Author),
+                    new Claim(ClaimTypes.Role, Policies.Controller),
+                    new Claim(ClaimTypes.Role, Policies.Viewer),
                 }),
                 SigningCredentials = sc,
             };
@@ -90,6 +101,17 @@ namespace Conductor.Auth
             });
 
             return builder;
+        }
+
+        public static void AddPolicies(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.Admin, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains("admin"))));
+                options.AddPolicy(Policies.Author, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains("author"))));
+                options.AddPolicy(Policies.Controller, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains("controller"))));
+                options.AddPolicy(Policies.Viewer, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains("viewer"))));
+            });
         }
     }
     

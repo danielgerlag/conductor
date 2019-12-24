@@ -33,7 +33,7 @@ namespace Conductor.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = Roles.ControllerOrViewer)]
+        [Authorize(Policy = Policies.Viewer)]
         public async Task<ActionResult<WorkflowInstance>> Get(string id)
         {
             var result = await _persistenceProvider.GetWorkflowInstance(id);
@@ -44,7 +44,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPost("{id}")]
-        [Authorize(Roles = Roles.Controller)]
+        [Authorize(Policy = Policies.Controller)]
         public async Task<ActionResult<WorkflowInstance>> Post(string id, [FromBody] ExpandoObject data)
         {
             var instanceId = await _workflowController.StartWorkflow(id, data);
@@ -54,7 +54,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPut("{id}/suspend")]
-        [Authorize(Roles = Roles.Controller)]
+        [Authorize(Policy = Policies.Controller)]
         public async Task Suspend(string id)
         {
             var result = await _workflowController.SuspendWorkflow(id);
@@ -65,7 +65,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPut("{id}/resume")]
-        [Authorize(Roles = Roles.Controller)]
+        [Authorize(Policy = Policies.Controller)]
         public async Task Resume(string id)
         {
             var result = await _workflowController.ResumeWorkflow(id);
@@ -76,7 +76,7 @@ namespace Conductor.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = Roles.Controller)]
+        [Authorize(Policy = Policies.Controller)]
         public async Task Terminate(string id)
         {
             var result = await _workflowController.TerminateWorkflow(id);

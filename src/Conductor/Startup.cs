@@ -49,6 +49,14 @@ namespace Conductor
             if (string.IsNullOrEmpty(redisConnectionStr))
                 redisConnectionStr = Configuration.GetValue<string>("RedisConnectionString");
 
+            var authEnabled = false;
+            var authEnabledStr = Environment.GetEnvironmentVariable("AUTH");
+            if (string.IsNullOrEmpty(authEnabledStr))
+                authEnabled = Configuration.GetValue<bool>("AuthEnabled");
+            else
+                authEnabled = Convert.ToBoolean(authEnabledStr);
+            
+
             services.AddMvc(options =>
             {
                 options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
@@ -64,11 +72,12 @@ namespace Conductor
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             });
 
-            if (Configuration.GetValue<bool>("AuthEnabled"))
+            if (authEnabled)
                 authConfig.AddJwtAuth(Configuration);
             else
                 authConfig.AddBypassAuth();
 
+            services.AddPolicies();
 
             services.AddWorkflow(cfg =>
             {

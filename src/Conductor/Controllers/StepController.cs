@@ -27,7 +27,7 @@ namespace Conductor.Controllers
 
 
         [HttpGet("{name}")]
-        [Authorize(Roles = Roles.Author)]
+        [Authorize(Policy = Policies.Author)]
         public IActionResult Get(string name)
         {
             var resource = _service.GetStepResource(name);
@@ -41,7 +41,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPost("{name}")]
-        [Authorize(Roles = Roles.Author)]
+        [Authorize(Policy = Policies.Author)]
         public async void Post(string name)
         {
             using (var sr = new StreamReader(Request.Body))
