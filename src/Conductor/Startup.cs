@@ -52,7 +52,7 @@ namespace Conductor
             var authEnabled = false;
             var authEnabledStr = Environment.GetEnvironmentVariable("AUTH");
             if (string.IsNullOrEmpty(authEnabledStr))
-                authEnabled = Configuration.GetValue<bool>("AuthEnabled");
+                authEnabled = Configuration.GetSection("Auth").GetValue<bool>("Enabled");
             else
                 authEnabled = Convert.ToBoolean(authEnabledStr);
             

@@ -19,15 +19,10 @@ namespace Conductor.Auth
 {
     public static class AuthExtensions
     {
+        
         public static AuthenticationBuilder AddJwtAuth(this AuthenticationBuilder builder, IConfiguration config)
         {
-            var publicKeyBase64 = Environment.GetEnvironmentVariable("PUBLICKEY");
-            if (string.IsNullOrEmpty(publicKeyBase64))
-                publicKeyBase64 = config.GetValue<string>("AuthPublicKey");
-            var publicKey = Convert.FromBase64String(publicKeyBase64);
-            var e1 = ECDsa.Create();
-            e1.ImportSubjectPublicKeyInfo(publicKey, out int br);
-            var signingKey = new ECDsaSecurityKey(e1);
+            var signingKey = LoadKey(config);
 
             builder.AddJwtBearer(options =>
              {
@@ -41,14 +36,6 @@ namespace Conductor.Auth
                      ValidateIssuer = false,
                      ValidateAudience = false,
                      RequireExpirationTime = false
-                 };
-                 options.Events = new JwtBearerEvents()
-                 {
-                     OnTokenValidated = context =>
-                     {
-                         
-                         return Task.CompletedTask;
-                     }
                  };
 
                  options.Validate();
@@ -67,10 +54,7 @@ namespace Conductor.Auth
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Role, Policies.Admin),
-                    new Claim(ClaimTypes.Role, Policies.Author),
-                    new Claim(ClaimTypes.Role, Policies.Controller),
-                    new Claim(ClaimTypes.Role, Policies.Viewer),
+                    new Claim("scope", $"{Permissions.Admin} {Permissions.Author} {Permissions.Controller} {Permissions.Viewer}")
                 }),
                 SigningCredentials = sc,
             };
@@ -107,11 +91,46 @@ namespace Conductor.Auth
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(Policies.Admin, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains("admin"))));
-                options.AddPolicy(Policies.Author, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains("author"))));
-                options.AddPolicy(Policies.Controller, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains("controller"))));
-                options.AddPolicy(Policies.Viewer, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains("viewer"))));
+                options.AddPolicy(Policies.Admin, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains(Permissions.Admin))));
+                options.AddPolicy(Policies.Author, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains(Permissions.Author))));
+                options.AddPolicy(Policies.Controller, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains(Permissions.Controller))));
+                options.AddPolicy(Policies.Viewer, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains(Permissions.Viewer))));
             });
+        }
+
+        private static SecurityKey LoadKey(IConfiguration config)
+        {
+            var publicKeyBase64 = Environment.GetEnvironmentVariable("PUBLICKEY");
+            if (string.IsNullOrEmpty(publicKeyBase64))
+                publicKeyBase64 = config.GetSection("Auth").GetValue<string>("PublicKey");
+            var publicKey = Convert.FromBase64String(publicKeyBase64);
+
+            var algName = Environment.GetEnvironmentVariable("ALG");
+            if (string.IsNullOrEmpty(algName))
+                algName = config.GetSection("Auth").GetValue<string>("Algorithm");
+            
+            if (algName.StartsWith("RS"))
+            {
+                var rsa = RSA.Create();
+                try
+                {
+                    rsa.ImportSubjectPublicKeyInfo(publicKey, out _);
+                }
+                catch
+                {
+                    rsa.ImportRSAPublicKey(publicKey, out _);
+                }
+                return new RsaSecurityKey(rsa);
+            }
+
+            if (algName.StartsWith("ES"))
+            {
+                var e1 = ECDsa.Create();
+                e1.ImportSubjectPublicKeyInfo(publicKey, out _);
+                return new ECDsaSecurityKey(e1);
+            }
+
+            throw new ArgumentException("Only RSA and ECDSA algorithms are supported");
         }
     }
     
