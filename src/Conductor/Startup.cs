@@ -41,16 +41,16 @@ namespace Conductor
         
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbConnectionStr = Environment.GetEnvironmentVariable("DBHOST");
+            var dbConnectionStr = EnvironmentVariables.DbHost;
             if (string.IsNullOrEmpty(dbConnectionStr))
                 dbConnectionStr = Configuration.GetValue<string>("DbConnectionString");
 
-            var redisConnectionStr = Environment.GetEnvironmentVariable("REDIS");
+            var redisConnectionStr = EnvironmentVariables.Redis;
             if (string.IsNullOrEmpty(redisConnectionStr))
                 redisConnectionStr = Configuration.GetValue<string>("RedisConnectionString");
 
             var authEnabled = false;
-            var authEnabledStr = Environment.GetEnvironmentVariable("AUTH");
+            var authEnabledStr = EnvironmentVariables.Auth;
             if (string.IsNullOrEmpty(authEnabledStr))
                 authEnabled = Configuration.GetSection("Auth").GetValue<bool>("Enabled");
             else

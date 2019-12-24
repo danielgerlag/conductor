@@ -3,9 +3,9 @@
 Conductor supports integrated authentication using the [OpenID Connect](https://openid.net/connect/) protocol.
 
 By default, authentication is disabled.  To enable it, 
-* Set the `AUTH` environment variable to `true` 
-* Set the `ALG` environment variable to the signing algorithm (`RS256` or `ES256`)
-* Set the `PUBLICKEY` variable to a Base64 encoded public key.
+* Set the `auth` environment variable to `true` 
+* Set the `alg` environment variable to the signing algorithm (`RS256` or `ES256`)
+* Set the `publickey` variable to a Base64 encoded public key.
 
 If authentication is enabled then you need to include a signed [JWT bearer token](https://jwt.io/) along with every request.  The is done by adding the `Authorization: Bearer <<token>>` header to each request.
 The token should be a valid JWT token that was signed with the corresponding private key to the public one in the environment variable.

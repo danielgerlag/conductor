@@ -100,12 +100,12 @@ namespace Conductor.Auth
 
         private static SecurityKey LoadKey(IConfiguration config)
         {
-            var publicKeyBase64 = Environment.GetEnvironmentVariable("PUBLICKEY");
+            var publicKeyBase64 = EnvironmentVariables.PublicKey;
             if (string.IsNullOrEmpty(publicKeyBase64))
                 publicKeyBase64 = config.GetSection("Auth").GetValue<string>("PublicKey");
             var publicKey = Convert.FromBase64String(publicKeyBase64);
 
-            var algName = Environment.GetEnvironmentVariable("ALG");
+            var algName = EnvironmentVariables.Alg;
             if (string.IsNullOrEmpty(algName))
                 algName = config.GetSection("Auth").GetValue<string>("Algorithm");
             
