@@ -1,6 +1,6 @@
 # Authentication
 
-Conductor supports integration authentication using the [OpenID Connect](https://openid.net/connect/) protocol.
+Conductor supports integrated authentication using the [OpenID Connect](https://openid.net/connect/) protocol.
 
 By default, authentication is disabled.  To enable it, 
 * Set the `AUTH` environment variable to `true` 
