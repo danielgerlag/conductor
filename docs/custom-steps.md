@@ -55,7 +55,7 @@ Response:
         "Value1": 7,
         "Value2": 3
     },
-    "definitionId": "MyLambdaWorkflow",
+    "definitionId": "MyStepWorkflow",
     "version": 1,
     "status": "Runnable",
 }
@@ -80,7 +80,7 @@ Response:
         "Value2": 3,
         "Result": 10
     },
-    "definitionId": "MyLambdaWorkflow",
+    "definitionId": "MyStepWorkflow",
     "version": 1,
     "status": "Complete",
 }
