@@ -19,6 +19,12 @@ namespace Conductor.Mappings
                 .ForMember(dest => dest.Version, opt => opt.MapFrom(src => src.Version))
                 .ForMember(dest => dest.Data, opt => opt.MapFrom(src => src.Data))
                 .ForMember(dest => dest.WorkflowId, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<WorkflowCore.Interface.PendingActivity, Models.PendingActivity>()
+                .ForMember(dest => dest.Token, opt => opt.MapFrom(src => src.Token))
+                .ForMember(dest => dest.TokenExpiry, opt => opt.MapFrom(src => src.TokenExpiry))
+                .ForMember(dest => dest.Parameters, opt => opt.MapFrom(src => src.Parameters))
+                .ForMember(dest => dest.ActivityName, opt => opt.MapFrom(src => src.ActivityName));
         }
     }
 }

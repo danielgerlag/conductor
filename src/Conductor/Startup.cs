@@ -61,7 +61,7 @@ namespace Conductor
             {
                 options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
                 options.OutputFormatters.Add(new YamlRequestBodyOutputFormatter());
-                options.EnableEndpointRouting = false;
+                options.EnableEndpointRouting = false;                
             })
             .AddNewtonsoftJson()
             .SetCompatibilityVersion(CompatibilityVersion.Latest);
@@ -122,7 +122,12 @@ namespace Conductor
                         
             app.UseAuthentication();
             //app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseMvc(cfg =>
+            {
+              //  cfg.
+            });
+            app.UseRouting();
+            //app.UseMvcWithDefaultRoute();
 
             app.UseCors(x => x
                 .AllowAnyOrigin()

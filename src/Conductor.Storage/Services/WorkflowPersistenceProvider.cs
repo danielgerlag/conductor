@@ -52,6 +52,10 @@ namespace Conductor.Storage.Services
                 x.MapProperty(y => y.WorkflowId);
                 x.MapProperty(y => y.SubscribeAsOf);
                 x.MapProperty(y => y.SubscriptionData);
+                x.MapProperty(y => y.ExternalToken);
+                x.MapProperty(y => y.ExternalWorkerId);
+                x.MapProperty(y => y.ExternalTokenExpiry);
+                x.MapProperty(y => y.ExecutionPointerId);
             });
 
             BsonClassMap.RegisterClassMap<Event>(x =>
@@ -74,8 +78,20 @@ namespace Conductor.Storage.Services
         {
             if (!indexesCreated)
             {
-                instance.WorkflowInstances.Indexes.CreateOne(Builders<WorkflowInstance>.IndexKeys.Ascending(x => x.NextExecution), new CreateIndexOptions() { Background = true, Name = "idx_nextExec" });
-                instance.Events.Indexes.CreateOne(Builders<Event>.IndexKeys.Ascending(x => x.IsProcessed), new CreateIndexOptions() { Background = true, Name = "idx_processed" });
+                instance.WorkflowInstances.Indexes.CreateOne(new CreateIndexModel<WorkflowInstance>(
+                    Builders<WorkflowInstance>.IndexKeys.Ascending(x => x.NextExecution),
+                    new CreateIndexOptions { Background = true, Name = "idx_nextExec" }));
+
+                instance.Events.Indexes.CreateOne(new CreateIndexModel<Event>(
+                    Builders<Event>.IndexKeys.Ascending(x => x.IsProcessed),
+                    new CreateIndexOptions { Background = true, Name = "idx_processed" }));
+
+                instance.EventSubscriptions.Indexes.CreateOne(new CreateIndexModel<EventSubscription>(
+                    Builders<EventSubscription>.IndexKeys
+                        .Ascending(x => x.EventName)
+                        .Ascending(x => x.EventKey),
+                    new CreateIndexOptions { Background = true, Name = "idx_namekey" }));
+
                 indexesCreated = true;
             }
         }
