@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Conductor.Auth;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,7 @@ namespace Conductor.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class StepController : ControllerBase
     {
         private readonly ICustomStepService _service;
@@ -24,6 +27,7 @@ namespace Conductor.Controllers
 
 
         [HttpGet("{name}")]
+        [Authorize(Policy = Policies.Author)]
         public IActionResult Get(string name)
         {
             var resource = _service.GetStepResource(name);
@@ -37,6 +41,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPost("{name}")]
+        [Authorize(Policy = Policies.Author)]
         public async void Post(string name)
         {
             using (var sr = new StreamReader(Request.Body))

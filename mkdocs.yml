@@ -5,5 +5,6 @@ nav:
     - Custom Steps: custom-steps.md
     - Http Requests: http-walkthru.md
     - API Reference: api-reference.md
+    - Authentication: auth.md
     - Roadmap: roadmap.md
 theme: readthedocs

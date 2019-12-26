@@ -5,15 +5,16 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Conductor.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Conductor.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController]    
     public class InfoController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet]        
         public ActionResult<DiagnosticInfo> Get()
         {
             var process = Process.GetCurrentProcess();

@@ -21,6 +21,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WorkflowCore.Interface;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
+using Conductor.Auth;
 
 namespace Conductor
 {
@@ -36,13 +41,21 @@ namespace Conductor
         
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbConnectionStr = Environment.GetEnvironmentVariable("DBHOST");
+            var dbConnectionStr = EnvironmentVariables.DbHost;
             if (string.IsNullOrEmpty(dbConnectionStr))
                 dbConnectionStr = Configuration.GetValue<string>("DbConnectionString");
 
-            var redisConnectionStr = Environment.GetEnvironmentVariable("REDIS");
+            var redisConnectionStr = EnvironmentVariables.Redis;
             if (string.IsNullOrEmpty(redisConnectionStr))
                 redisConnectionStr = Configuration.GetValue<string>("RedisConnectionString");
+
+            var authEnabled = false;
+            var authEnabledStr = EnvironmentVariables.Auth;
+            if (string.IsNullOrEmpty(authEnabledStr))
+                authEnabled = Configuration.GetSection("Auth").GetValue<bool>("Enabled");
+            else
+                authEnabled = Convert.ToBoolean(authEnabledStr);
+            
 
             services.AddMvc(options =>
             {
@@ -52,6 +65,19 @@ namespace Conductor
             })
             .AddNewtonsoftJson()
             .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            
+            var authConfig = services.AddAuthentication(options =>
+            {                
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            });
+
+            if (authEnabled)
+                authConfig.AddJwtAuth(Configuration);
+            else
+                authConfig.AddBypassAuth();
+
+            services.AddPolicies();
 
             services.AddWorkflow(cfg =>
             {
@@ -82,7 +108,7 @@ namespace Conductor
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -93,10 +119,16 @@ namespace Conductor
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
-
+                        
+            app.UseAuthentication();
             //app.UseHttpsRedirection();
             app.UseMvc();
-            
+
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
             var host = app.ApplicationServices.GetService<IWorkflowHost>();
             var defService = app.ApplicationServices.GetService<IDefinitionService>();
             var backplane = app.ApplicationServices.GetService<IClusterBackplane>();

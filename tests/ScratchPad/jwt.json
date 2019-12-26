@@ -1,0 +1,8 @@
+﻿{
+  "role": [
+    "Admin",
+    "Author",
+    "Controller",
+    "Viewer"
+  ]
+}

@@ -9,8 +9,8 @@ services:
     - mongo
     - redis
     environment:
-      DBHOST: mongodb://mongo:27017/
-      REDIS: redis:6379
+      dbhost: mongodb://mongo:27017/
+      redis: redis:6379
   conductor2:
     build:
       context: ../../
@@ -20,8 +20,8 @@ services:
     - mongo
     - redis
     environment:
-      DBHOST: mongodb://mongo:27017/
-      REDIS: redis:6379
+      dbhost: mongodb://mongo:27017/
+      redis: redis:6379
   mongo:
     image: mongo
   redis:

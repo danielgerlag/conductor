@@ -4,9 +4,11 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Conductor.Auth;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
 using Conductor.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -16,6 +18,7 @@ namespace Conductor.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WorkflowController : ControllerBase
     {
         private readonly IWorkflowController _workflowController;
@@ -30,6 +33,7 @@ namespace Conductor.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = Policies.Viewer)]
         public async Task<ActionResult<WorkflowInstance>> Get(string id)
         {
             var result = await _persistenceProvider.GetWorkflowInstance(id);
@@ -40,6 +44,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPost("{id}")]
+        [Authorize(Policy = Policies.Controller)]
         public async Task<ActionResult<WorkflowInstance>> Post(string id, [FromBody] ExpandoObject data)
         {
             var instanceId = await _workflowController.StartWorkflow(id, data);
@@ -49,6 +54,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPut("{id}/suspend")]
+        [Authorize(Policy = Policies.Controller)]
         public async Task Suspend(string id)
         {
             var result = await _workflowController.SuspendWorkflow(id);
@@ -59,6 +65,7 @@ namespace Conductor.Controllers
         }
 
         [HttpPut("{id}/resume")]
+        [Authorize(Policy = Policies.Controller)]
         public async Task Resume(string id)
         {
             var result = await _workflowController.ResumeWorkflow(id);
@@ -69,6 +76,7 @@ namespace Conductor.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = Policies.Controller)]
         public async Task Terminate(string id)
         {
             var result = await _workflowController.TerminateWorkflow(id);
