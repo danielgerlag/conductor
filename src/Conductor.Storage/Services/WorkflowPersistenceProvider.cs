@@ -161,7 +161,7 @@ namespace Conductor.Storage.Services
 
         }
 
-        public async Task<IEnumerable<EventSubscription>> GetSubcriptions(string eventName, string eventKey, DateTime asOf)
+        public async Task<IEnumerable<EventSubscription>> GetSubscriptions(string eventName, string eventKey, DateTime asOf)
         {
             var query = EventSubscriptions
                 .Find(x => x.EventName == eventName && x.EventKey == eventKey && x.SubscribeAsOf <= asOf);
@@ -220,6 +220,41 @@ namespace Conductor.Storage.Services
         {
             if (errors.Any())
                 await ExecutionErrors.InsertManyAsync(errors);
+        }
+
+        public async Task<EventSubscription> GetSubscription(string eventSubscriptionId)
+        {
+            var result = await EventSubscriptions.FindAsync(x => x.Id == eventSubscriptionId);
+            return await result.FirstAsync();
+        }
+
+        public async Task<EventSubscription> GetFirstOpenSubscription(string eventName, string eventKey, DateTime asOf)
+        {
+            var query = EventSubscriptions
+                .Find(x => x.EventName == eventName && x.EventKey == eventKey && x.SubscribeAsOf <= asOf && x.ExternalToken == null);
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> SetSubscriptionToken(string eventSubscriptionId, string token, string workerId, DateTime expiry)
+        {
+            var update = Builders<EventSubscription>.Update
+                .Set(x => x.ExternalToken, token)
+                .Set(x => x.ExternalTokenExpiry, expiry)
+                .Set(x => x.ExternalWorkerId, workerId);
+
+            var result = await EventSubscriptions.UpdateOneAsync(x => x.Id == eventSubscriptionId && x.ExternalToken == null, update);
+            return (result.ModifiedCount > 0);
+        }
+
+        public async Task ClearSubscriptionToken(string eventSubscriptionId, string token)
+        {
+            var update = Builders<EventSubscription>.Update
+                .Set(x => x.ExternalToken, null)
+                .Set(x => x.ExternalTokenExpiry, null)
+                .Set(x => x.ExternalWorkerId, null);
+
+            await EventSubscriptions.UpdateOneAsync(x => x.Id == eventSubscriptionId && x.ExternalToken == token, update);
         }
     }
 }
