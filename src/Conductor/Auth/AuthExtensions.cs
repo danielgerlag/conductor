@@ -54,7 +54,7 @@ namespace Conductor.Auth
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim("scope", $"{Permissions.Admin} {Permissions.Author} {Permissions.Controller} {Permissions.Viewer}")
+                    new Claim("scope", $"{Permissions.Admin} {Permissions.Author} {Permissions.Controller} {Permissions.Viewer} {Permissions.Worker}")
                 }),
                 SigningCredentials = sc,
             };
@@ -95,6 +95,7 @@ namespace Conductor.Auth
                 options.AddPolicy(Policies.Author, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains(Permissions.Author))));
                 options.AddPolicy(Policies.Controller, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains(Permissions.Controller))));
                 options.AddPolicy(Policies.Viewer, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains(Permissions.Viewer))));
+                options.AddPolicy(Policies.Worker, policy => policy.RequireAssertion(context => context.User.Claims.Any(x => x.Type == "scope" && x.Value.Split(' ').Contains(Permissions.Worker))));
             });
         }
 

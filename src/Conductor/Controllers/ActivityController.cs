@@ -28,7 +28,7 @@ namespace Conductor.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Policy = Policies.Controller)]
+        [Authorize(Policy = Policies.Worker)]
         [HttpPost("success/{token}")]
         public async Task<IActionResult> Success(string token, [FromBody] object data)
         {
@@ -36,7 +36,7 @@ namespace Conductor.Controllers
             return Accepted();                
         }
 
-        [Authorize(Policy = Policies.Controller)]
+        [Authorize(Policy = Policies.Worker)]
         [HttpPost("fail/{token}")]
         public async Task<IActionResult> Fail(string token, [FromBody] object data)
         {
@@ -45,7 +45,7 @@ namespace Conductor.Controllers
         }
 
         [HttpGet("{name}")]
-        [Authorize(Policy = Policies.Controller)]
+        [Authorize(Policy = Policies.Worker)]
         public async Task<IActionResult> Get(string name, string workerId, int timeout)
         {
             var result = await _activityService.GetPendingActivity(name, workerId, TimeSpan.FromSeconds(timeout));
@@ -56,7 +56,7 @@ namespace Conductor.Controllers
             return Ok(_mapper.Map<Models.PendingActivity>(result));
         }
 
-        [Authorize(Policy = Policies.Controller)]
+        [Authorize(Policy = Policies.Worker)]
         [HttpDelete("{token}")]
         public async Task<IActionResult> Delete(string token)
         {
