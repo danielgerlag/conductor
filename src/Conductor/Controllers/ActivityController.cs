@@ -32,6 +32,8 @@ namespace Conductor.Controllers
         [HttpPost("success/{token}")]
         public async Task<IActionResult> Success(string token, [FromBody] object data)
         {
+            if (data is JObject)
+                data = (data as JObject).ToObject<ExpandoObject>();
             await _activityService.SubmitActivitySuccess(token, data);
             return Accepted();                
         }
@@ -40,6 +42,8 @@ namespace Conductor.Controllers
         [HttpPost("fail/{token}")]
         public async Task<IActionResult> Fail(string token, [FromBody] object data)
         {
+            if (data is JObject)
+                data = (data as JObject).ToObject<ExpandoObject>();
             await _activityService.SubmitActivityFailure(token, data);
             return Accepted();
         }

@@ -29,6 +29,8 @@ namespace Conductor.Controllers
         [HttpPost("{name}/{key}")]
         public async Task Post(string name, string key, [FromBody] object data)
         {
+            if (data is JObject)
+                data = (data as JObject).ToObject<ExpandoObject>();
             await _workflowController.PublishEvent(name, key, data);
             Response.StatusCode = 204;
         }

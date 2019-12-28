@@ -71,6 +71,8 @@ namespace Conductor.Storage.Services
 
             BsonClassMap.RegisterClassMap<ControlPersistenceData>(x => x.AutoMap());
             BsonClassMap.RegisterClassMap<SchedulePersistenceData>(x => x.AutoMap());
+            BsonClassMap.RegisterClassMap<ExecutionPointer>(x => x.AutoMap());
+            BsonClassMap.RegisterClassMap<ActivityResult>(x => x.AutoMap());
         }
 
         static bool indexesCreated = false;

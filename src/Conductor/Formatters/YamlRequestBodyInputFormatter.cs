@@ -26,37 +26,36 @@ namespace Conductor.Formatters
 
             var request = context.HttpContext.Request;
             using (var reader = new StreamReader(request.Body))
-            {
-                try
-                {
-                    var content = await reader.ReadToEndAsync();
+            {                
+                var content = await reader.ReadToEndAsync();
                     
-                    var serializer = new Serializer();
+                var serializer = new Serializer();
 
-                    if (context.ModelType == typeof(Definition))
-                    {
-                        var definition = serializer.DeserializeInto(content, new Definition());
-                        return await InputFormatterResult.SuccessAsync(definition);
-                    }
-
-                    if (context.ModelType == typeof(JObject))
-                    {
-                        var definition = serializer.DeserializeInto(content, new JObject());
-                        return await InputFormatterResult.SuccessAsync(definition);
-                    }
-
-                    if (context.ModelType == typeof(ExpandoObject))
-                    {
-                        var definition = serializer.DeserializeInto(content, new ExpandoObject());
-                        return await InputFormatterResult.SuccessAsync(definition);
-                    }
-
-                    return await InputFormatterResult.FailureAsync();
-                }
-                catch (Exception ex)
+                if (context.ModelType == typeof(Definition))
                 {
-                    return await InputFormatterResult.FailureAsync();
+                    var data = serializer.DeserializeInto(content, new Definition());
+                    return await InputFormatterResult.SuccessAsync(data);
                 }
+
+                if (context.ModelType == typeof(JObject))
+                {
+                    var data = serializer.DeserializeInto(content, new JObject());
+                    return await InputFormatterResult.SuccessAsync(data);
+                }
+
+                if (context.ModelType == typeof(ExpandoObject))
+                {
+                    var data = serializer.DeserializeInto(content, new ExpandoObject());
+                    return await InputFormatterResult.SuccessAsync(data);
+                }
+                    
+                if (context.ModelType == typeof(object))
+                {
+                    var data = serializer.Deserialize(content);
+                    return await InputFormatterResult.SuccessAsync(JObject.FromObject(data));
+                }
+
+                return await InputFormatterResult.FailureAsync();                
             }
         }
     }
