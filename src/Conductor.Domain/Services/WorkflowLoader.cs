@@ -252,7 +252,16 @@ namespace Conductor.Domain.Services
                 if (stepProperty.PropertyType.IsEnum)
                     stepProperty.SetValue(pStep, Enum.Parse(stepProperty.PropertyType, (string)resolvedValue, true));
                 else
-                    stepProperty.SetValue(pStep, System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType));
+                {
+                    if (stepProperty.PropertyType == typeof(object))
+                    {
+                        stepProperty.SetValue(pStep, resolvedValue);
+                    }
+                    else
+                    {
+                        stepProperty.SetValue(pStep, System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType));
+                    }                    
+                }
             }
             return acn;
         }
