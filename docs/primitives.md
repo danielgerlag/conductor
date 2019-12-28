@@ -314,3 +314,83 @@ Response:
 
 
 TODO: effective date
+
+
+# Activity
+
+An activity is defined as an item on an external queue of work, that a workflow can wait for.
+Use the `Activity` step type to pause your workflow and wait for an external activity worker that you implement.
+
+
+The following example will wait for an external activity of name `my-activity` and pass "Hello from the workflow" as the input data to the worker that will process this activity.  Once the worker submits a response, the workflow will continue and log the result from the worker. 
+
+```yml
+Id: activity-test
+Steps:
+- Id: Step1
+  StepType: Activity
+  NextStepId: Step2
+  Inputs:
+    ActivityName: '"my-activity"'
+    Parameters: '"Hello from the workflow"'
+  Outputs:
+    ActivityResult: step.Result
+- Id: Step2
+  StepType: EmitLog
+  Inputs:
+    Message: 'data.ActivityResult'
+```
+
+We can then use the activity API to implement a worker to process "my-activity" activities.
+
+First, let's start a new workflow instance.
+```
+POST /api/workflow/activity-test
+{}
+```
+Response:
+```json
+{
+    "workflowId": "5d274481ec9ce50001bc9c34",
+    "data": {},
+    "definitionId": "activity-test",
+    "version": 1,
+    "status": "Runnable",
+    "reference": null,
+    "startTime": "2019-07-11T14:15:29.86Z",
+    "endTime": null
+}
+```
+
+In our external worker process, we can fetch a waiting activity of an active workflow with the following request. 
+
+```
+GET /api/activity/my-activity?workerId=worker1&timeout=30
+```
+
+If there is no workflow waiting on the activity requested, then a `404 Not Found` will be returned.
+If there is work waiting for that activity queue, then an exclusive token will be issued and the reponse will look as follows
+
+```json
+{
+    "token": "eyJTdWJzY3JpcHRpb25JZCI6IjVlMD",
+    "activityName": "my-activity",
+    "parameters": "Hello from the workflow",
+    "tokenExpiry": "9999-12-31T23:59:59.9999999"
+}
+```
+* `token` An exclusive token is issued to the worker to use in future requests for this activity.
+* `parameters` The input data that the workflow attached to this actvity. Can be any object.
+* `tokenExpiry` When the token expires and the activity will be made available to other workers.
+
+
+To submit a successful response to an activity and pass some response data back to the workflow in the body of the request
+
+```
+POST /api/activity/success/eyJTdWJzY3JpcHRpb25JZCI6IjVlMD
+```
+```
+"Hello from the worker"
+```
+
+The workflow will now continue and the "Hello from the worker" string will be mapped to the `ActivityResult` field on the workflow data, and then logged in the final step.  The response data can be any object, not just scalar values.
