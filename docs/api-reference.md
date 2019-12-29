@@ -3,6 +3,7 @@
 * [Definitions](#definition-api)
 * [Workflows](#workflow-api)
 * [Events](#event-api)
+* [Activity Workers](#activity-api)
 * [Custom Steps](#steps-api)
 * [Diagnostics](#diagnostic-api)
 
@@ -126,14 +127,74 @@ DELETE /api/workflow/<<WorkflowId>>
 
 You can publish an event with a particular name and key and attach some data to all workflows that may be listening to it.  Use the event API.
 
-** Currently, only scalar values are supported for the attached data **
-
 ```
 POST /api/event/<<name>>/<<key>>
 ```
 ```
 <<data>>
 ```
+
+# Activity API
+
+An activity is defined as an item on an external queue of work, that a workflow can wait for.
+
+## Getting a pending activity 
+
+To fetch a waiting activity of an active workflow.  
+```
+GET /api/activity/<<name>>?workerId=<<workerId>>&timeout=30
+```
+
+* `name` (required) is the activity name to fetch waiting work for.
+* `workerId` (optional) is an identifier of the worker pulling the work.
+* `timout` (optional) number of seconds to block while waiting for an activity.
+
+#### Response
+
+If there is no workflow waiting on the activity requested, then a `404 Not Found` will be returned.
+If there is work waiting for that activity name, then an exclusive token will be issued and the reponse will look as follows
+
+```json
+{
+    "token": "...",
+    "activityName": "...",
+    "parameters": {},
+    "tokenExpiry": "9999-12-31T23:59:59.9999999"
+}
+```
+* `token` An exclusive token is issued to the worker to use in future requests for this activity.
+* `parameters` The input data that the workflow attached to this actvity.
+* `tokenExpiry` When the token expires and the activity will be made available to other workers.
+
+
+## Submitting a result for an activity 
+
+To submit a successful response to an activity and pass some response data back to the workflow in the body of the request.
+
+```
+POST /api/activity/success/<<token>>
+```
+```
+<<data>>
+```
+
+To submit a failure response to an activity and pass some response data back to the workflow in the body of the request.
+
+```
+POST /api/activity/fail/<<token>>
+```
+```
+<<data>>
+```
+
+## Release a token
+
+To release a token held by a worker, so that another worker could pick it up.
+
+```
+DELETE /api/activity/<<token>>
+```
+
 
 
 # Steps API

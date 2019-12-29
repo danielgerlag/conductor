@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using WorkflowCore.Exceptions;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -52,6 +53,10 @@ namespace Conductor.Storage.Services
                 x.MapProperty(y => y.WorkflowId);
                 x.MapProperty(y => y.SubscribeAsOf);
                 x.MapProperty(y => y.SubscriptionData);
+                x.MapProperty(y => y.ExternalToken);
+                x.MapProperty(y => y.ExternalWorkerId);
+                x.MapProperty(y => y.ExternalTokenExpiry);
+                x.MapProperty(y => y.ExecutionPointerId);
             });
 
             BsonClassMap.RegisterClassMap<Event>(x =>
@@ -67,6 +72,8 @@ namespace Conductor.Storage.Services
 
             BsonClassMap.RegisterClassMap<ControlPersistenceData>(x => x.AutoMap());
             BsonClassMap.RegisterClassMap<SchedulePersistenceData>(x => x.AutoMap());
+            BsonClassMap.RegisterClassMap<ExecutionPointer>(x => x.AutoMap());
+            BsonClassMap.RegisterClassMap<ActivityResult>(x => x.AutoMap());
         }
 
         static bool indexesCreated = false;
@@ -74,8 +81,27 @@ namespace Conductor.Storage.Services
         {
             if (!indexesCreated)
             {
-                instance.WorkflowInstances.Indexes.CreateOne(Builders<WorkflowInstance>.IndexKeys.Ascending(x => x.NextExecution), new CreateIndexOptions() { Background = true, Name = "idx_nextExec" });
-                instance.Events.Indexes.CreateOne(Builders<Event>.IndexKeys.Ascending(x => x.IsProcessed), new CreateIndexOptions() { Background = true, Name = "idx_processed" });
+                instance.WorkflowInstances.Indexes.CreateOne(new CreateIndexModel<WorkflowInstance>(
+                    Builders<WorkflowInstance>.IndexKeys.Ascending(x => x.NextExecution),
+                    new CreateIndexOptions { Background = true, Name = "idx_nextExec" }));
+
+                instance.Events.Indexes.CreateOne(new CreateIndexModel<Event>(
+                    Builders<Event>.IndexKeys
+                        .Ascending(x => x.EventName)
+                        .Ascending(x => x.EventKey)
+                        .Ascending(x => x.EventTime),
+                    new CreateIndexOptions { Background = true, Name = "idx_namekey" }));
+
+                instance.Events.Indexes.CreateOne(new CreateIndexModel<Event>(
+                    Builders<Event>.IndexKeys.Ascending(x => x.IsProcessed),
+                    new CreateIndexOptions { Background = true, Name = "idx_processed" }));
+
+                instance.EventSubscriptions.Indexes.CreateOne(new CreateIndexModel<EventSubscription>(
+                    Builders<EventSubscription>.IndexKeys
+                        .Ascending(x => x.EventName)
+                        .Ascending(x => x.EventKey),
+                    new CreateIndexOptions { Background = true, Name = "idx_namekey" }));
+
                 indexesCreated = true;
             }
         }
@@ -111,8 +137,11 @@ namespace Conductor.Storage.Services
 
         public async Task<WorkflowInstance> GetWorkflowInstance(string Id)
         {
-            var result = await WorkflowInstances.FindAsync(x => x.Id == Id);
-            return await result.FirstAsync();
+            var query = await WorkflowInstances.FindAsync(x => x.Id == Id);
+            var result = await query.FirstOrDefaultAsync();
+            if (result == null)
+                throw new NotFoundException();
+            return result;
         }
 
         public async Task<IEnumerable<WorkflowInstance>> GetWorkflowInstances(IEnumerable<string> ids)
@@ -161,7 +190,7 @@ namespace Conductor.Storage.Services
 
         }
 
-        public async Task<IEnumerable<EventSubscription>> GetSubcriptions(string eventName, string eventKey, DateTime asOf)
+        public async Task<IEnumerable<EventSubscription>> GetSubscriptions(string eventName, string eventKey, DateTime asOf)
         {
             var query = EventSubscriptions
                 .Find(x => x.EventName == eventName && x.EventKey == eventKey && x.SubscribeAsOf <= asOf);
@@ -220,6 +249,41 @@ namespace Conductor.Storage.Services
         {
             if (errors.Any())
                 await ExecutionErrors.InsertManyAsync(errors);
+        }
+
+        public async Task<EventSubscription> GetSubscription(string eventSubscriptionId)
+        {
+            var result = await EventSubscriptions.FindAsync(x => x.Id == eventSubscriptionId);
+            return await result.FirstOrDefaultAsync();
+        }
+
+        public async Task<EventSubscription> GetFirstOpenSubscription(string eventName, string eventKey, DateTime asOf)
+        {
+            var query = EventSubscriptions
+                .Find(x => x.EventName == eventName && x.EventKey == eventKey && x.SubscribeAsOf <= asOf && x.ExternalToken == null);
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> SetSubscriptionToken(string eventSubscriptionId, string token, string workerId, DateTime expiry)
+        {
+            var update = Builders<EventSubscription>.Update
+                .Set(x => x.ExternalToken, token)
+                .Set(x => x.ExternalTokenExpiry, expiry)
+                .Set(x => x.ExternalWorkerId, workerId);
+
+            var result = await EventSubscriptions.UpdateOneAsync(x => x.Id == eventSubscriptionId && x.ExternalToken == null, update);
+            return (result.ModifiedCount > 0);
+        }
+
+        public async Task ClearSubscriptionToken(string eventSubscriptionId, string token)
+        {
+            var update = Builders<EventSubscription>.Update
+                .Set(x => x.ExternalToken, null)
+                .Set(x => x.ExternalTokenExpiry, null)
+                .Set(x => x.ExternalWorkerId, null);
+
+            await EventSubscriptions.UpdateOneAsync(x => x.Id == eventSubscriptionId && x.ExternalToken == token, update);
         }
     }
 }

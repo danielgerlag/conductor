@@ -11,5 +11,6 @@ namespace Conductor.Auth
         public const string Viewer = "conductor:viewer";
         public const string Controller = "conductor:controller";
         public const string Author = "conductor:author";
+        public const string Worker = "conductor:worker";
     }
 }

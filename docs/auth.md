@@ -16,12 +16,13 @@ The token must also include a scope claim that indicate the level of access.  Th
 * `conductor:author` - Authoring of workflow definitions and steps.
 * `conductor:controller` - Starting, stopping, suspending and resuming workflows.
 * `conductor:viewer` - Querying the status of a workflow.
+* `conductor:worker` - Activity workers.
 
 A minimal JWT payload the include all the scopes would look as follows
 
 ```json
 {
-  "scope": "conductor:admin conductor:author conductor:controller conductor:viewer"
+  "scope": "conductor:admin conductor:author conductor:controller conductor:viewer conductor:worker"
 }
 ```
 
