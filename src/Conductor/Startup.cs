@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using Conductor.Auth;
+using Conductor.Middleware;
 
 namespace Conductor
 {
@@ -59,8 +60,9 @@ namespace Conductor
 
             services.AddMvc(options =>
             {
-                options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
+                options.InputFormatters.Add(new YamlRequestBodyInputFormatter());                
                 options.OutputFormatters.Add(new YamlRequestBodyOutputFormatter());
+                options.Filters.Add<RequestObjectFilter>();
                 options.EnableEndpointRouting = false;                
             })
             .AddNewtonsoftJson()
