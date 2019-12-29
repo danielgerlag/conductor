@@ -85,6 +85,13 @@ namespace Conductor.Storage.Services
                     new CreateIndexOptions { Background = true, Name = "idx_nextExec" }));
 
                 instance.Events.Indexes.CreateOne(new CreateIndexModel<Event>(
+                    Builders<Event>.IndexKeys
+                        .Ascending(x => x.EventName)
+                        .Ascending(x => x.EventKey)
+                        .Ascending(x => x.EventTime),
+                    new CreateIndexOptions { Background = true, Name = "idx_namekey" }));
+
+                instance.Events.Indexes.CreateOne(new CreateIndexModel<Event>(
                     Builders<Event>.IndexKeys.Ascending(x => x.IsProcessed),
                     new CreateIndexOptions { Background = true, Name = "idx_processed" }));
 
@@ -243,7 +250,7 @@ namespace Conductor.Storage.Services
         public async Task<EventSubscription> GetSubscription(string eventSubscriptionId)
         {
             var result = await EventSubscriptions.FindAsync(x => x.Id == eventSubscriptionId);
-            return await result.FirstAsync();
+            return await result.FirstOrDefaultAsync();
         }
 
         public async Task<EventSubscription> GetFirstOpenSubscription(string eventName, string eventKey, DateTime asOf)
