@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using WorkflowCore.Exceptions;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -136,8 +137,11 @@ namespace Conductor.Storage.Services
 
         public async Task<WorkflowInstance> GetWorkflowInstance(string Id)
         {
-            var result = await WorkflowInstances.FindAsync(x => x.Id == Id);
-            return await result.FirstAsync();
+            var query = await WorkflowInstances.FindAsync(x => x.Id == Id);
+            var result = await query.FirstOrDefaultAsync();
+            if (result == null)
+                throw new NotFoundException();
+            return result;
         }
 
         public async Task<IEnumerable<WorkflowInstance>> GetWorkflowInstances(IEnumerable<string> ids)
