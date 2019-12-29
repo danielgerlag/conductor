@@ -141,3 +141,7 @@ Content-Type: application/x-yaml
 ```yaml
 CustomMessage: foobar
 ```
+
+# Resources
+
+* Download the [Postman Collection](https://raw.githubusercontent.com/danielgerlag/conductor/master/docs/Conductor.postman_collection.json)

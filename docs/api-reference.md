@@ -7,6 +7,8 @@
 * [Custom Steps](#steps-api)
 * [Diagnostics](#diagnostic-api)
 
+Download the [Postman Collection](https://raw.githubusercontent.com/danielgerlag/conductor/master/docs/Conductor.postman_collection.json)
+
 # Definition API
 
 ## Create or update a definition

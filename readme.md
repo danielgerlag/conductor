@@ -100,6 +100,10 @@ CustomMessage: foobar
 ## Further reading
 * [Documentation](https://conductor-core.readthedocs.io/en/latest/)
 
+## Resources
+
+* Download the [Postman Collection](https://raw.githubusercontent.com/danielgerlag/conductor/master/docs/Conductor.postman_collection.json)
+
 
 ## License
 

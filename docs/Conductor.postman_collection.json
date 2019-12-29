@@ -1,100 +1,559 @@
 {
 	"info": {
-		"_postman_id": "294796e1-6634-4339-8d80-5d3f461241ae",
+		"_postman_id": "435792a4-ffd1-491f-81e7-9e54fcea2f25",
 		"name": "Conductor",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Register Workflow",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"lambda1\",\n    \"version\": 1,\n    \"steps\": [\n        {\n            \"stepType\": \"Lambda\",\n            \"id\": \"Step1\",\n            \"nextStepId\": \"Step2\",\n            \"inputs\": {\n            \t\"Name\": \"\\\"add\\\"\",\n            \t\"Variables\": {\n            \t\t\"a\": 2,\n            \t\t\"b\": 3\n            \t}\n            },\n            \"outputs\": {\n            \t\"Result\": \"step.Variables[\\\"result\\\"]\"\n            }\n        },\n        {\n\t        \"stepType\": \"EmitLog\",\n\t        \"id\": \"Step2\",\n\t        \"inputs\": {\n\t          \"Message\": \"\\\"Answer is \\\" + data[\\\"Result\\\"]\"\n\t    \t}\n        }\n    ]\n}"
+			"name": "Definitions",
+			"item": [
+				{
+					"name": "Register Workflow (JSON)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Id\": \"my-workflow\",\n  \"Version\": 1,\n  \"Steps\": [\n    {\n      \"Id\": \"Step1\",\n      \"StepType\": \"EmitLog\",\n      \"Inputs\": {\n        \"Message\": \"\\\"Hi there\\\"\"\n      },\n      \"NextStepId\": \"Step2\"\n    },\n    {\n      \"Id\": \"Step2\",\n      \"StepType\": \"EmitLog\",\n      \"Inputs\": {\n        \"Message\": \"\\\"Goodbye!\\\"\"\n      }\n    }\n  ]\n}\n"
+						},
+						"url": {
+							"raw": "{{conductor}}/api/definition",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"definition"
+							]
+						},
+						"description": "## Create or update a definition\r\n\r\nWe `POST` the definition to `api/definition` in either `YAML` or `JSON`.\r\n\r\n```http\r\nPOST /api/definition\r\nContent-Type: application/json\r\n```\r\n```json\r\n{\r\n  \"Id\": \"Hello1\",\r\n  \"Steps\": [\r\n    {\r\n      \"Id\": \"Step1\",\r\n      \"StepType\": \"EmitLog\",\r\n      \"NextStepId\": \"Step2\",\r\n      \"Inputs\": {\r\n        \"Message\": \"\\\"Hello world\\\"\",\r\n        \"Level\": \"\\\"Information\\\"\"\r\n      }\r\n    },\r\n    {\r\n      \"Id\": \"Step2\",\r\n      \"StepType\": \"EmitLog\",\r\n      \"Inputs\": {\r\n        \"Message\": \"\\\"Goodbye!!!\\\"\",\r\n        \"Level\": \"\\\"Information\\\"\"\r\n      }\r\n    }\r\n  ]\r\n}\r\n```\r\n\r\nPosting to a definition ID that already exists, will create a second version of that workflow definition and all existing workflows that were started on the old verison, will continue on the old version but all workflows that are started after this will run on the new version."
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{conductor}}/api/definition",
-					"host": [
-						"{{conductor}}"
-					],
-					"path": [
-						"api",
-						"definition"
-					]
+				{
+					"name": "Register Workflow (YAML)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/yaml"
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/yaml"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "Id: my-workflow\r\nVersion: 1\r\nSteps:\r\n  - Id: Step1\r\n    StepType: EmitLog\r\n    Inputs:\r\n      Message: '\"Hi there\"'\r\n    NextStepId: Step2\r\n  - Id: Step2\r\n    StepType: EmitLog\r\n    Inputs:\r\n      Message: '\"Goodbye!\"'"
+						},
+						"url": {
+							"raw": "{{conductor}}/api/definition",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"definition"
+							]
+						},
+						"description": "## Create or update a definition\r\n\r\nWe `POST` the definition to `api/definition` in either `YAML` or `JSON`.\r\n\r\n```http\r\nPOST /api/definition\r\nContent-Type: application/yaml\r\n```\r\n```yml\r\nId: Hello1\r\nSteps:\r\n- Id: Step1\r\n  StepType: EmitLog\r\n  NextStepId: Step2\r\n  Inputs:\r\n    Message: '\"Hello world\"'\r\n    Level: '\"Information\"'\r\n- Id: Step2\r\n  StepType: EmitLog\r\n  Inputs:\r\n    Message: '\"Goodbye!!!\"'\r\n    Level: '\"Information\"'\r\n```\r\n\r\nPosting to a definition ID that already exists, will create a second version of that workflow definition and all existing workflows that were started on the old verison, will continue on the old version but all workflows that are started after this will run on the new version."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Definition (JSON)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkFkbWluIiwiQXV0aG9yIiwiQ29udHJvbGxlciIsIlZpZXdlciJdLCJleHAiOjE0MzI3OTY2NDQsImlhdCI6MTU3NzEyMzA0NH0._qiFj--9xzDKApWx1sJMekGywg76C9Q3LnUaDDUcvbdN6zL4vmptDYbUAMEeqqKXpbqWPrUmsk9NRiZq8FYZuw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{conductor}}/api/definition/my-workflow",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"definition",
+								"my-workflow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Definition (YAML)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-yaml",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/x-yaml"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkFkbWluIiwiQXV0aG9yIiwiQ29udHJvbGxlciIsIlZpZXdlciJdLCJleHAiOjE0MzI3OTY2NDQsImlhdCI6MTU3NzEyMzA0NH0._qiFj--9xzDKApWx1sJMekGywg76C9Q3LnUaDDUcvbdN6zL4vmptDYbUAMEeqqKXpbqWPrUmsk9NRiZq8FYZuw",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{conductor}}/api/definition/my-workflow",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"definition",
+								"my-workflow"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Start Workflow",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"Message\": \"BOO!!!\",\n\t\"Value1\": 2,\n\t\"Value2\": 3,\n\t\"List1\": [ 1, 2, 4 ]\n}"
+			"name": "Activities",
+			"item": [
+				{
+					"name": "Activity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{conductor}}/api/activity/<<activityId>>",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"activity",
+								"<<activityId>>"
+							]
+						},
+						"description": "## Getting a pending activity \r\n\r\nTo fetch a waiting activity of an active workflow.  \r\n```\r\nGET /api/activity/<<name>>?workerId=<<workerId>>&timeout=30\r\n```\r\n\r\n* `name` (required) is the activity name to fetch waiting work for.\r\n* `workerId` (optional) is an identifier of the worker pulling the work.\r\n* `timout` (optional) number of seconds to block while waiting for an activity.\r\n\r\n#### Response\r\n\r\nIf there is no workflow waiting on the activity requested, then a `404 Not Found` will be returned.\r\nIf there is work waiting for that activity name, then an exclusive token will be issued and the reponse will look as follows\r\n\r\n```json\r\n{\r\n    \"token\": \"...\",\r\n    \"activityName\": \"...\",\r\n    \"parameters\": {},\r\n    \"tokenExpiry\": \"9999-12-31T23:59:59.9999999\"\r\n}\r\n```\r\n* `token` An exclusive token is issued to the worker to use in future requests for this activity.\r\n* `parameters` The input data that the workflow attached to this actvity.\r\n* `tokenExpiry` When the token expires and the activity will be made available to other workers."
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{conductor}}/api/workflow/Hello1",
-					"host": [
-						"{{conductor}}"
-					],
-					"path": [
-						"api",
-						"workflow",
-						"Hello1"
-					]
+				{
+					"name": "Activity Success",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Value1\": 2,\n\t\"Value2\": 3\n}"
+						},
+						"url": {
+							"raw": "{{conductor}}/api/activity/success/<<token>>",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"activity",
+								"success",
+								"<<token>>"
+							]
+						},
+						"description": "## Submitting a result for an activity \r\n\r\nTo submit a successful response to an activity and pass some response data back to the workflow in the body of the request.\r\n\r\n```\r\nPOST /api/activity/success/<<token>>\r\n```\r\n```\r\n<<data>>\r\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Activity Fail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Value1\": 2,\n\t\"Value2\": 3\n}"
+						},
+						"url": {
+							"raw": "{{conductor}}/api/activity/fail/<<token>>",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"activity",
+								"fail",
+								"<<token>>"
+							]
+						},
+						"description": "## Submitting a result for an activity \r\n\r\nTo submit a failure response to an activity and pass some response data back to the workflow in the body of the request.\r\n\r\n```\r\nPOST /api/activity/fail/<<token>>\r\n```\r\n```\r\n<<data>>\r\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Activity Clear",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"hello there\""
+						},
+						"url": {
+							"raw": "{{conductor}}/api/activity/<<token>>",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"activity",
+								"<<token>>"
+							]
+						},
+						"description": "## Release a token\r\n\r\nTo release a token held by a worker, so that another worker could pick it up.\r\n\r\n```\r\nDELETE /api/activity/<<token>>\r\n```"
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Lambda",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"type": "text",
-						"value": "text/x-python"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "def add(a, b):\r\n   return a + b"
+			"name": "Workflows",
+			"item": [
+				{
+					"name": "Start Workflow",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Value1\": 2,\n\t\"Value2\": 3\n}"
+						},
+						"url": {
+							"raw": "{{conductor}}/api/workflow/my-workflow",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"workflow",
+								"my-workflow"
+							]
+						},
+						"description": "## Start a workflow\r\n\r\nTo start a workflow, submit a `POST` to `/api/workflow/<<DefinitionId>>`, where the body of the request will be the initial data object passed to the new workflow instance.\r\n\r\n```\r\nPOST /api/workflow/<<DefinitionId>>\r\n\r\n```\r\nExample: Start the `HelloWorld` workflow, with some custom data.\r\n```\r\nPOST /api/workflow/HelloWorld\r\nContent-Type: application/x-yaml\r\n```\r\n```yaml\r\nCustomMessage: foobar\r\n```\r\n\r\n#### Response\r\n\r\n```json\r\n{\r\n    \"workflowId\": \"5d26ae05ec9ce50001bc9c2a\",\r\n    \"data\": {\r\n        \"CustomMessage\": \"foobar\"\r\n    },\r\n    \"definitionId\": \"HelloWorld\",\r\n    \"version\": 1,\r\n    \"status\": \"Runnable\",\r\n    \"reference\": null,\r\n    \"startTime\": \"2019-07-11T03:33:25.203Z\",\r\n    \"endTime\": null\r\n}\r\n```"
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "https://localhost:5001/api/lambda/py1",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"lambda",
-						"py1"
-					]
+				{
+					"name": "Get Workflow",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-yaml",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{conductor}}/api/workflow/<<id>>",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"workflow",
+								"<<id>>"
+							]
+						},
+						"description": "## Querying a workflow\r\n\r\nIf you have the `workflowId` that you get back when you start a workflow, you can query it's status via the API.\r\n\r\n```\r\nGET /api/workflow/<<WorkflowId>>\r\n```\r\n\r\n#### Response\r\n\r\n```json\r\n{\r\n    \"workflowId\": \"5d26ae05ec9ce50001bc9c2a\",\r\n    \"data\": {\r\n        \"CustomMessage\": \"foobar\"\r\n    },\r\n    \"definitionId\": \"HelloWorld\",\r\n    \"version\": 1,\r\n    \"status\": \"Runnable\",\r\n    \"reference\": null,\r\n    \"startTime\": \"2019-07-11T03:33:25.203Z\",\r\n    \"endTime\": null\r\n}\r\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Suspend Workflow",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-yaml",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{conductor}}/api/workflow/<<id>>/suspend",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"workflow",
+								"<<id>>",
+								"suspend"
+							]
+						},
+						"description": "## Suspending a workflow\r\n\r\nYou can suspend a workflow with a `PUT`\r\n\r\n```\r\nPUT /api/workflow/<<WorkflowId>>/suspend\r\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Resume Workflow",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-yaml",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{conductor}}/api/workflow/<<id>>/suspend",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"workflow",
+								"<<id>>",
+								"suspend"
+							]
+						},
+						"description": "## Resuming a workflow\r\n\r\nYou can resume a suspended a workflow with a `PUT`\r\n\r\n```\r\nPUT /api/workflow/<<WorkflowId>>/resume\r\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Terminate Workflow",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-yaml",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{conductor}}/api/workflow/<<id>>",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"workflow",
+								"<<id>>"
+							]
+						},
+						"description": "## Terminting a workflow\r\n\r\nYou can abort a workflow with a `DELETE`\r\n\r\n```\r\nDELETE /api/workflow/<<WorkflowId>>\r\n```"
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Lambda",
+			"name": "Custom Steps",
+			"item": [
+				{
+					"name": "Step",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "text/x-python"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "print(\"yoyo\")\nresult = value1 + value2\nprint(\"haha\")"
+						},
+						"url": {
+							"raw": "{{conductor}}/api/step/sum",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"step",
+								"sum"
+							]
+						},
+						"description": "## Creating a step\r\n\r\nThe following call creates a step called `add`, which is a Python script that sets c to a + b\r\n```\r\nPOST /api/step/add\r\nContent-Type: text/x-python\r\n```\r\n```python\r\nc = a + b\r\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Step",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "text/x-python",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{conductor}}/api/step/test-add",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"step",
+								"test-add"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Publish Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Value1\": 3\n}"
+						},
+						"url": {
+							"raw": "{{conductor}}/api/event/<<name>>/<<key>>",
+							"host": [
+								"{{conductor}}"
+							],
+							"path": [
+								"api",
+								"event",
+								"<<name>>",
+								"<<key>>"
+							]
+						},
+						"description": "You can publish an event with a particular name and key and attach some data to all workflows that may be listening to it.  Use the event API.\r\n\r\n```\r\nPOST /api/event/<<name>>/<<key>>\r\n```\r\n```\r\n<<data>>\r\n```"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "info",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -106,177 +565,49 @@
 					}
 				],
 				"url": {
-					"raw": "https://localhost:5001/api/lambda/py1",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"lambda",
-						"py1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Publish Event",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "\"test\""
-				},
-				"url": {
-					"raw": "{{conductor}}/api/event/my-event/my-key",
+					"raw": "{{conductor}}/api/info",
 					"host": [
 						"{{conductor}}"
 					],
 					"path": [
 						"api",
-						"event",
-						"my-event",
-						"my-key"
+						"info"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwic2NvcGUiOiJjb25kdWN0b3I6YXV0aG9yIn0.F8FWzYEcgguFYyQapv7e88G18jugROAmVh5ggyGOTfJWPaUsJbIGmgCuEWns-rqD4MJHOf9HtVHIMIAsHD4_5liKHL4Sqk7IBmj8s40c0FgO-GOp4HTgMFTxN3_yQCQ8_dbvnt6JfWeAVkhEf6w3N_LDIKnl0ToaFg-dAk7vpd-SQL2sxryby93mj3yBsgjaibp3vmrGP-MWRIhVkMlgLcJZgcJMAUUij6Di31s1KXktd0vdFvh1pLS2iCCHorHFyHEl1SufizejYi4auJfdV3lB44jXnv_Lp-71OROsCiZSdoOCMAW-5ZLVS6Oly3h1iN0nSYX_cGU_2UfJCJtGLg",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ca0a8524-5d0d-4ee6-af2c-3afa4e913f4b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		},
 		{
-			"name": "Get Definition",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"type": "text",
-						"value": "application/x-yaml",
-						"disabled": true
-					},
-					{
-						"key": "Accept",
-						"value": "application/x-yaml",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "https://localhost:5001/api/definition/Test3",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"definition",
-						"Test3"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Workflow",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"type": "text",
-						"value": "application/x-yaml",
-						"disabled": true
-					},
-					{
-						"key": "Accept",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"url": {
-					"raw": "{{conductor}}/api/workflow/5d26b2fdec9ce50001bc9c2e",
-					"host": [
-						"{{conductor}}"
-					],
-					"path": [
-						"api",
-						"workflow",
-						"5d26b2fdec9ce50001bc9c2e"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Suspend Workflow",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"type": "text",
-						"value": "application/x-yaml",
-						"disabled": true
-					},
-					{
-						"key": "Accept",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"url": {
-					"raw": "{{conductor}}/api/workflow/5d26b15cec9ce50001bc9c2c/suspend",
-					"host": [
-						"{{conductor}}"
-					],
-					"path": [
-						"api",
-						"workflow",
-						"5d26b15cec9ce50001bc9c2c",
-						"suspend"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Terminate Workflow",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"type": "text",
-						"value": "application/x-yaml",
-						"disabled": true
-					},
-					{
-						"key": "Accept",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"url": {
-					"raw": "{{conductor}}/api/workflow/5d26b15cec9ce50001bc9c2c",
-					"host": [
-						"{{conductor}}"
-					],
-					"path": [
-						"api",
-						"workflow",
-						"5d26b15cec9ce50001bc9c2c"
-					]
-				}
-			},
-			"response": []
+			"listen": "test",
+			"script": {
+				"id": "88d00914-b2f3-4e25-b04f-0ae66f2ebed8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
