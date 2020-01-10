@@ -123,8 +123,7 @@ namespace Conductor.Domain.Services
                         compensatables.Add(nextStep);
                 }
 
-                if (!string.IsNullOrEmpty(nextStep.NextStepId))
-                    targetStep.Outcomes.Add(new StepOutcome() { ExternalNextStepId = $"{nextStep.NextStepId}" });
+                AttachOutcomes(nextStep, dataType, targetStep);
 
                 result.Add(targetStep);
 
@@ -213,6 +212,22 @@ namespace Conductor.Domain.Services
                 };
 
                 step.Outputs.Add(new ActionParameter<IStepBody, object>(acn));
+            }
+        }
+        
+        private void AttachOutcomes(Step source, Type dataType, WorkflowStep step)
+        {
+            if (!string.IsNullOrEmpty(source.NextStepId))
+                step.Outcomes.Add(new StepOutcome() { ExternalNextStepId = $"{source.NextStepId}" });
+            
+            foreach (var nextStep in source.OutcomeSteps)
+            {
+                Expression<Func<object, object>> sourceExpr = data => _expressionEvaluator.EvaluateExpression(nextStep.Value, data, null);
+                step.Outcomes.Add(new StepOutcome()
+                {
+                    Value = sourceExpr,
+                    ExternalNextStepId = $"{nextStep.Key}"
+                });
             }
         }
 
