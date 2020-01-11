@@ -216,21 +216,20 @@ namespace Conductor.Domain.Services
         }
         
         private void AttachOutcomes(Step source, Type dataType, WorkflowStep step)
-        {
+        {            
             if (!string.IsNullOrEmpty(source.NextStepId))
-                step.Outcomes.Add(new StepOutcome() { ExternalNextStepId = $"{source.NextStepId}" });
+                step.Outcomes.Add(new ValueOutcome() { ExternalNextStepId = $"{source.NextStepId}" });
             
             foreach (var nextStep in source.OutcomeSteps)
             {
-                Expression<Func<object, object>> sourceExpr = data => _expressionEvaluator.EvaluateExpression(nextStep.Value, data, null);
-                step.Outcomes.Add(new StepOutcome()
+                Expression<Func<ExpandoObject, object, bool>> sourceExpr = (data, outcome) => _expressionEvaluator.EvaluateOutcomeExpression(nextStep.Value, data, outcome);
+                step.Outcomes.Add(new ExpressionOutcome<ExpandoObject>(sourceExpr)
                 {
-                    Value = sourceExpr,
                     ExternalNextStepId = $"{nextStep.Key}"
                 });
             }
         }
-
+              
         private Type FindType(string name)
         {
             name = name.Trim();
