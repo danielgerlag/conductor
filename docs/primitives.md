@@ -80,6 +80,42 @@ Outputs:
 
 TODO
 
+# Decide
+
+```json
+{
+  "Id": "decide-workflow",
+  "Version": 1,
+  "Steps": [
+    {
+      "Id": "Start",
+      "StepType": "Decide",
+      "Inputs": {
+        "Expression": "data.Value1"
+      },
+      "OutcomeSteps": {
+      	"A": "2",
+      	"B": "3",
+      }
+    },    
+    {
+      "Id": "A",
+      "StepType": "EmitLog",
+      "Inputs": {
+        "Message": "\"Hi from A!\""
+      }
+    },
+    {
+      "Id": "B",
+      "StepType": "EmitLog",
+      "Inputs": {
+        "Message": "\"Hi from B!\""
+      }
+    }
+  ]
+}
+
+```
 
 # If
 
