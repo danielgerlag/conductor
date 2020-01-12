@@ -33,7 +33,7 @@ namespace Conductor.Domain.Models
 
         public Dictionary<string, string> Outputs { get; set; } = new Dictionary<string, string>();
 
-        public Dictionary<string, string> OutcomeSteps { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> SelectNextStep { get; set; } = new Dictionary<string, string>();
         
     }
 }

@@ -220,7 +220,7 @@ namespace Conductor.Domain.Services
             if (!string.IsNullOrEmpty(source.NextStepId))
                 step.Outcomes.Add(new ValueOutcome() { ExternalNextStepId = $"{source.NextStepId}" });
             
-            foreach (var nextStep in source.OutcomeSteps)
+            foreach (var nextStep in source.SelectNextStep)
             {
                 Expression<Func<ExpandoObject, object, bool>> sourceExpr = (data, outcome) => _expressionEvaluator.EvaluateOutcomeExpression(nextStep.Value, data, outcome);
                 step.Outcomes.Add(new ExpressionOutcome<ExpandoObject>(sourceExpr)
