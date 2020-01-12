@@ -5,7 +5,7 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <UserSecretsId>0b178d89-9937-49c8-b1f1-efb5f96e516d</UserSecretsId>
-    <Version>0.1.0-alpha</Version>
+    <Version>1.0.0</Version>
     <StartupObject>Conductor.Program</StartupObject>
   </PropertyGroup>
 
@@ -27,7 +27,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="WorkflowCore" Version="3.0.2" />
+    <PackageReference Include="WorkflowCore" Version="3.1.1" />
     <PackageReference Include="WorkflowCore.Providers.Redis" Version="3.0.0" />
   </ItemGroup>
 

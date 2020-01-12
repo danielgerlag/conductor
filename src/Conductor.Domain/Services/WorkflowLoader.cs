@@ -123,8 +123,7 @@ namespace Conductor.Domain.Services
                         compensatables.Add(nextStep);
                 }
 
-                if (!string.IsNullOrEmpty(nextStep.NextStepId))
-                    targetStep.Outcomes.Add(new StepOutcome() { ExternalNextStepId = $"{nextStep.NextStepId}" });
+                AttachOutcomes(nextStep, dataType, targetStep);
 
                 result.Add(targetStep);
 
@@ -215,7 +214,22 @@ namespace Conductor.Domain.Services
                 step.Outputs.Add(new ActionParameter<IStepBody, object>(acn));
             }
         }
-
+        
+        private void AttachOutcomes(Step source, Type dataType, WorkflowStep step)
+        {            
+            if (!string.IsNullOrEmpty(source.NextStepId))
+                step.Outcomes.Add(new ValueOutcome() { ExternalNextStepId = $"{source.NextStepId}" });
+            
+            foreach (var nextStep in source.SelectNextStep)
+            {
+                Expression<Func<ExpandoObject, object, bool>> sourceExpr = (data, outcome) => _expressionEvaluator.EvaluateOutcomeExpression(nextStep.Value, data, outcome);
+                step.Outcomes.Add(new ExpressionOutcome<ExpandoObject>(sourceExpr)
+                {
+                    ExternalNextStepId = $"{nextStep.Key}"
+                });
+            }
+        }
+              
         private Type FindType(string name)
         {
             name = name.Trim();

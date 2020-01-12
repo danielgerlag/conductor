@@ -76,6 +76,62 @@ Outputs:
   ResponseBody: step.ResponseBody
 ```
 
+## Branching
+
+You can define multiple independent branches within your workflow and select one based on an expression value.
+Hook up your branches via the `SelectNextStep` property, instead of a `NextStepId`.  The expressions will be matched to the step Ids listed in `SelectNextStep`, and the matching next step(s) will be scheduled to execute next.  If more then one step is matched, then the workflow will have multiple parallel paths.
+
+```json
+{
+  "Id": "decide-workflow",
+  "Version": 1,
+  "Steps": [
+    {
+      "Id": "Start",
+      "StepType": "Decide",
+      "SelectNextStep": {
+      	"A": "data.Value1 == 2",
+      	"B": "data.Value1 == 3"
+      }
+    },    
+    {
+      "Id": "A",
+      "StepType": "EmitLog",
+      "Inputs": {
+        "Message": "\"Hi from A!\""
+      }
+    },
+    {
+      "Id": "B",
+      "StepType": "EmitLog",
+      "Inputs": {
+        "Message": "\"Hi from B!\""
+      }
+    }
+  ]
+}
+
+```
+
+```yaml
+Id: decide-workflow
+Version: 1
+Steps:
+- Id: Start
+  StepType: Decide
+  SelectNextStep:
+    A: data.Value1 == 2
+    B: data.Value1 == 3
+- Id: A
+  StepType: EmitLog
+  Inputs:
+    Message: '"Hi from A!"'
+- Id: B
+  StepType: EmitLog
+  Inputs:
+    Message: '"Hi from B!"'
+```
+
 # Error handling
 
 TODO
