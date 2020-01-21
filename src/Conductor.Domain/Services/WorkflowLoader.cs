@@ -273,7 +273,10 @@ namespace Conductor.Domain.Services
                     }
                     else
                     {
-                        stepProperty.SetValue(pStep, System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType));
+                        if ((resolvedValue != null) && (stepProperty.PropertyType.IsAssignableFrom(resolvedValue.GetType())))
+                            stepProperty.SetValue(pStep, resolvedValue);
+                        else
+                            stepProperty.SetValue(pStep, System.Convert.ChangeType(resolvedValue, stepProperty.PropertyType));
                     }                    
                 }
             }
