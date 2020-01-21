@@ -424,7 +424,7 @@ In our external worker process, we can fetch a waiting activity of an active wor
 GET /api/activity/my-activity?timeout=30
 ```
 
-This will wait yp to 30 seconds for some work be become ready to process, if there is no workflow waiting on the activity requested, then a `404 Not Found` will be returned.  If there is work waiting for that activity queue, then an exclusive token will be issued and the reponse will look as follows
+This will wait up to 30 seconds for some work be become ready to process, if there is no workflow waiting on the activity requested, then a `404 Not Found` will be returned.  If there is work waiting for that activity queue, then an exclusive token will be issued and the reponse will look as follows
 
 ```json
 {
