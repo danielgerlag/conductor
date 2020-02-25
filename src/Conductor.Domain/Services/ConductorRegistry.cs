@@ -9,7 +9,7 @@ namespace Conductor.Domain.Services
 {
     public class ConductorRegistry : IWorkflowRegistry
     {
-        private readonly List<Tuple<string, int, WorkflowDefinition>> _registry = new List<Tuple<string, int, WorkflowDefinition>>();
+        private readonly List<(string WorkflowId, int Version, WorkflowDefinition WorkflowDefinition)> _registry = new List<(string workflowId, int version, WorkflowDefinition workflowDefinition)>();
 
         public ConductorRegistry()
         {
@@ -20,15 +20,14 @@ namespace Conductor.Domain.Services
         {
             if (version.HasValue)
             {
-                var entry = _registry.FirstOrDefault(x => x.Item1 == workflowId && x.Item2 == version.Value);
-                // TODO: What in the heck does Item3 mean?
-                return entry?.Item3;
+                var entry = _registry.FirstOrDefault(x => x.WorkflowId == workflowId && x.Version == version.Value);
+                return entry.WorkflowDefinition;
             }
             else
             {
-                var entry = _registry.Where(x => x.Item1 == workflowId).OrderByDescending(x => x.Item2)
+                var entry = _registry.Where(x => x.WorkflowId == workflowId).OrderByDescending(x => x.Version)
                                      .FirstOrDefault();
-                return entry?.Item3;
+                return entry.WorkflowDefinition;
             }
         }
 
@@ -39,7 +38,7 @@ namespace Conductor.Domain.Services
                 throw new InvalidOperationException($"Workflow {definition.Id} version {definition.Version} is already registered");
             }
 
-            _registry.Add(Tuple.Create(definition.Id, definition.Version, definition));
+            _registry.Add((definition.Id, definition.Version, definition));
         }
 
         public void RegisterWorkflow(IWorkflow workflow)
