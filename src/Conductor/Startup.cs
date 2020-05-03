@@ -27,6 +27,7 @@ using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using Conductor.Auth;
 using Conductor.Middleware;
+using Microsoft.OpenApi.Models;
 
 namespace Conductor
 {
@@ -68,7 +69,16 @@ namespace Conductor
             })
             .AddNewtonsoftJson()
             .SetCompatibilityVersion(CompatibilityVersion.Latest);
-            
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Conductor API"
+                });
+            });
+
             var authConfig = services.AddAuthentication(options =>
             {                
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -131,6 +141,12 @@ namespace Conductor
             });
             app.UseRouting();
             //app.UseMvcWithDefaultRoute();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+            });
 
             app.UseCors(x => x
                 .AllowAnyOrigin()

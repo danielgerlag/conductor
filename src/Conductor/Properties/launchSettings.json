@@ -20,7 +20,7 @@
     "Conductor": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/info",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
