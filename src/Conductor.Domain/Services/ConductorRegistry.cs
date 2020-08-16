@@ -16,6 +16,16 @@ namespace Conductor.Domain.Services
             
         }
 
+        public void DeregisterWorkflow(string workflowId, int version)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<WorkflowDefinition> GetAllDefinitions()
+        {
+            throw new NotImplementedException();
+        }
+
         public WorkflowDefinition GetDefinition(string workflowId, int? version = null)
         {
             if (version.HasValue)
@@ -29,6 +39,11 @@ namespace Conductor.Domain.Services
                                      .FirstOrDefault();
                 return entry.WorkflowDefinition;
             }
+        }
+
+        public bool IsRegistered(string workflowId, int version)
+        {
+            throw new NotImplementedException();
         }
 
         public void RegisterWorkflow(WorkflowDefinition definition)
