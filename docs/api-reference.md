@@ -6,6 +6,7 @@
 * [Activity Workers](#activity-api)
 * [Custom Steps](#steps-api)
 * [Diagnostics](#diagnostic-api)
+* [Swagger documentation](#swagger-documentation)
 
 Download the [Postman Collection](https://raw.githubusercontent.com/danielgerlag/conductor/master/docs/Conductor.postman_collection.json)
 
@@ -226,3 +227,14 @@ GET /api/step/<<id>>
 ```
 GET /api/info
 ```
+
+
+# Swagger Documentation
+
+It is possible to discover and try out API with [Swagger](https://swagger.io/) in a browser `https://localhost:5001/swagger`.
+
+![Swagger in browser](swagger_browser.png)
+
+It’s also convenient to import a Postman collection as swagger json `https://localhost:5001/swagger/v1/swagger.json`.
+
+![Import Posrmat collection](swagger_import.png)

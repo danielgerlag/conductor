@@ -27,6 +27,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
     <PackageReference Include="WorkflowCore" Version="3.2.2" />
     <PackageReference Include="WorkflowCore.Providers.Redis" Version="3.0.0" />
   </ItemGroup>
@@ -37,5 +38,7 @@
     <ProjectReference Include="..\Conductor.Steps\Conductor.Steps.csproj" />
     <ProjectReference Include="..\Conductor.Storage\Conductor.Storage.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
