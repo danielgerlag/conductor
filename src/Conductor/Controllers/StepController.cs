@@ -42,7 +42,7 @@ namespace Conductor.Controllers
 
         [HttpPost("{name}")]
         [Authorize(Policy = Policies.Author)]
-        public async void Post(string name)
+        public async Task Post(string name)
         {
             using (var sr = new StreamReader(Request.Body))
             {
