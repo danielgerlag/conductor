@@ -10,7 +10,7 @@
     <PackageReference Include="Ductus.FluentDocker" Version="2.7.3" />
     <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-    <PackageReference Include="RestSharp" Version="106.6.10" />
+    <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
