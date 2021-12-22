@@ -57,5 +57,10 @@ namespace Conductor.Domain.Services
         {
             return _repository.Find(id);
         }
+
+        public IEnumerable<Definition> GetDefinitions()
+        {
+            return _repository.GetAll();
+        }
     }
 }

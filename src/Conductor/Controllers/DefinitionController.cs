@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Conductor.Auth;
+﻿using Conductor.Auth;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Conductor.Controllers
 {
@@ -24,9 +20,11 @@ namespace Conductor.Controllers
 
         [HttpGet]
         [Authorize(Policy = Policies.Author)]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<Definition>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var result = _service.GetDefinitions();
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
