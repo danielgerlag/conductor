@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Conductor.Auth;
-using Conductor.Domain.Interfaces;
-using Conductor.Domain.Models;
 using Conductor.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+using System.Dynamic;
+using System.Threading.Tasks;
 using WorkflowCore.Interface;
 
 namespace Conductor.Controllers
