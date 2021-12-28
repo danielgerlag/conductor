@@ -1,9 +1,13 @@
 ﻿using Conductor.Auth;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
+using Conductor.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Conductor.Controllers
 {
@@ -20,10 +24,20 @@ namespace Conductor.Controllers
 
         [HttpGet]
         [Authorize(Policy = Policies.Author)]
-        public ActionResult<IEnumerable<Definition>> Get()
+        public ActionResult<IEnumerable<Definition>> Get([FromQuery] PaginationParameter parameter)
         {
-            var result = _service.GetDefinitions();
+            var result = parameter.IsValid() ?
 
+                _service.GetDefinitions()
+                    .OrderByDescending(x => x.Version)
+                    .DistinctBy(p => p.Id)
+                    .Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                    .Take(parameter.PageSize) :
+
+                _service.GetDefinitions()
+                    .OrderByDescending(x => x.Version)
+                    .DistinctBy(p => p.Id);       
+           
             return Ok(result);
         }
 
