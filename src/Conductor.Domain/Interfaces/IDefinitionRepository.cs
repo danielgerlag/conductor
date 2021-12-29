@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Conductor.Domain.Models;
 using System.Collections.Generic;
-using System.Text;
-using Conductor.Domain.Models;
 
 namespace Conductor.Domain.Interfaces
 {
     public interface IDefinitionRepository
     {
         IEnumerable<Definition> GetAll();
+        IEnumerable<Definition> Get(int pageNumber, int pageSize);
 
         Definition Find(string workflowId);
         Definition Find(string workflowId, int version);

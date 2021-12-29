@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Conductor.Domain.Interfaces;
+﻿using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
 using Microsoft.Extensions.Logging;
-using SharpYaml.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace Conductor.Domain.Services
 {
     public class DefinitionService : IDefinitionService
     {
-
         private readonly IDefinitionRepository _repository;
         private readonly IWorkflowLoader _loader;
         private readonly IClusterBackplane _backplane;
@@ -58,9 +55,9 @@ namespace Conductor.Domain.Services
             return _repository.Find(id);
         }
 
-        public IEnumerable<Definition> GetDefinitions()
+        public IEnumerable<Definition> GetDefinitions(int pageNumber, int pageSize)
         {
-            return _repository.GetAll();
+            return _repository.Get(pageNumber, pageSize);
         }
     }
 }

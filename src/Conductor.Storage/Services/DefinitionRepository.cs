@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Conductor.Domain.Interfaces;
+﻿using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
 using Conductor.Storage.Models;
-using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Conductor.Storage.Services
 {
@@ -62,6 +58,29 @@ namespace Conductor.Storage.Services
         public IEnumerable<Definition> GetAll()
         {
             var results = _collection.AsQueryable().Select(x => x.Definition);
+
+            foreach (var item in results)
+            {
+                var json = item.ToJson();
+                yield return JsonConvert.DeserializeObject<Definition>(json);
+            }
+        }
+
+        public IEnumerable<Definition> Get(int pageNumber, int pageSize)
+        {
+            var paginationValid = pageNumber > 0 && pageSize > 0;
+
+            var results = paginationValid ?
+
+                _collection
+                    .AsQueryable()
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(x => x.Definition) :
+
+                _collection
+                    .AsQueryable()
+                    .Select(x => x.Definition);
 
             foreach (var item in results)
             {
