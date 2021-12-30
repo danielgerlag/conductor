@@ -3,6 +3,7 @@ using Conductor.Domain.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Conductor.Domain.Services
 {
@@ -58,6 +59,27 @@ namespace Conductor.Domain.Services
         public IEnumerable<Definition> GetDefinitions(int pageNumber, int pageSize)
         {
             return _repository.Get(pageNumber, pageSize);
+        }
+
+        public IEnumerable<Definition> GetUniqueDefinitions(int pageNumber, int pageSize)
+        {
+            var results = _repository.GetAll();
+
+            var paginationValid = pageNumber > 0 && pageSize > 0;
+
+            var result = paginationValid ?
+
+                results
+                    .OrderByDescending(x => x.Version)
+                    .DistinctBy(p => p.Id)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize) :
+
+                results
+                    .OrderByDescending(x => x.Version)
+                    .DistinctBy(p => p.Id);
+
+            return result;
         }
     }
 }

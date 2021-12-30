@@ -89,6 +89,19 @@ namespace Conductor.Storage.Services
             }
         }
 
+        public IEnumerable<Definition> GetUnique()
+        {
+            var results = _collection
+                .AsQueryable()
+                .Select(x => x.Definition);
+
+            foreach (var item in results)
+            {
+                var json = item.ToJson();
+                yield return JsonConvert.DeserializeObject<Definition>(json);
+            }
+        }
+
         public void Save(Definition definition)
         {
             var json = JsonConvert.SerializeObject(definition);

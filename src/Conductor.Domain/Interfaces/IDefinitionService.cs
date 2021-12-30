@@ -10,5 +10,6 @@ namespace Conductor.Domain.Interfaces
         void ReplaceVersion(Definition definition);
         Definition GetDefinition(string id);
         IEnumerable<Definition> GetDefinitions(int pageNumber, int pageSize);
+        IEnumerable<Definition> GetUniqueDefinitions(int pageNumber, int pageSize);
     }
 }

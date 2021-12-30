@@ -28,6 +28,15 @@ namespace Conductor.Controllers
             return Ok(result);
         }
 
+        [HttpGet("unique")]
+        [Authorize(Policy = Policies.Author)]
+        public ActionResult<IEnumerable<Definition>> GetUnique([FromQuery] PaginationParameter parameter)
+        {
+            var result = _service.GetUniqueDefinitions(parameter.PageNumber, parameter.PageSize);
+
+            return Ok(result);
+        }
+
         [HttpGet("{id}")]
         [Authorize(Policy = Policies.Author)]
         public ActionResult<Definition> Get(string id)
