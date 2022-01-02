@@ -5,6 +5,7 @@ using Conductor.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Conductor.Controllers
 {
@@ -21,7 +22,7 @@ namespace Conductor.Controllers
 
         [HttpGet]
         [Authorize(Policy = Policies.Author)]
-        public ActionResult<IEnumerable<Definition>> Get([FromQuery] PaginationParameter parameter)
+        public ActionResult<IAsyncEnumerable<Definition>> Get([FromQuery] PaginationParameter parameter)
         {
             var result = _service.GetDefinitions(parameter.PageNumber, parameter.PageSize);
 

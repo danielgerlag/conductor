@@ -66,27 +66,27 @@ namespace Conductor.Storage.Services
             }
         }
 
-        public IEnumerable<Definition> Get(int pageNumber, int pageSize)
+        public async IAsyncEnumerable<Definition> Get(int pageNumber, int pageSize)
         {
             var paginationValid = pageNumber > 0 && pageSize > 0;
 
-            var results = paginationValid ?
+            var filter = new BsonDocument();
 
-                _collection
-                    .AsQueryable()
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .Select(x => x.Definition) :
-
-                _collection
-                    .AsQueryable()
-                    .Select(x => x.Definition);
-
-            foreach (var item in results)
+            using (var cursor = paginationValid ?
+                await _collection.Find(filter).Skip((pageNumber - 1) * pageSize).Limit(pageSize).ToCursorAsync() :
+                await _collection.Find(filter).ToCursorAsync())
             {
-                var json = item.ToJson();
-                yield return JsonConvert.DeserializeObject<Definition>(json);
-            }
+                while (await cursor.MoveNextAsync())
+                {
+                    foreach (var item in cursor.Current)
+                    {
+                        var json = item.Definition.ToJson();
+                        var definition = JsonConvert.DeserializeObject<Definition>(json);
+
+                        yield return definition;
+                    }
+                }
+            }        
         }
 
         public void Save(Definition definition)

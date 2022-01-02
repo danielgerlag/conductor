@@ -6,7 +6,7 @@ namespace Conductor.Domain.Interfaces
     public interface IDefinitionRepository
     {
         IEnumerable<Definition> GetAll();
-        IEnumerable<Definition> Get(int pageNumber, int pageSize);
+        IAsyncEnumerable<Definition> Get(int pageNumber, int pageSize);
 
         Definition Find(string workflowId);
         Definition Find(string workflowId, int version);
