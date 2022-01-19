@@ -10,6 +10,7 @@ namespace Conductor.Domain
         public static void ConfigureDomainServices(this IServiceCollection services)
         {
             services.AddSingleton<IDefinitionService, DefinitionService>();
+            services.AddSingleton<IFlowService, FlowService>();
             services.AddSingleton<IWorkflowLoader, WorkflowLoader>();
             services.AddSingleton<ICustomStepService, CustomStepService>();
             services.AddSingleton<IExpressionEvaluator, ExpressionEvaluator>();
