@@ -56,9 +56,14 @@ namespace Conductor.Domain.Services
             return _repository.Find(id);
         }
 
-        public IEnumerable<Definition> GetDefinitions(int pageNumber, int pageSize)
+        public async IAsyncEnumerable<Definition> GetDefinitions(int pageNumber, int pageSize)
         {
-            return _repository.Get(pageNumber, pageSize);
+            var definitions = _repository.Get(pageNumber, pageSize);
+
+            await foreach (var item in definitions)
+            {
+                yield return item;
+            }
         }
 
         public IEnumerable<Definition> GetUniqueDefinitions(int pageNumber, int pageSize)
