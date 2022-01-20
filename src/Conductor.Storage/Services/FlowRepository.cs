@@ -15,6 +15,7 @@ namespace Conductor.Storage.Services
         private readonly IMongoDatabase _database;
 
         private IMongoCollection<StoredFlow> _collection => _database.GetCollection<StoredFlow>("Flows");
+        private IMongoCollection<StoredDefinition> _definitionsCollection => _database.GetCollection<StoredDefinition>("Definitions");
 
         static FlowRepository()
         {
@@ -29,11 +30,25 @@ namespace Conductor.Storage.Services
         public Flow Find(string flowId)
         {
             var result = _collection.Find(x => x.ExternalId == flowId);
+
             if (!result.Any())
                 return null;
 
             var json = result.First().Flow.ToJson();
-            return JsonConvert.DeserializeObject<Flow>(json);
+            var flow = JsonConvert.DeserializeObject<Flow>(json);
+           
+            var definitions = _definitionsCollection.AsQueryable()
+                .Where(x => flow.DefinitionIds.Contains(x.ExternalId))
+                .Select(x => x.Definition);
+
+            foreach (var definitionBson in definitions)
+            {
+                var definitionJson = definitionBson.ToJson();
+                var definition = JsonConvert.DeserializeObject<Definition>(definitionJson);
+                flow.Definitions.Add(definition);
+            }
+
+            return flow;
         }
 
         public IEnumerable<Flow> GetAll()
