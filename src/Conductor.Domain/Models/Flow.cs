@@ -7,6 +7,6 @@ namespace Conductor.Domain.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public string StartupDefinitionId { get; set; }
-        public IEnumerable<Definition> Definitions { get; set; }
+        public IEnumerable<string> DefinitionIds { get; set; }
     }
 }
